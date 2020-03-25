@@ -1,3 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+rstudio-server.job.*
+runSingularity.sh
+exampleCode.txt
