@@ -13,3 +13,4 @@ Imports:
   purrr
 Suggests: 
     testthat
+RoxygenNote: 7.0.2

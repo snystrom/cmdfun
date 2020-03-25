@@ -7,11 +7,35 @@
 # - handle BOOL flags correctly (UNTESTED)
 # - handle vector arguments
 
+#' return function dots as named list
+#'
+#' @param ... dots from function call
+#'
+#' @return named list of kwargs from ...
+#' @export
+#'
+#' @examples
+#' theFunction <- function(...) { getDots(...) }
+#' theDots <-  myFunction(example = "hello", example2 = "world", boolFlag = TRUE)
 getDots <- function(...){
   dots <- eval(substitute(list(...)))
   return(dots)
 }
 
+#' convert list from getDots to vector of formatted shell flags
+#'
+#' @param dots output list from getDots
+#' @param flag_lookup optional named vector to convert names from dots to a
+#'   simplified shell flag, useful for providing aliases to single-letter flags
+#' @param prefix flag prefix, usually - or --
+#'
+#' @return named vector of shell flags with their values
+#' @export
+#'
+#' @examples
+#' theFunction <- function(...) { getDots(...) }
+#' theDots <-  myFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+#' theArgs <-  dotsToArgs(theDots)
 dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-"){
   # prefix = flag prefix, usually - or --
   # dots = named list parsed from getDots
