@@ -22,6 +22,6 @@ convert list from getDots to vector of formatted shell flags
 }
 \examples{
 theFunction <- function(...) { getDots(...) }
-theDots <-  myFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE)
 theArgs <-  dotsToArgs(theDots)
 }

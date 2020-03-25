@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' theFunction <- function(...) { getDots(...) }
-#' theDots <-  myFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE)
 getDots <- function(...){
   dots <- eval(substitute(list(...)))
   return(dots)
@@ -34,7 +34,7 @@ getDots <- function(...){
 #'
 #' @examples
 #' theFunction <- function(...) { getDots(...) }
-#' theDots <-  myFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE)
 #' theArgs <-  dotsToArgs(theDots)
 dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-"){
 
