@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1585147315338.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "F1E54F78",
+    "lastKnownWriteTime" : 1585147327,
+    "last_content_update" : 1585147327788,
+    "path" : "~/pkg_dev/dotargs/test/test.R",
+    "project_path" : "test/test.R",
+    "properties" : {
+        "cursorPosition" : "23,13",
+        "marks" : "<:0,15\n>:3,15",
+        "scrollLine" : "5"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
