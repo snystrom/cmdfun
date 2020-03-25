@@ -3,24 +3,7 @@ dict <- c("n_motifs" = "m",
           "evalue_thresh" = "e")
 dotsToArgs(dots, dict)
 
-#system2("cut", c("-f 1", "-d\t", " <(echo hello\tworld)"))
-
-system2("echo", "hello world", input = "test.txt") -> x
-
-myFun <- function(file, ...){
-  args <- getDots(...) %>%
-    dotsToArgs
-
-  system2("wc", c(args, file))
-}
-
-system2("echo", "hello", stdout = "myFile.txt")
-
-myFun("myFile.txt", l = T)
-
-
 getDots(x = T, y = F) %>%
   dotsToArgs()
 
 
-## ISSUE WITH GLOBAL ENVIRONMENT: WHY???
