@@ -1,3 +1,6 @@
+library(dotargs)
+## TODO: format tests inside test_that()
+
 # pass non-list to dotsToArgs
 expect_equal(dotsToArgs(list("a" = 2)), "-a 2")
 expect_equal(dotsToArgs(list("a" = 2, "b" = 3, "c" = 4)), c("-a 2", "-b 3", "-c 4"))
