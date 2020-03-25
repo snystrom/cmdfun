@@ -1,7 +1,20 @@
 dotargs
 ================
 
+<!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
+
 ## A simple framework for building shell interfaces
+
+`dotargs` provides two main functions: `getDots` and `dotsToArgs` which
+can act as a useful backend for converting keyword arguments passed to …
+in a function call into a vector of shell command flags which can be
+passed to `system2` or `processx`. Together, they can be used to build
+user-friendly R interfaces to shell programs with several options which
+need to be exposed to the user.
 
 ## Install
 
