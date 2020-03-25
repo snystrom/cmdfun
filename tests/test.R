@@ -19,7 +19,7 @@ system2("echo", "hello", stdout = "myFile.txt")
 myFun("myFile.txt", l = T)
 
 
-getDots(m = T, x = F) %>%
+getDots(x = T, y = F) %>%
   dotsToArgs()
 
 
