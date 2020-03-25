@@ -24,7 +24,7 @@ getDots <- function(...){
 
 #' convert list from getDots to vector of formatted shell flags
 #'
-#' @param dots output list from getDots
+#' @param dots output from getDots
 #' @param flag_lookup optional named vector to convert names from dots to a
 #'   simplified shell flag, useful for providing aliases to single-letter flags
 #' @param prefix flag prefix, usually - or --
@@ -37,10 +37,9 @@ getDots <- function(...){
 #' theDots <-  myFunction(example = "hello", example2 = "world", boolFlag = TRUE)
 #' theArgs <-  dotsToArgs(theDots)
 dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-"){
-  # prefix = flag prefix, usually - or --
-  # dots = named list parsed from getDots
-  # flag_lookup = named vector where names are custom name and value is actual flag,
-       # useful for parsing single-letter flags with no expanded names
+
+  testthat::expect_named(dots)
+
   if (!is.null(flag_lookup)) {
     names(dots)[names(dots) %in% names(flag_lookup)] <- flag_lookup[names(dots)[names(dots) %in% names(flag_lookup)]]
   }

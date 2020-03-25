@@ -7,9 +7,10 @@
 dotsToArgs(dots, flag_lookup = NULL, prefix = "-")
 }
 \arguments{
-\item{dots}{output list from getDots}
+\item{dots}{output from getDots}
 
-\item{flag_lookup}{optional named vector to convert names from dots to a simplified shell flag}
+\item{flag_lookup}{optional named vector to convert names from dots to a
+simplified shell flag, useful for providing aliases to single-letter flags}
 
 \item{prefix}{flag prefix, usually - or --}
 }
