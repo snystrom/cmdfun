@@ -19,12 +19,8 @@ system2("echo", "hello", stdout = "myFile.txt")
 myFun("myFile.txt", l = T)
 
 
-getDots(m = "test") -> r
+getDots(m = T, x = F) %>%
+  dotsToArgs()
 
-dotsToArgs(r)
-
-getDots(d = "tess") -> d
-
-dotsToArgs(d)
 
 ## ISSUE WITH GLOBAL ENVIRONMENT: WHY???
