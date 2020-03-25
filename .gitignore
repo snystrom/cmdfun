@@ -2,3 +2,4 @@
 rstudio-server.job.*
 runSingularity.sh
 exampleCode.txt
+.Rhistory
