@@ -1,49 +1,48 @@
-dotargs
-================
-
+---
+title: "dotargs"
+output: github_document
+---
 ## A simple framework for building shell interfaces
 
 ## Install
-
-``` r
+```{r, eval=F}
 remotes::install_github("snystrom/dotargs")
 ```
 
 ## Examples
-
-``` r
+```{r}
 library(magrittr)
 library(dotargs)
 
 shellCut <- function(text, ...){
 
-    args <- getDots(...) %>%
-        dotsToArgs
+	args <- getDots(...) %>%
+		dotsToArgs
 
-    system2("echo", c(text, "|", "cut", args))
+	system2("echo", c(text, "|", "cut", args))
 
 }
 ```
 
-``` r
+```{r}
 shellCut("hello_world", f = 2, d = "_") 
 ```
+```{r, echo=F}
+cat("world")
+```
 
-    ## world
-
-**WARNING:** It’s still possible to do unsafe operations as follows:
-
-``` r
+**WARNING:** It's still possible to do unsafe operations as follows:
+```{r}
 shellCut("hello_world", f = 2, d = "_", `&&echo` = "test")
 ```
 
-    ## world
-
-    ## test
+```{r, echo=F}
+cat("world")
+cat("test")
+```
 
 ### Boolean flags are passed as bool operators
-
-``` r
+```{r}
 shell_ls <- function(dir = ".", ...){
   args <- getDots(...) %>% 
     dotsToArgs
@@ -52,23 +51,25 @@ shell_ls <- function(dir = ".", ...){
 }
 ```
 
-``` r
+```{r}
 shell_ls("R")
 ```
+```{r, echo=F}
+cat("dots_to_args.R")
+```
 
-    ## dots_to_args.R
-
-``` r
+```{r}
 shell_ls("R", l = T)
 ```
 
-    ## total 4
-
-    ## -rw-r--r-- 1 snystrom employee 1372 Mar 25 11:22 dots_to_args.R
+```{r, echo=F}
+cat("total 4\n")
+cat("-rw-r--r-- 1 snystrom employee 1372 Mar 25 11:22 dots_to_args.R")
+```
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
+```{r}
 
-``` r
 shell_ls_alias <- function(dir = ".", ...){
   
   argsDict <- c("long" = "l")
@@ -80,28 +81,30 @@ shell_ls_alias <- function(dir = ".", ...){
 }
 ```
 
-``` r
+```{r}
 shell_ls_alias("R", long = T)
 ```
+```{r, echo=F}
+cat("total 4\n")
+cat("-rw-r--r-- 1 snystrom employee 1372 Mar 25 11:22 dots_to_args.R")
+```
 
-    ## total 4
-
-    ## -rw-r--r-- 1 snystrom employee 1372 Mar 25 11:22 dots_to_args.R
-
-``` r
+```{r}
 shellCut_alias <- function(text, ...){
 
   argsDict <- c("sep" = "d")
     
-    args <- getDots(...) %>%
-        dotsToArgs(argsDict)
+	args <- getDots(...) %>%
+		dotsToArgs(argsDict)
 
-    system2("echo", c(text, "|", "cut", args))
+	system2("echo", c(text, "|", "cut", args))
 }
 ```
 
-``` r
+```{r}
 shellCut_alias("hello_world", f = 2, sep = "_") 
 ```
+```{r, echo=F}
+cat("world")
+```
 
-    ## world
