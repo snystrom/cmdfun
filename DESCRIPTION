@@ -9,7 +9,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  magrittr,
   purrr
 Suggests: 
     testthat

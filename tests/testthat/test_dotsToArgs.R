@@ -1,14 +1,26 @@
 library(dotargs)
 ## TODO: format tests inside test_that()
 
+# test empty list
+expect_equal(dotsToArgs(list()), "")
+# Test list vs vec
+expect_success(dotsToArgs(list("a" = 1)))
+expect_failure(dotsToArgs(c("a" = 1)))
+
+# Test multiple inputs
+expect_equal(dotsToArgs(list("a" = c(1,2,3))), "-a 1,2,3")
+
+# test quo vs unquoted names, all combinations
+expect_success(dotsToArgs(list("a" = 1, "b" = T, "c" = F,
+                               d = 1, e = T, f = F)))
+
 # pass non-list to dotsToArgs
 expect_equal(dotsToArgs(list("a" = 2)), "-a 2")
 expect_equal(dotsToArgs(list("a" = 2, "b" = 3, "c" = 4)), c("-a 2", "-b 3", "-c 4"))
-expect_equal(dotsToArgs(c("a" = 2, "b" = 3, "c" = 4)), c("-a 2", "-b 3", "-c 4"))
 
 # Check False gets dropped correctly for list and vector
 expect_equal(dotsToArgs(list("a" = 2, "b" = T, "c" = F)), c("-a 2", "-b "))
-expect_equal(dotsToArgs(c("a" = 2, "b" = T, "c" = F)), c("-a 2", "-b "))
+expect_equal(dotsToArgs(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))), c("-a 2", "-b ", "-d 1,3,test"))
 
 # Input must be named, should be caught by internal checking
 expect_error(dotsToArgs(list(2,3)))
@@ -21,8 +33,6 @@ argsDict <- c("long1" = "l",
 
 ## List & vector (modify when conversion complete to warn, etc.)
 expect_equal(dotsToArgs(list("long1" = 2, "long2" = T), argsDict), c("-l 2", "-ll "))
-## T should get dropped correctly from vectors
-expect_equal(dotsToArgs(c("long1" = 2, "long2" = T), argsDict), c("-l 2", "-ll "))
 
 ## Should warn if dict contains BOOL values, invalid entry
 expect_warning(dotsToArgs(list("a" = 2), argsDict))

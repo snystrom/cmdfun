@@ -4,7 +4,7 @@
 \alias{dotsToArgs}
 \title{convert list from getDots to vector of formatted shell flags}
 \usage{
-dotsToArgs(dots, flag_lookup = NULL, prefix = "-")
+dotsToArgs(dots, flag_lookup = NULL, prefix = "-", sep = ",")
 }
 \arguments{
 \item{dots}{output from getDots}
@@ -13,6 +13,8 @@ dotsToArgs(dots, flag_lookup = NULL, prefix = "-")
 simplified shell flag, useful for providing aliases to single-letter flags}
 
 \item{prefix}{flag prefix, usually - or --}
+
+\item{sep}{separator to use when passing vector for a single flag}
 }
 \value{
 named vector of shell flags with their values
@@ -22,6 +24,6 @@ convert list from getDots to vector of formatted shell flags
 }
 \examples{
 theFunction <- function(...) { getDots(...) }
-theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE, vectorFlag = c(1,2,3))
 theArgs <-  dotsToArgs(theDots)
 }

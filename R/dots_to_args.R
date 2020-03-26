@@ -16,9 +16,9 @@
 #'
 #' @examples
 #' theFunction <- function(...) { getDots(...) }
-#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE, vectorFlag = c(1,2,3))
 getDots <- function(...){
-  dots <- eval(substitute(list(...)))
+  dots <- list(...)
   return(dots)
 }
 
@@ -28,16 +28,20 @@ getDots <- function(...){
 #' @param flag_lookup optional named vector to convert names from dots to a
 #'   simplified shell flag, useful for providing aliases to single-letter flags
 #' @param prefix flag prefix, usually - or --
+#' @param sep separator to use when passing vector for a single flag
 #'
 #' @return named vector of shell flags with their values
 #' @export
 #'
 #' @examples
 #' theFunction <- function(...) { getDots(...) }
-#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE)
+#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE, vectorFlag = c(1,2,3))
 #' theArgs <-  dotsToArgs(theDots)
-dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-"){
-
+dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-", sep = ","){
+  
+  testthat::expect_type(dots, "list")
+  if (length(dots) == 0) { return("") }
+  
   testthat::expect_named(dots)
 
   if (!is.null(flag_lookup)) {
@@ -56,12 +60,10 @@ dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-"){
   # only FALSE logicals remain, so they are dropped
   dots <- dots[!purrr::map_lgl(dots, is.logical)]
 
-  # collapse to named vector
-  named_dots <- purrr::map_chr(dots, as.character)
-
   # concatenate to vector of flag calls
-  args <- purrr::map2_chr(names(named_dots), named_dots, ~{paste0(prefix, .x, " ", .y)})
-
+  args <- purrr::imap_chr(dots, ~{paste0(prefix, .y, " ", paste0(.x, collapse = sep))})
+  args <- purrr::set_names(args, NULL)
+  
   return(args)
 }
 

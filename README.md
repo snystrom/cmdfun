@@ -44,6 +44,14 @@ shellCut("hello_world", f = 2, d = "_")
 
     ## world
 
+Multiple values can be passed to arguments using vectors
+
+``` r
+shellCut("hello_world_hello", f = c(1,3), d = "_") 
+```
+
+    ## hello_hello
+
 **WARNING:** It’s still possible to do unsafe operations as follows:
 
 ``` r
