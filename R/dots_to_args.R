@@ -40,31 +40,40 @@ getDots <- function(...){
 dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-", sep = ","){
   
   testthat::expect_type(dots, "list")
-  if (length(dots) == 0) { return("") }
+  
+  if (length(dots) == 0) { return(NULL) }
   
   testthat::expect_named(dots)
-
+  
+  if (any(flag_lookup == "TRUE" | flag_lookup == "FALSE")) {
+    warning("flag_lookup may contain boolean definitions, which could cause unexpected behavior")
+  }
+  
   if (!is.null(flag_lookup)) {
-    names(dots)[names(dots) %in% names(flag_lookup)] <- flag_lookup[names(dots)[names(dots) %in% names(flag_lookup)]]
+    dots <- convert_names(dots, flag_lookup)
+  }
+  
+  if (is.null(flag_lookup)) { 
+    flag_lookup <- names(dots)
+    names(flag_lookup) <- names(dots)
   }
 
-  # collapse logicals, T = include, F = exclude
-  dots <- purrr::map(dots, ~{
-    if (!is.logical(.x)) return(.x)
-
-    if (.x == T) return("")
-
-    return(.x)
-  })
+  # collapse logicals, T = include, replace for empty string
+  dots <- true_to_empty(dots)
 
   # only FALSE logicals remain, so they are dropped
-  dots <- dots[!purrr::map_lgl(dots, is.logical)]
+  dots <- drop_list_logicals(dots)
+  
+  # Warn if arguments are defined multiple times
+  purrr::imap_dbl(flag_lookup, count_matched_args, dots) %>% 
+    purrr::set_names(concatenate_args(flag_lookup)) %>% 
+    find_multimatched_args() %>% 
+    {purrr::walk(., warn_multimatched_arg)}
 
   # concatenate to vector of flag calls
-  args <- purrr::imap_chr(dots, ~{paste0(prefix, .y, " ", paste0(.x, collapse = sep))})
-  args <- purrr::set_names(args, NULL)
+  args <- purrr::imap_chr(dots, ~{paste0(prefix, .y, " ", paste0(.x, collapse = sep))}) %>% 
+    purrr::set_names(NULL)
   
   return(args)
 }
-
 

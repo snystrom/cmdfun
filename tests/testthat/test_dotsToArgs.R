@@ -2,7 +2,8 @@ library(dotargs)
 ## TODO: format tests inside test_that()
 
 # test empty list
-expect_equal(dotsToArgs(list()), "")
+expect_equal(dotsToArgs(list()), NULL)
+
 # Test list vs vec
 expect_success(dotsToArgs(list("a" = 1)))
 expect_failure(dotsToArgs(c("a" = 1)))
@@ -28,15 +29,17 @@ expect_error(dotsToArgs(c(2,3)))
 
 # Dictionary tests
 argsDict <- c("long1" = "l",
-              "long2" = "ll",
-              test = T)
+              "long2" = "ll")
+argsDict_bool <- c(argsDict,
+                   test = T)
+
 
 ## List & vector (modify when conversion complete to warn, etc.)
 expect_equal(dotsToArgs(list("long1" = 2, "long2" = T), argsDict), c("-l 2", "-ll "))
 
 ## Should warn if dict contains BOOL values, invalid entry
-expect_warning(dotsToArgs(list("a" = 2), argsDict))
-expect_warning(dotsToArgs(list("long1" = 2, "long2" = T, "test" = "abc"), argsDict))
+expect_warning(dotsToArgs(list("a" = 2), argsDict_bool))
+expect_warning(dotsToArgs(list("long1" = 2, "long2" = T, "test" = "abc"), argsDict_bool))
 
 ## should warn if flag has both T & F
 expect_warning(dotsToArgs(list("b" = T, "b" = F)))
@@ -46,8 +49,10 @@ expect_warning(dotsToArgs(list("long1" = T, "long1" = F), argsDict))
 
 ## Should also catch if long & short version of flags are both set
 expect_equal(dotsToArgs(list("long1" = 2, "l" = T)), c("-long1 2", "-l "))
-expect_warning(dotsToArgs(list("long1" = 2, "l" = T), argsDict))
+expect_message(dotsToArgs(list("long1" = 2, "l" = T), argsDict))
+
+expect_message(dotsToArgs(list("l" = T, "l" = T), argsDict))
+expect_message(dotsToArgs(list("l" = T, "l" = T)))
 
 # getDots checks
 expect_type(getDots(a = 2, b = "myString", c = T, d = F), "list")
-expect_type(getDots(a = 2, b = "myString", c = T, d = F), "character")

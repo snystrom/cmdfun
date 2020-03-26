@@ -78,14 +78,17 @@ shell_ls("R")
 ```
 
     ## dots_to_args.R
+    ## utils.R
 
 ``` r
 shell_ls("R", l = T)
 ```
 
-    ## total 4
+    ## total 8
 
-    ## -rw-r--r-- 1 snystrom employee 1372 Mar 25 11:22 dots_to_args.R
+    ## -rw-r--r-- 1 snystrom employee 1372 Mar 25 12:00 dots_to_args.R
+
+    ## -rw-r--r-- 1 snystrom employee 1372 Mar 25 12:00 utils.R
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 

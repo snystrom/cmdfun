@@ -77,7 +77,7 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("R")
 ```
 ```{r, echo=F}
-cat("dots_to_args.R")
+cat("dots_to_args.R\nutils.R")
 ```
 
 ```{r}
@@ -85,8 +85,9 @@ shell_ls("R", l = T)
 ```
 
 ```{r, echo=F}
-cat("total 4\n")
-cat("-rw-r--r-- 1 snystrom employee 1372 Mar 25 11:22 dots_to_args.R")
+cat("total 8\n")
+cat("-rw-r--r-- 1 snystrom employee 1372 Mar 25 12:00 dots_to_args.R\n")
+cat("-rw-r--r-- 1 snystrom employee 1372 Mar 25 12:00 utils.R")
 ```
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags

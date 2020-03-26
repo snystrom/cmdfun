@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  purrr
-Suggests: 
-    testthat
+  magrittr,
+  purrr,
+  testthat
 RoxygenNote: 7.0.2
