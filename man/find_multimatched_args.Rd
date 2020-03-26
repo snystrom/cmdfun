@@ -15,3 +15,9 @@ names of args with matches > 1
 \description{
 returns list of named args with multiple definitions
 }
+\examples{
+vec <- c("setArg" = 1, "unsetArg" = 0, "multiSetArg" = 3)
+\dontrun{
+find_multimatched_args(vec)
+}
+}

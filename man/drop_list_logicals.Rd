@@ -15,3 +15,9 @@ the same list without any entries with logical vectors
 \description{
 Removes logical vectors from list objects
 }
+\examples{
+myList <- list(a = 1, b = TRUE, c = FALSE)
+\dontrun{
+drop_list_logicals(myList)
+}
+}

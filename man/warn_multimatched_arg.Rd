@@ -15,3 +15,8 @@ warn_multimatched_arg(name)
 \description{
 Prints message warning user of each argument that is defined multiple times in function call
 }
+\examples{
+\dontrun{
+warn_multimatched_arg("arg")
+}
+}

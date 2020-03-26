@@ -2,3 +2,4 @@
 
 export(dotsToArgs)
 export(getDots)
+importFrom(magrittr,"%>%")

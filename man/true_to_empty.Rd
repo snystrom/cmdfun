@@ -7,11 +7,17 @@
 true_to_empty(list)
 }
 \arguments{
-\item{list}{}
+\item{list}{a list}
 }
 \value{
 list where entries with TRUE are replaced for ""
 }
 \description{
 Replace list entries with boolean values of TRUE with empty string
+}
+\examples{
+myList <- list(a = TRUE)
+\dontrun{
+true_to_empty(myList)
+}
 }

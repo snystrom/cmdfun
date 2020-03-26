@@ -1,11 +1,5 @@
 # TODO:
-# - Switch purrr calls to base R?
-# - write tests
-# - add function for constructing full call for passing to system2
-# - ERROR CHECK that arg & user-friendly name aren't both used
-#   - Warn user, default behavior to use raw flag over user-friendly name
-# - handle BOOL flags correctly (UNTESTED)
-# - handle vector arguments
+# - add macro function for constructing full call for passing to system2, etc.
 
 #' return function dots as named list
 #'
@@ -16,7 +10,7 @@
 #'
 #' @examples
 #' theFunction <- function(...) { getDots(...) }
-#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE, vectorFlag = c(1,2,3))
+#' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
 getDots <- function(...){
   dots <- list(...)
   return(dots)
@@ -32,10 +26,12 @@ getDots <- function(...){
 #'
 #' @return named vector of shell flags with their values
 #' @export
+#' 
+#' @importFrom magrittr %>%
 #'
 #' @examples
 #' theFunction <- function(...) { getDots(...) }
-#' theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE, vectorFlag = c(1,2,3))
+#' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
 #' theArgs <-  dotsToArgs(theDots)
 dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-", sep = ","){
   
@@ -57,6 +53,9 @@ dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-", sep = ","){
     flag_lookup <- names(dots)
     names(flag_lookup) <- names(dots)
   }
+  
+  # Check for illegal characters in dots, print warning
+  check_args_contain_illegal_flags(dots)
 
   # collapse logicals, T = include, replace for empty string
   dots <- true_to_empty(dots)

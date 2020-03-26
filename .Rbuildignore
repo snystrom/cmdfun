@@ -3,5 +3,4 @@
 ^LICENSE\.md$
 rstudio-server.job.*
 runSingularity.sh
-exampleCode.txt
-README.Rmd
+^README\.Rmd$

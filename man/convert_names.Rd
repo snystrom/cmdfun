@@ -17,3 +17,10 @@ convert_names(obj, dict)
 \description{
 converts names of object (obj) to values of named vector (dict)
 }
+\examples{
+dict <- c("long" = "l")
+dots <- list("long" = 1, "a" = 1)
+\dontrun{
+convert_names(dots, dict)
+}
+}

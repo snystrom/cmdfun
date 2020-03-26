@@ -17,5 +17,5 @@ return function dots as named list
 }
 \examples{
 theFunction <- function(...) { getDots(...) }
-theDots <-  theFunction(example = "hello", example2 = "world", boolFlag = TRUE, vectorFlag = c(1,2,3))
+theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
 }

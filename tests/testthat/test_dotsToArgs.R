@@ -41,11 +41,11 @@ expect_equal(dotsToArgs(list("long1" = 2, "long2" = T), argsDict), c("-l 2", "-l
 expect_warning(dotsToArgs(list("a" = 2), argsDict_bool))
 expect_warning(dotsToArgs(list("long1" = 2, "long2" = T, "test" = "abc"), argsDict_bool))
 
-## should warn if flag has both T & F
-expect_warning(dotsToArgs(list("b" = T, "b" = F)))
+## should warn if flag has both T & F ?
+#expect_warning(dotsToArgs(list("b" = T, "b" = F)))
 
 ## should warn if flag has both T & F (with dictionary)
-expect_warning(dotsToArgs(list("long1" = T, "long1" = F), argsDict))
+#expect_warning(dotsToArgs(list("long1" = T, "long1" = F), argsDict))
 
 ## Should also catch if long & short version of flags are both set
 expect_equal(dotsToArgs(list("long1" = 2, "l" = T)), c("-long1 2", "-l "))
@@ -56,3 +56,11 @@ expect_message(dotsToArgs(list("l" = T, "l" = T)))
 
 # getDots checks
 expect_type(getDots(a = 2, b = "myString", c = T, d = F), "list")
+
+test_that("Illegal flags detected", {
+  expect_error(dotsToArgs(list("&&echo" = "test")))
+  expect_error(dotsToArgs(list("$(echo hello world)" = T)))
+  expect_error(dotsToArgs(list("test flag" = T)))
+  expect_error(dotsToArgs(list("<(cat.)" = T)))
+})
+

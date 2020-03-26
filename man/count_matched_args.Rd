@@ -19,3 +19,16 @@ count of matches to value or name (should be 1 or greater if set, 0 if not)
 \description{
 count number of times dots contains match to long or short version of flag
 }
+\examples{
+dict <- c("name" = "value")
+dots <- list("name" = 1, "value" = 1)
+\dontrun{
+count_matched_args(dict[1], names(dict)[1], dots)
+}
+
+dict <- c("name" = "value")
+dots <- list("name" = 1)
+\dontrun{
+count_matched_args(dict[1], names(dict)[1], dots)
+}
+}

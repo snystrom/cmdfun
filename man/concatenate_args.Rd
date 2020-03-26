@@ -17,3 +17,9 @@ concatenate_args(dict, sep = "/")
 \description{
 Combines key/value pairs from named vector by separator
 }
+\examples{
+dict <- c("name" = "val")
+\dontrun{
+concatenate_args(dict)
+}
+}

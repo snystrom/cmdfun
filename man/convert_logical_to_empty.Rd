@@ -7,7 +7,7 @@
 convert_logical_to_empty(list, bool = T)
 }
 \arguments{
-\item{list}{}
+\item{list}{a list}
 
 \item{bool}{whether to convert T or F to empty string (default T)}
 }
@@ -16,4 +16,10 @@ same list with entries replaced
 }
 \description{
 Replaces list entries of bool of specified value with empty strings
+}
+\examples{
+myList <- list(a = TRUE, b = FALSE)
+\dontrun{
+convert_logical_to_empty(myList)
+}
 }
