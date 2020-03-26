@@ -4,7 +4,7 @@ output: github_document
 ---
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
 ## A simple framework for building shell interfaces
@@ -55,7 +55,7 @@ cat("hello_hello")
 
 **WARNING:** It's still possible to do unsafe operations as follows:
 ```{r}
-shellCut("hello_world", f = 2, d = "_", `&&echo` = "test")
+shellCut("hello_world", f = 2, d = "_ && echo test")
 ```
 
 ```{r, echo=F}

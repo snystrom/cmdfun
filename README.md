@@ -4,7 +4,7 @@ dotargs
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
 ## A simple framework for building shell interfaces
@@ -55,7 +55,7 @@ shellCut("hello_world_hello", f = c(1,3), d = "_")
 **WARNING:** It’s still possible to do unsafe operations as follows:
 
 ``` r
-shellCut("hello_world", f = 2, d = "_", `&&echo` = "test")
+shellCut("hello_world", f = 2, d = "_ && echo test")
 ```
 
     ## world
