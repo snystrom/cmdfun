@@ -29,8 +29,8 @@ library(dotargs)
 
 shellCut <- function(text, ...){
 
-	args <- getDots(...) %>%
-		dotsToArgs
+  args <- getDotArgs() %>%
+    argsToFlags()
 
 	system2("echo", c(text, "|", "cut", args))
 
@@ -66,8 +66,8 @@ cat("test")
 ### Boolean flags are passed as bool operators
 ```{r}
 shell_ls <- function(dir = ".", ...){
-  args <- getDots(...) %>% 
-    dotsToArgs
+  args <- getDotArgs() %>% 
+    argsToFlags()
   
   system2("ls", c(dir, args))
 }
@@ -97,8 +97,8 @@ shell_ls_alias <- function(dir = ".", ...){
   
   argsDict <- c("long" = "l")
   
-  args <- getDots(...) %>% 
-    dotsToArgs(argsDict)
+  args <- getDotArgs() %>% 
+    argsToFlags(argsDict)
   
   system2("ls", c(dir, args))
 }
@@ -117,8 +117,8 @@ shellCut_alias <- function(text, ...){
 
   argsDict <- c("sep" = "d")
     
-	args <- getDots(...) %>%
-		dotsToArgs(argsDict)
+	args <- getDotArgs() %>%
+		argsToFlags(argsDict)
 
 	system2("echo", c(text, "|", "cut", args))
 }

@@ -16,7 +16,7 @@ prints warning for each illegal flag
 Checks dots for illegal flag names
 }
 \examples{
-theFunction <- function(...) { getDots(...) }
+theFunction <- function(...) { getDotArgs() }
 theDots <-  theFunction(validFlag = TRUE, `&illegalFlag` = "will error")
 \dontrun{
 theArgs <-  dotsToArgs(theDots)

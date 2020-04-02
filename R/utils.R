@@ -1,3 +1,33 @@
+#' Keep items by name from list
+#'
+#' @param list an R list
+#' @param names vector of names to keep
+#'
+#' @return
+#'
+#' @examples
+#' \dontrun{
+#' keep_list_by_name(list("a" = 1, "b" = 2), "a")
+#' }
+keep_list_by_name <- function(list, names){
+  list[(names(list) %in% names)]
+}
+
+#' Drop items by name from list
+#'
+#' @param list an R list
+#' @param names vector of names to drop
+#'
+#' @return
+#'
+#' @examples
+#' \dontrun{
+#' drop_list_by_name(list("a" = 1, "b" = 2), "a")
+#' }
+drop_list_by_name <- function(list, names){
+  list[!(names(list) %in% names)]
+}
+
 #' Drops list members by function
 #'
 #' @param list any list object
@@ -182,7 +212,6 @@ concatenate_args <- function(dict, sep = "/"){
 }
 
 
-
 #' Searches for illegal values in string
 #'
 #' @param flag string
@@ -222,7 +251,7 @@ error_illegal_flag <- function(name){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' theFunction <- function(...) { getDots(...) }
+#' theFunction <- function(...) { getDotArgs() }
 #' theDots <-  theFunction(validFlag = TRUE, `&illegalFlag` = "will error")
 #' \dontrun{
 #' theArgs <-  dotsToArgs(theDots)
