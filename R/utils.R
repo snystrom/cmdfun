@@ -1,3 +1,21 @@
+#' Drops list members by function
+#'
+#' @param list any list object
+#' @param fun a function that evaluates to boolean value, used to filter members of list
+#'
+#' @return the same list without any entries with logical vectors
+#'
+#' @examples
+#' myList <- list(a = 1, b = TRUE, c = FALSE)
+#' \dontrun{
+#' # This will drop logicals from list
+#' drop_list_fun(myList, fun = is.logical)
+#' }
+drop_list_fun <- function(list, fun){
+  testthat::expect_equal(class(fun), "function")
+  list[!purrr::map_lgl(list, fun)]
+}
+
 #' Removes logical vectors from list objects
 #'
 #' @param list any list object
@@ -10,7 +28,22 @@
 #' drop_list_logicals(myList)
 #' }
 drop_list_logicals <- function(list){
-  list[!purrr::map_lgl(list, is.logical)]
+  drop_list_fun(list, is.logical)
+}
+
+#' Removes logical vectors from list objects
+#'
+#' @param list any list object
+#'
+#' @return the same list without any entries with logical vectors
+#'
+#' @examples
+#' myList <- list(a = 1, b = TRUE, c = FALSE, d = NULL)
+#' \dontrun{
+#' drop_list_NULL(myList)
+#' }
+drop_list_NULL <- function(list){
+  drop_list_fun(list, is.null)
 }
 
 

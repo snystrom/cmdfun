@@ -8,6 +8,9 @@ expect_equal(dotsToArgs(list()), NULL)
 expect_success(dotsToArgs(list("a" = 1)))
 expect_failure(dotsToArgs(c("a" = 1)))
 
+# Null is dropped like FALSE
+expect_equal(dotsToArgs(list("b" = NULL)), dotsToArgs(list("b" = FALSE)))
+
 # Test multiple inputs
 expect_equal(dotsToArgs(list("a" = c(1,2,3))), "-a 1,2,3")
 

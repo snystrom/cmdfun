@@ -57,11 +57,13 @@ dotsToArgs <- function(dots, flag_lookup = NULL, prefix = "-", sep = ","){
   # Check for illegal characters in dots, print warning
   check_args_contain_illegal_flags(dots)
 
-  # collapse logicals, T = include, replace for empty string
-  dots <- true_to_empty(dots)
-
-  # only FALSE logicals remain, so they are dropped
-  dots <- drop_list_logicals(dots)
+  dots %<>% 
+    # collapse logicals, T = include, replace for empty string
+    true_to_empty() %>% 
+    # only FALSE logicals remain, so they are dropped
+    drop_list_logicals() %>% 
+    # NULL flags should be removed
+    drop_list_NULL()
   
   # Warn if arguments are defined multiple times
   purrr::imap_dbl(flag_lookup, count_matched_args, dots) %>% 
