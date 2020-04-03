@@ -2,7 +2,10 @@ Package: dotargs
 Type: Package
 Title: Framework for Building R Interfaces to Shell Commands
 Version: 0.0.9000
-Authors@R: person("Spencer", "Nystrom", email = "snystrom@email.unc.edu", role = c("aut", "cre", "cph"))
+Authors@R: person("Spencer", "Nystrom", 
+    email = "snystrom@email.unc.edu", 
+    role = c("aut", "cre", "cph"),
+    comment = c(ORCID = "0000-0003-1000-1579"))
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
@@ -13,3 +16,4 @@ Imports:
   purrr,
   testthat
 RoxygenNote: 7.0.2
+Roxygen: list(markdown = TRUE)
