@@ -4,13 +4,15 @@
 #' @param fun a function that evaluates to boolean value, used to filter members of list
 #'
 #' @return the same list without any entries with logical vectors
-#'
+#' 
 #' @examples
 #' myList <- list(a = 1, b = TRUE, c = FALSE)
 #' \dontrun{
 #' # This will drop logicals from list
 #' drop_list_fun(myList, fun = is.logical)
 #' }
+#' 
+#' @noRd
 drop_list_fun <- function(list, fun){
   testthat::expect_equal(class(fun), "function")
   list[!purrr::map_lgl(list, fun)]
@@ -27,6 +29,7 @@ drop_list_fun <- function(list, fun){
 #' \dontrun{
 #' drop_list_logicals(myList)
 #' }
+#' @noRd
 drop_list_logicals <- function(list){
   drop_list_fun(list, is.logical)
 }
@@ -42,6 +45,7 @@ drop_list_logicals <- function(list){
 #' \dontrun{
 #' drop_list_NULL(myList)
 #' }
+#' @noRd
 drop_list_NULL <- function(list){
   drop_list_fun(list, is.null)
 }
@@ -60,6 +64,7 @@ drop_list_NULL <- function(list){
 #' \dontrun{
 #' convert_logical_to_empty(myList)
 #' }
+#' @noRd
 convert_logical_to_empty <- function(list, bool = TRUE){
   list <- purrr::map(list, ~{
     if (!is.logical(.x)) return(.x)
@@ -82,6 +87,7 @@ convert_logical_to_empty <- function(list, bool = TRUE){
 #' \dontrun{
 #' true_to_empty(myList)
 #' }
+#' @noRd
 true_to_empty <- function(list){
   list <- convert_logical_to_empty(list, TRUE)
   return(list)
@@ -101,6 +107,7 @@ true_to_empty <- function(list){
 #' \dontrun{
 #' convert_names(dots, dict)
 #' }
+#' @noRd
 convert_names <- function(obj, dict){
   testthat::expect_named(obj)
   testthat::expect_named(dict)
@@ -131,6 +138,7 @@ convert_names <- function(obj, dict){
 #' \dontrun{
 #' count_matched_args(dict[1], names(dict)[1], dots)
 #' }
+#' @noRd
 count_matched_args <- function(value, name, dots){
   names(dots) %in% c(value, name) %>% sum
 }
@@ -146,6 +154,7 @@ count_matched_args <- function(value, name, dots){
 #' \dontrun{
 #' find_multimatched_args(vec)
 #' }
+#' @noRd
 find_multimatched_args <- function(vec){
   testthat::expect_named(vec)
   names(vec[vec > 1])
@@ -161,6 +170,7 @@ find_multimatched_args <- function(vec){
 #' \dontrun{
 #' warn_multimatched_arg("arg")
 #' }
+#' @noRd
 warn_multimatched_arg <- function(name){
   message(paste0(name, " is set multiple times in function call, ensure this is correct behavior."))
 }
@@ -177,6 +187,7 @@ warn_multimatched_arg <- function(name){
 #' \dontrun{
 #' concatenate_args(dict)
 #' }
+#' @noRd
 concatenate_args <- function(dict, sep = "/"){
   paste(names(dict), dict, sep = sep)
 }
@@ -193,6 +204,7 @@ concatenate_args <- function(dict, sep = "/"){
 #' \dontrun{
 #' flag_is_illegal("&&echo")
 #' }
+#' @noRd
 flag_is_illegal <- function(flag, 
                                   illegal_chars = c("&", "\\|", ";", "\\(", "\\)", "\\{", "\\}", "\\$", "\\@", "\\/", " ")){
   any(purrr::map_lgl(illegal_chars, grepl, flag))
@@ -208,6 +220,7 @@ flag_is_illegal <- function(flag,
 #' \dontrun{
 #' error_illegal_flag("&&echo")
 #' }
+#' @noRd
 error_illegal_flag <- function(name){
   stop(paste0(name, " is not a valid flag name. Contains illegal character."))
 }
@@ -227,6 +240,7 @@ error_illegal_flag <- function(name){
 #' \dontrun{
 #' theArgs <-  dotsToArgs(theDots)
 #' }
+#' @noRd
 check_args_contain_illegal_flags <- function(dots){
   purrr::map_lgl(names(dots), flag_is_illegal) %>% 
     purrr::set_names(names(dots)) %>% 

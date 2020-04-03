@@ -28,10 +28,14 @@ drop_list_by_name <- function(list, names){
   list[!(names(list) %in% names)]
 }
 
-#' Title
+#' Drop values from vector matching one or more regexes
+#' 
+#' Sometimes it is easier to preprocess arguments to commandline flags before
+#' removing known invalid entries or special circumstances. This function allows
+#' quick removal of values by scanning the flags vector with multiple regexes.
 #'
-#' @param flags
-#' @param regex 
+#' @param flags character vector of flags (typically output of argsToFlags())
+#' @param regex vector of regexes to scan flags. Will remove any flags matching the regex.
 #'
 #' @return
 #' @export

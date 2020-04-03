@@ -18,7 +18,5 @@ keep_list_by_name(list, names)
 Keep items by name from list
 }
 \examples{
-\dontrun{
 keep_list_by_name(list("a" = 1, "b" = 2), "a")
-}
 }

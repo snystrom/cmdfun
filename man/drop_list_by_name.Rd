@@ -18,7 +18,5 @@ drop_list_by_name(list, names)
 Drop items by name from list
 }
 \examples{
-\dontrun{
 drop_list_by_name(list("a" = 1, "b" = 2), "a")
-}
 }

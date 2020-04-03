@@ -9,8 +9,8 @@
 getAllArgs <- function(){
   # Modified from:
   # https://stackoverflow.com/questions/17256834/getting-the-arguments-of-a-parent-function-in-r-with-names
-  # using callstack position of parent call will always evaluate to function this was called inside,
-  # this allows this to work inside pipes
+  # using callstack position of parent call will always evaluate to function
+  # this was called inside, this allows this to work inside pipes
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
                      expand.dots = TRUE))[-1]
