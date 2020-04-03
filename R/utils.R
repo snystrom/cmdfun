@@ -4,11 +4,11 @@
 #' @param names vector of names to keep
 #'
 #' @return
+#' 
+#' @export
 #'
 #' @examples
-#' \dontrun{
 #' keep_list_by_name(list("a" = 1, "b" = 2), "a")
-#' }
 keep_list_by_name <- function(list, names){
   list[(names(list) %in% names)]
 }
@@ -20,10 +20,10 @@ keep_list_by_name <- function(list, names){
 #'
 #' @return
 #'
+#' @export
+#' 
 #' @examples
-#' \dontrun{
 #' drop_list_by_name(list("a" = 1, "b" = 2), "a")
-#' }
 drop_list_by_name <- function(list, names){
   list[!(names(list) %in% names)]
 }
