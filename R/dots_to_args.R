@@ -13,7 +13,7 @@ getAllArgs <- function(){
   # this allows this to work inside pipes
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
-                     expand.dots = T))[-1]
+                     expand.dots = TRUE))[-1]
   
   # arguments from callstack need to be evaluated
   lapply(argList, eval)
@@ -35,7 +35,7 @@ getDotArgs <- function(){
   
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
-                     expand.dots = F))[-1]
+                     expand.dots = FALSE))[-1]
   
   lapply(argList[["..."]], eval) 
 }
@@ -52,7 +52,7 @@ getNamedArgs <- function(){
   # see getAllNamedArgs for explanation of how this chunk works
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
-                     expand.dots = F))[-1]
+                     expand.dots = FALSE))[-1]
   
   lapply(argList, eval) %>% 
     drop_list_by_name("...")
@@ -72,6 +72,7 @@ getNamedArgs <- function(){
 #' 
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
+#' @importFrom rlang .data
 #'
 #' @examples
 #' theFunction <- function(...) { getDotArgs() }
@@ -115,7 +116,7 @@ argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
   purrr::imap_dbl(flag_lookup, count_matched_args, args) %>% 
     purrr::set_names(concatenate_args(flag_lookup)) %>% 
     find_multimatched_args() %>% 
-    {purrr::walk(., warn_multimatched_arg)}
+    {purrr::walk(.data, warn_multimatched_arg)}
 
   # concatenate to vector of flag calls
   flags <- purrr::imap_chr(args, ~{paste0(prefix, .y, " ", paste0(.x, collapse = sep))}) %>% 
