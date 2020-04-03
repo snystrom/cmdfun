@@ -13,10 +13,15 @@ getAllArgs <- function(){
   # this was called inside, this allows this to work inside pipes
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
+                     #envir = parent.frame(),
                      expand.dots = TRUE))[-1]
   
-  # arguments from callstack need to be evaluated
-  lapply(argList, eval)
+  # arguments from callstack need to be evaluated in parent environment.
+  # eval's default is to execute in the parent frame of where it was called,
+  # which in this case would be **within** the lapply loop. 
+  # setting envir = parent.frame() will evaluate **before** the loop, so the
+  # environment will be the same as the match.call parent as intended.
+  lapply(argList, eval, envir = parent.frame())
   
 }
 
@@ -37,7 +42,7 @@ getDotArgs <- function(){
                      call = sys.call(sys.parent()), 
                      expand.dots = FALSE))[-1]
   
-  lapply(argList[["..."]], eval) 
+  lapply(argList[["..."]], eval, envir = parent.frame()) 
 }
 
 #' Return all named arguments from parent function call
@@ -54,7 +59,7 @@ getNamedArgs <- function(){
                      call = sys.call(sys.parent()), 
                      expand.dots = FALSE))[-1]
   
-  lapply(argList, eval) %>% 
+  lapply(argList, eval, envir = parent.frame()) %>% 
     drop_list_by_name("...")
 }
 
