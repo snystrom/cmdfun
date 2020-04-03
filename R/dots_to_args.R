@@ -116,7 +116,7 @@ argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
   purrr::imap_dbl(flag_lookup, count_matched_args, args) %>% 
     purrr::set_names(concatenate_args(flag_lookup)) %>% 
     find_multimatched_args() %>% 
-    {purrr::walk(.data, warn_multimatched_arg)}
+    purrr::walk(warn_multimatched_arg)
 
   # concatenate to vector of flag calls
   flags <- purrr::imap_chr(args, ~{paste0(prefix, .y, " ", paste0(.x, collapse = sep))}) %>% 

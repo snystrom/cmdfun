@@ -12,7 +12,7 @@ keep_list_by_name(list, names)
 \item{names}{vector of names to keep}
 }
 \value{
-
+list keeping only items defined by names
 }
 \description{
 Keep items by name from list

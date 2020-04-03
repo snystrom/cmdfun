@@ -232,7 +232,6 @@ error_illegal_flag <- function(name){
 #' @return prints warning for each illegal flag
 #'
 #' @importFrom magrittr %>%
-#' @importFrom rlang .data
 #' 
 #' @examples
 #' theFunction <- function(...) { getDotArgs() }
@@ -242,8 +241,10 @@ error_illegal_flag <- function(name){
 #' }
 #' @noRd
 check_args_contain_illegal_flags <- function(dots){
-  purrr::map_lgl(names(dots), flag_is_illegal) %>% 
-    purrr::set_names(names(dots)) %>% 
-    {.data[.data==TRUE]} %>% 
-    {purrr::walk(names(.data), error_illegal_flag)}
+  is_illegal <- purrr::map_lgl(names(dots), flag_is_illegal) %>% 
+    purrr::set_names(names(dots)) 
+  
+  illegals <- is_illegal[is_illegal == T]
+  
+  purrr::walk(names(illegals), error_illegal_flag)
 }

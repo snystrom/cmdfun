@@ -3,7 +3,7 @@
 #' @param list an R list
 #' @param names vector of names to keep
 #'
-#' @return
+#' @return list keeping only items defined by names
 #' 
 #' @export
 #'
@@ -18,7 +18,7 @@ keep_list_by_name <- function(list, names){
 #' @param list an R list
 #' @param names vector of names to drop
 #'
-#' @return
+#' @return list removing items defined by names
 #'
 #' @export
 #' 
@@ -37,7 +37,7 @@ drop_list_by_name <- function(list, names){
 #' @param flags character vector of flags (typically output of argsToFlags())
 #' @param regex vector of regexes to scan flags. Will remove any flags matching the regex.
 #'
-#' @return
+#' @return flags without flags matching regexes
 #' @export
 #'
 #' @examples

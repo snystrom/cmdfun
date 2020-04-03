@@ -12,7 +12,7 @@ drop_flags_regex(flags, regex)
 \item{regex}{vector of regexes to scan flags. Will remove any flags matching the regex.}
 }
 \value{
-
+flags without flags matching regexes
 }
 \description{
 Sometimes it is easier to preprocess arguments to commandline flags before

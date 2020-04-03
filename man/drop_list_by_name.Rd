@@ -12,7 +12,7 @@ drop_list_by_name(list, names)
 \item{names}{vector of names to drop}
 }
 \value{
-
+list removing items defined by names
 }
 \description{
 Drop items by name from list
