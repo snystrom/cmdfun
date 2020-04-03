@@ -5,6 +5,9 @@ dotargs
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 <!-- badges: end -->
 
 ## A simple framework for building shell interfaces
@@ -95,15 +98,16 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("R")
 ```
 
-    ## [1] "dots_to_args.R" "utils.R"
+    ## [1] "dots_to_args.R"   "utils_internal.R" "utils.R"
 
 ``` r
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 16"                                                               
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4115 Apr  2 18:06 dots_to_args.R"
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 6217 Apr  2 18:08 utils.R"
+    ## [1] "total 20"                                                                 
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4115 Apr  2 19:57 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 5660 Apr  3 09:32 utils_internal.R"
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  877 Apr  3 09:44 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -123,9 +127,10 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 16"                                                               
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4115 Apr  2 18:06 dots_to_args.R"
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 6217 Apr  2 18:08 utils.R"
+    ## [1] "total 20"                                                                 
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4115 Apr  2 19:57 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 5660 Apr  3 09:32 utils_internal.R"
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  877 Apr  3 09:44 utils.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
