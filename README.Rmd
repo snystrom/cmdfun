@@ -120,6 +120,109 @@ shellCut_alias <- function(text, ...){
 shellCut_alias("hello_world", f = 2, sep = "_") 
 ```
 
+## Abstraction of command path handling
+
+A common pattern when designing shell interfaces is to ask the user to give an
+absolute path to the target shell utility. It is common to pass this information
+from the user to R by using either R environment variables defined in .Renviron,
+using options (set with `option()`, and got with `getOption()`), having the user
+explicitly pass the path in the function call, or failing this, using a default
+install path.
+
+`build_path_handler()` returns a function that correctly returns the path to the
+target utility.
+
+For example, to build an interface to the "MEME" suite, which is by default
+installed to "~/meme/bin", one could build the following:
+
+```{r}
+handle_meme_path <- build_path_handler(default_path = "~/meme/bin")
+
+handle_meme_path()
+```
+
+To only search the R environment variable "MEME_PATH", one could build:
+```{r}
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH")
+```
+
+
+```{r, error = T}
+# Without environment varialbe defined
+handle_meme_path()
+```
+
+```{r}
+# With environment varialbe defined
+Sys.setenv("MEME_PATH" = "~/meme/bin")
+handle_meme_path()
+```
+
+Multiple arguments can be used, and they will be searched from most-specific, to most-general. 
+```{r}
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin")
+```
+
+For example, if "MEME_PATH" is invalid on my machine, the handler will return
+the default path as long as the default is also valid on my machine.
+```{r}
+Sys.setenv("MEME_PATH" = "bad/path")
+handle_meme_path()
+```
+
+### Support for tool utilities
+Some software, like the MEME suite is distributed as several binaries located in
+a common directory. To allow interface builders to officially support specific binaries, 
+each binary can be defined as a "utility" within the build path.
+
+Here, I will include two tools from the MEME suite, AME, and DREME (distributed
+as binaries named "ame", and "dreme").
+```{r}
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin",
+                                       utils = c("dreme", "ame"))
+```
+
+handler functions have two optional arguments: `path` and `util`. `path` acts as
+an override to the defaults provided when building the handler. User-provided
+path variables will always be used instead of provided defaults. This is to
+catch problems from the user and not cause unexpected user-level behavior.
+```{r, error = T}
+handle_meme_path("bad/path")
+```
+
+`util` specifies which utility path to return (if any). 
+```{r, error = T}
+handle_meme_path(util = "dreme")
+```
+
+## Bringing it all together
+Using a `get*Args()` family function to get and convert function arguments to
+commandline flags. The path handler returns the correct `command` call which can
+be passed to `system2` or `processx` along with the flags generated from `argsToFlags`.
+
+This makes for a robust shell wrapper without excess overhead.
+```{r}
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin",
+                                       utils = c("dreme", "ame"))
+
+runDreme <- function(..., meme_path = NULL){
+  flags <- getDotArgs() %>% 
+    argsToFlags()
+  
+  command <- handle_meme_path(path = meme_path, util = "dreme")
+  
+  system2(command, flags)
+}
+```
+
+Commands can now run through `runDreme` by passing flags as function arguments.
+```{r, error = T}
+runDreme(h = T)
+```
+
 ## Unsafe operations
 
 **WARNING:** It's still possible to do unsafe operations as follows, so please be careful how you build system calls.

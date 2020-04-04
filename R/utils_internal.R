@@ -5,6 +5,7 @@
 #'
 #' @return the same list without any entries with logical vectors
 #' 
+#' 
 #' @examples
 #' myList <- list(a = 1, b = TRUE, c = FALSE)
 #' \dontrun{
@@ -247,4 +248,23 @@ check_args_contain_illegal_flags <- function(dots){
   illegals <- is_illegal[is_illegal == T]
   
   purrr::walk(names(illegals), error_illegal_flag)
+}
+
+#' Creates system-agnostic paths
+#' 
+#' Used to expand path shortcuts (like ~), and make system-agnostic calls.
+#' In particular can be useful for trimming trailing slashes for path names.
+#'
+#' @param path file path
+#'
+#' @return sanitized file path
+#'
+#' @examples
+#' path <- "~/bin/"
+#' \dontrun{
+#' sanitize_path(path)
+#' }
+#' @noRd
+sanitize_path <- function(path){
+  file.path(dirname(path), basename(path))
 }

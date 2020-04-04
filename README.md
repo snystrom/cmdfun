@@ -98,16 +98,17 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("R")
 ```
 
-    ## [1] "dots_to_args.R"   "utils_internal.R" "utils.R"
+    ## [1] "dots_to_args.R"   "macros.R"         "utils_internal.R" "utils.R"
 
 ``` r
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 20"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4115 Apr  2 19:57 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 5660 Apr  3 09:32 utils_internal.R"
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  877 Apr  3 09:44 utils.R"
+    ## [1] "total 28"                                                                 
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4548 Apr  4 00:37 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 17:45 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6249 Apr  4 17:46 utils_internal.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 00:37 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -127,10 +128,11 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 20"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4115 Apr  2 19:57 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 5660 Apr  3 09:32 utils_internal.R"
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  877 Apr  3 09:44 utils.R"
+    ## [1] "total 28"                                                                 
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4548 Apr  4 00:37 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 17:45 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6249 Apr  4 17:46 utils_internal.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 00:37 utils.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -149,6 +151,137 @@ shellCut_alias("hello_world", f = 2, sep = "_")
 ```
 
     ## [1] "world"
+
+## Abstraction of command path handling
+
+A common pattern when designing shell interfaces is to ask the user to
+give an absolute path to the target shell utility. It is common to pass
+this information from the user to R by using either R environment
+variables defined in .Renviron, using options (set with `option()`, and
+got with `getOption()`), having the user explicitly pass the path in the
+function call, or failing this, using a default install path.
+
+`build_path_handler()` returns a function that correctly returns the
+path to the target utility.
+
+For example, to build an interface to the “MEME” suite, which is by
+default installed to “~/meme/bin”, one could build the following:
+
+``` r
+handle_meme_path <- build_path_handler(default_path = "~/meme/bin")
+
+handle_meme_path()
+```
+
+    ## [1] "/nas/longleaf/home/snystrom/meme/bin"
+
+To only search the R environment variable “MEME\_PATH”, one could build:
+
+``` r
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH")
+```
+
+``` r
+# Without environment varialbe defined
+handle_meme_path()
+```
+
+    ## Error in handle_meme_path(): No path defined or detected
+
+``` r
+# With environment varialbe defined
+Sys.setenv("MEME_PATH" = "~/meme/bin")
+handle_meme_path()
+```
+
+    ## [1] "/nas/longleaf/home/snystrom/meme/bin"
+
+Multiple arguments can be used, and they will be searched from
+most-specific, to most-general.
+
+``` r
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin")
+```
+
+For example, if “MEME\_PATH” is invalid on my machine, the handler will
+return the default path as long as the default is also valid on my
+machine.
+
+``` r
+Sys.setenv("MEME_PATH" = "bad/path")
+handle_meme_path()
+```
+
+    ## [1] "/nas/longleaf/home/snystrom/meme/bin"
+
+### Support for tool utilities
+
+Some software, like the MEME suite is distributed as several binaries
+located in a common directory. To allow interface builders to officially
+support specific binaries, each binary can be defined as a “utility”
+within the build path.
+
+Here, I will include two tools from the MEME suite, AME, and DREME
+(distributed as binaries named “ame”, and “dreme”).
+
+``` r
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin",
+                                       utils = c("dreme", "ame"))
+```
+
+handler functions have two optional arguments: `path` and `util`. `path`
+acts as an override to the defaults provided when building the handler.
+User-provided path variables will always be used instead of provided
+defaults. This is to catch problems from the user and not cause
+unexpected user-level
+    behavior.
+
+``` r
+handle_meme_path("bad/path")
+```
+
+    ## Error in check_valid_command_path(path): Command: bad/path, does not exist.
+
+`util` specifies which utility path to return (if any).
+
+``` r
+handle_meme_path(util = "dreme")
+```
+
+    ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
+
+## Bringing it all together
+
+Using a `get*Args()` family function to get and convert function
+arguments to commandline flags. The path handler returns the correct
+`command` call which can be passed to `system2` or `processx` along with
+the flags generated from `argsToFlags`.
+
+This makes for a robust shell wrapper without excess overhead.
+
+``` r
+handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin",
+                                       utils = c("dreme", "ame"))
+
+runDreme <- function(..., meme_path = NULL){
+  flags <- getDotArgs() %>% 
+    argsToFlags()
+  
+  command <- handle_meme_path(path = meme_path, util = "dreme")
+  
+  system2(command, flags)
+}
+```
+
+Commands can now run through `runDreme` by passing flags as function
+arguments.
+
+``` r
+runDreme(h = T)
+```
 
 ## Unsafe operations
 
