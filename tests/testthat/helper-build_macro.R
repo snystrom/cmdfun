@@ -1,6 +1,8 @@
+
+
 build_valid_path <- function(path = NULL, utils = NULL){
-  basePath <- file.path(tempdir(), path)
-  dir.create(basePath)
+  basePath <- file.path("/tmp", path)
+  dir.create(basePath, showWarnings = F)
   
   if (!is.null(utils)){
     utilPaths <- file.path(basePath, utils)
@@ -20,11 +22,15 @@ cleanup_valid_path <- function(allPaths){
   unlink(allPaths["base"], recursive = T)
 }
 
-myUtils <- c("tool1", "tool2")
-check_paths <- build_valid_path("tests", myUtils)
+
+allUtils <- c("tool1", "tool2", "tool3")
+supportedUtils <- c("tool1", "tool2")
+myUtils <- supportedUtils
+
+check_paths <- build_valid_path("tests", allUtils)
 base_path <- check_paths["base"]
 names(base_path) <- NULL
-double_assign <- c("one", "two")
 
+double_assign <- c("one", "two")
 test_option <- "dotargs_test_option"
 test_env_var <- "DOTARGS_TEST"

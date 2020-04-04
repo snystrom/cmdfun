@@ -132,11 +132,15 @@ check_valid_util <- function(util, utils = NULL, path = NULL){
   }
   
   if (!(needs_util_warning) & !(util_exists)){
-    stop(paste0(util_path, " is an invalid path to supported util: ", util))
+    stop(paste0(util_path, " is an invalid path to supported util: ", util, ". Check that ", util, " is installed."))
+  }
+  
+  if ((needs_util_warning) & !(util_exists)){
+    stop(paste0(util_path, " is an invalid path to an unsupported util: ", util))
   }
   
   if (needs_util_warning & util_exists){
-      warning("util,", path, ", exists but is not supported by package maintainer or in `utils` definition")
+      warning("the util: ", path, ", exists but is not supported by package maintainer or in `utils` definition")
       return(util_path)
   }
   
