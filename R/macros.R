@@ -19,29 +19,39 @@
 #' and validation for not only the package, but for each desired utility in the
 #' package.
 #' 
+#' The heirarchy of path usage is: user-defined > option_name > environment_var > default_path
+#' 
 #' 
 #'
 #' @param environment_var name of R environment variable defining target path. Can be set in .Renviron.
 #' @param option_name name of user-configurable option (called by getOption) which will hold path to target
-#' @param default_path default install path of target
+#' @param default_path default install path of target. Can contain shell
+#'   specials like "~" which will be expanded at runtime (as opposed to build time of the handler).
 #' @param utils optional character vector containing names of valid utils inside
 #'   target path, used to populate error checking for valid install
 #' 
-#' @return function that returns a valid path to tool or optional utility
+#' @return function that returns a valid path to tool or optional utility.
+#' 
+#' The returned path_handler function takes as input a path or util. where path
+#' is a user override path for the supported tool. If the user-defined path is
+#' invalid, this will always throw an error and not search the defined defaults.
+#' 
+#' util must be found within the target path, but does not have to be present in
+#' the original "utils" call. The user will be warned if this is the case.
 #' 
 #' 
 #' @export
 #' 
 #' @examples
 #' \dontrun{
-#' cool_checker <- build_util_checker(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
+#' cool_checker <- build_path_handler(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
 #' # returns path to coolpackage
 #' cool_checker()
 #' # returns path to coolpackage/tool1
 #' cool_checker(util = "tool1")
 #' 
 #' }
-build_util_checker <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
+build_path_handler <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
   
   if (is.null(environment_var) & is.null(option_name) & is.null(default_path)){
     warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
@@ -51,7 +61,7 @@ build_util_checker <- function(environment_var = NULL, option_name = NULL, defau
     drop_list_by_name("utils")
   
   purrr::map(requiredArgs, length) %>% 
-    drop_list_fun(function(x) x <= 1) %>% 
+    drop_list_fun(fun = function(x) x <= 1) %>% 
     names %>% 
     purrr::walk(~{
       stop(paste0(.x, " must contain only 1 value"))
@@ -63,23 +73,43 @@ build_util_checker <- function(environment_var = NULL, option_name = NULL, defau
   
   return_valid_path <- function(path = NULL, util = NULL){
     # Try to use correct path if user doesn't set in call
-    if (!is.null(path)) { 
-      fullPath <- sanitize_path(path) 
-      
-      } else if (!is.null(safe_getOption(option_name)$result)) {
-        fullPath <- sanitize_path(R.utils::getOption(option_name))
-      
-      } else if (!identical(Sys.getenv(environment_var), Sys.getenv()) &
-                 !identical(Sys.getenv(environment_var), "") &
-                 length(Sys.getenv(environment_var)) == 1) {
-        fullPath <- sanitize_path(Sys.getenv(environment_var))
-      } else if (!is.null(default_path)) {
-        fullPath <- default_path
-      } else {
-        stop("No path defined or detected")
-      }
+    pathList <- list()
     
-    fullPath <- check_valid_command_path(fullPath)
+    if (!is.null(path)) {
+      pathList$user <- check_valid_command_path(path) 
+      
+    } 
+    
+    if (!is.null(safe_getOption(option_name)$result)) {
+      pathList$option <- valid_path_or_null(R.utils::getOption(option_name))
+      
+    } 
+    
+    if (!identical(Sys.getenv(environment_var), Sys.getenv()) &
+        !identical(Sys.getenv(environment_var), "") &
+        length(Sys.getenv(environment_var)) == 1) {
+      
+      pathList$environment <- valid_path_or_null(Sys.getenv(environment_var))
+    } 
+    
+    if (!is.null(default_path)) {
+        pathList$default <- default_path
+    }
+    
+    if (length(pathList) == 0) stop("No path defined or detected")
+    
+    # use this vector to sort list of valid paths
+    heirarchy <- c("user", "option", "environment", "default")
+    
+    validPathHeirarchy <- pathList %>% 
+      unlist %>% 
+      sort_vector(heirarchy) %>% 
+      as.list()
+    
+    # This check is to mostly to evaluate default_path at runtime 
+    # if all other options fail. This is so that default_path values 
+    # like "~/path/to/file" won't expand at compile-time.
+    fullPath <- check_valid_command_path(validPathHeirarchy[[1]])
     
     if (!is.null(util)) {
       if (is.null(utils)){
@@ -170,4 +200,44 @@ check_valid_command_path <- function(path){
   
   return(path)
   
+}
+
+#' Check if path exists
+#'
+#' @param path file path
+#'
+#' @return boolean
+#'
+#' @noRd
+is_valid_path <- function(path){
+  path <- sanitize_path(path)
+  is_valid <- file.exists(path)
+  return(is_valid)
+}
+
+#' Checks if path exists
+#'
+#' @param path a path
+#'
+#' @return sanitized file path if it exists, otherwise return NULL
+#'
+#' @noRd
+valid_path_or_null <- function(path){
+  if (is_valid_path(path)){
+    return(sanitize_path(path))
+  } else {
+    return(NULL)
+  }
+}
+
+#' Sort a named vector using custom name order
+#'
+#' @param vector named vector
+#' @param names order to arrange names in vector
+#'
+#' @return sorted vector in order of names
+#'
+#' @noRd
+sort_vector <- function(vector, names){
+  vector[order(factor(names(vector), levels = names))]
 }
