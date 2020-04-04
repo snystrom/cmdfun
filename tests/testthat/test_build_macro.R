@@ -1,14 +1,14 @@
 skip_if(T, message = "Needs to be Manually Run until I fix environment issues")
 
 test_that("warn at least 1 var not assigned", {
-  expect_warning(build_util_checker(), "at least one")
-  expect_warning(build_util_checker(environment_var = NULL), "at least one")
-  expect_warning(build_util_checker(option_name = NULL), "at least one")
-  expect_warning(build_util_checker(default_path = NULL), "at least one")
+  expect_warning(build_path_handler(), "at least one")
+  expect_warning(build_path_handler(environment_var = NULL), "at least one")
+  expect_warning(build_path_handler(option_name = NULL), "at least one")
+  expect_warning(build_path_handler(default_path = NULL), "at least one")
 })
 
 test_that("At least 1 path is defined at calltime", {
-  expect_warning(build_check <- build_util_checker())
+  expect_warning(build_check <- build_path_handler())
   
   expect_error(build_check(), "No path defined or detected")
 })
@@ -16,30 +16,30 @@ test_that("At least 1 path is defined at calltime", {
 test_that("Catches double assignment",{
   
   expect_error(
-    build_util_checker(environment_var = c("one", "two")),
+    build_path_handler(environment_var = c("one", "two")),
     "environment_var must contain"
   )
   
   expect_error(
-    build_util_checker(option_name = double_assign),
+    build_path_handler(option_name = double_assign),
     "option_name must contain"
   )
   
   expect_error(
-    build_util_checker(default_path = double_assign),
+    build_path_handler(default_path = double_assign),
     "default_path must contain"
   )
   
   # utils can have many values
   expect_success(
-    build_util_checker(default_path = tempdir(), utils = double_assign)
+    build_path_handler(default_path = tempdir(), utils = double_assign)
   )
 })
 
 
 test_that("Default path only, noUtils works",{
   expect_warning(
-    check_build <- build_util_checker(environment_var = NULL, 
+    check_build <- build_path_handler(environment_var = NULL, 
                                      option_name = NULL, 
                                      default_path = NULL)
   )
@@ -48,11 +48,21 @@ test_that("Default path only, noUtils works",{
   expect_error(check_build(base_path, util = myUtils[1]), "no defined utils")
 })
 
-test_that("Defining & checking utils works", {
-  print(base_path)
-  check_build <- build_util_checker(environment_var = NULL, 
+test_that("Passing invalid user path throws error", {
+  check_build <- build_path_handler(environment_var = NULL, 
                                    option_name = NULL, 
-                                   default_path = eval(base_path),
+                                   default_path = base_path,
+                                   utils = myUtils)
+  
+  expect_equal(check_build(), dotargs:::sanitize_path(base_path))
+  expect_error(check_build("bad/path"), "does not exist")
+  
+})
+
+test_that("Defining & checking utils works", {
+  check_build <- build_path_handler(environment_var = NULL, 
+                                   option_name = NULL, 
+                                   default_path = base_path,
                                    utils = myUtils)
   
   expect_equal(check_build(), dotargs:::sanitize_path(base_path))
@@ -62,7 +72,7 @@ test_that("Defining & checking utils works", {
 })
 
 test_that("Options definition works",{
-  check_build <- build_util_checker(environment_var = NULL, 
+  check_build <- build_path_handler(environment_var = NULL, 
                              option_name = test_option, 
                              default_path = "bad/path",
                              utils = myUtils)
@@ -74,20 +84,30 @@ test_that("Options definition works",{
   expect_equal(check_build(), dotargs:::sanitize_path(base_path))
   expect_equal(check_build(util = myUtils[1]), dotargs:::sanitize_path(file.path(base_path, myUtils[1])))
   
+  # Test inheritance of default w/ bad option
+  R.utils::setOption(test_option, "wrong_path")
+  expect_error(check_build(), "bad/path, does not exist")
+  
   R.utils::setOption(test_option, NULL)
 })
 
 test_that("Environment definition works", {
-  check_build <- build_util_checker(environment_var = test_env_var, 
+  check_build <- build_path_handler(environment_var = test_env_var, 
                              utils = myUtils)
   expect_error(check_build(), "No path defined or detected")
   
   Sys.setenv(test_env_var = base_path)
-  check_build <- build_util_checker(environment_var = test_env_var, 
+  check_build <- build_path_handler(environment_var = test_env_var, 
                                    utils = myUtils)
   
   expect_equal(check_build(base_path), dotargs:::sanitize_path(base_path))
   expect_equal(check_build(base_path, util = myUtils[1]), dotargs:::sanitize_path(file.path(base_path, myUtils[1])))
+  
+  # Test inheritance of default w/ bad environment var
+  Sys.setenv(test_env_var = "wrong_path")
+  check_build <- build_path_handler(environment_var = test_env_var, 
+                                    default_path = "bad/path")
+  expect_error(check_build(), "bad/path, does not exist")
   
   Sys.setenv(test_env_var = "")
 })

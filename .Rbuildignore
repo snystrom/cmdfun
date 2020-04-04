@@ -6,3 +6,4 @@ runSingularity.sh
 ^README\.Rmd$
 todo
 call_stack_blogpost.Rmd
+scratch.R

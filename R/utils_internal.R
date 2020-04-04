@@ -5,6 +5,7 @@
 #'
 #' @return the same list without any entries with logical vectors
 #' 
+#' 
 #' @examples
 #' myList <- list(a = 1, b = TRUE, c = FALSE)
 #' \dontrun{
