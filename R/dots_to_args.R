@@ -77,7 +77,6 @@ getNamedArgs <- function(){
 #' 
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#' @importFrom rlang .data
 #'
 #' @examples
 #' theFunction <- function(...) { getDotArgs() }
