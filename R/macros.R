@@ -58,14 +58,14 @@ build_util_checker <- function(environment_var = NULL, option_name = NULL, defau
       } else if (!is.null(safe_getOption(option_name)$result)) {
       fullPath <- sanitize_path(getOption(option_name))
       
-      } else if (Sys.getenv(environment_var) != "") {
+      } else if (!identical(Sys.getenv(environment_var), Sys.getenv()) &
+                 !identical(Sys.getenv(environment_var), "") &
+                 length(Sys.getenv(environment_var)) == 1) {
       fullPath <- sanitize_path(Sys.getenv(environment_var))
-      
       } else {
       fullPath <- default_path
       }
-    print(default_path)
-    print(fullPath)
+    
     fullPath <- check_valid_command_path(fullPath)
     
     if (!is.null(util)) {
