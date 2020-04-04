@@ -1,82 +1,95 @@
-library(dotargs)
-meme_path <- "~/meme/bin"
-myUtils <- c("dreme", "ame", "tomtom")
 
-check_meme <- build_util_checker(environment_var = NULL, 
+test_that("warn at least 1 var not assigned", {
+  expect_warning(build_util_checker(), "at least one")
+  expect_warning(build_util_checker(environment_var = NULL), "at least one")
+  expect_warning(build_util_checker(option_name = NULL), "at least one")
+  expect_warning(build_util_checker(default_path = NULL), "at least one")
+})
+
+test_that("At least 1 path is defined at calltime", {
+  expect_warning(build_check <- build_util_checker())
+  
+  expect_error(build_check(), "No path defined or detected")
+})
+
+test_that("Catches double assignment",{
+  
+  expect_error(
+    build_util_checker(environment_var = double_assign),
+    "environment_var must contain"
+  )
+  
+  expect_error(
+    build_util_checker(option_name = double_assign),
+    "option_name must contain"
+  )
+  
+  expect_error(
+    build_util_checker(default_path = double_assign),
+    "default_path must contain"
+  )
+  
+  # utils can have many values
+  expect_success(
+    build_util_checker(default_path = base_path, utils = double_assign)
+  )
+})
+
+suppressWarnings(
+check_build <- build_util_checker(environment_var = NULL, 
                                  option_name = NULL, 
-                                 default_path = meme_path)
+                                 default_path = NULL)
+)
 
 test_that("Default path only, noUtils works",{
-# TODO: do i need to call internal function in test or are those globally scoped for testthat?
-  expect_equal(check_meme(meme_path), dotargs:::sanitize_path(meme_path))
-  expect_error(check_meme(meme_path, util = "dreme"), "no defined utils")
+# TODO: will this error R CMD CHECK?
+  expect_equal(check_build(base_path), dotargs:::sanitize_path(base_path))
+  expect_error(check_build(base_path, util = myUtils[1]), "no defined utils")
 })
 
 
-check_meme <- build_util_checker(environment_var = NULL, 
+check_build <- build_util_checker(environment_var = NULL, 
                                  option_name = NULL, 
-                                 default_path = meme_path,
+                                 default_path = base_path,
                                  utils = myUtils)
 
 test_that("Defining & checking utils works", {
-  expect_equal(check_meme(), dotargs:::sanitize_path(meme_path))
-  expect_equal(check_meme(meme_path, util = "dreme"), dotargs:::sanitize_path(file.path(meme_path, "dreme")))
+  expect_equal(check_build(), dotargs:::sanitize_path(base_path))
+  expect_equal(check_build(base_path, util = myUtils[1]), dotargs:::sanitize_path(file.path(base_path, myUtils[1])))
+  # Expect errror with many utils
+  expect_error(check_build(base_path, util = myUtils), class = "expectation_failure")
 })
 
 test_that("Options definition works",{
-  check_meme <- build_util_checker(environment_var = NULL, 
-                             option_name = "mp", 
+  check_build <- build_util_checker(environment_var = NULL, 
+                             option_name = test_option, 
                              default_path = "bad/path",
                              utils = myUtils)
   
-  expect_equal(check_meme(meme_path), dotargs:::sanitize_path(meme_path))
-  expect_equal(check_meme(meme_path, util = "dreme"), dotargs:::sanitize_path(file.path(meme_path, "dreme")))
+  expect_error(check_build(), "bad/path, does not exist")
   
-  options("mp" = meme_path)
+  R.utils::setOption(test_option, base_path)
   
-  expect_equal(check_meme(meme_path), dotargs:::sanitize_path(meme_path))
-  expect_equal(check_meme(meme_path, util = "dreme"), dotargs:::sanitize_path(file.path(meme_path, "dreme")))
+  expect_equal(check_build(), dotargs:::sanitize_path(base_path))
+  expect_equal(check_build(util = myUtils[1]), dotargs:::sanitize_path(file.path(base_path, myUtils[1])))
+  
+  R.utils::setOption(test_option, NULL)
 })
-  check_meme <- build_util_checker(environment_var = NULL, 
-                             option_name = "mp", 
-                             default_path = "bad/path",
+
+test_that("Environment definition works", {
+  check_build <- build_util_checker(environment_var = test_env_var, 
                              utils = myUtils)
+  expect_error(check_build(), "No path defined or detected")
   
-  check_meme()
-  expect_equal(check_meme(meme_path), dotargs:::sanitize_path(meme_path))
-  expect_equal(check_meme(meme_path, util = "dreme"), dotargs:::sanitize_path(file.path(meme_path, "dreme")))
+  Sys.setenv(test_env_var = base_path)
+  check_build <- build_util_checker(environment_var = test_env_var, 
+                                   utils = myUtils)
   
-  options("mp" = meme_path)
-  options("mpp" = meme_path)
+  expect_equal(check_build(base_path), dotargs:::sanitize_path(base_path))
+  expect_equal(check_build(base_path, util = myUtils[1]), dotargs:::sanitize_path(file.path(base_path, myUtils[1])))
   
-  expect_equal(check_meme(meme_path), dotargs:::sanitize_path(meme_path))
-  expect_equal(check_meme(meme_path, util = "dreme"), dotargs:::sanitize_path(file.path(meme_path, "dreme")))
-  
-check_meme(meme_path)
-check_meme(meme_path, util = "dreme")
+  Sys.setenv(test_env_var = "")
+})
 
-Sys.setenv("MEME_PATH" = meme_path)
-check_meme_utils <- build_util_checker(environment_var = "MEME_PATH", 
-                                 option_name = "badoption", 
-                                 default_path = "bad/path",
-                                 utils = myUtils)
-check_meme_utils(meme_path)
-check_meme_utils(meme_path, util = "dreme")
-
-check_meme_utils <- build_util_checker(environment_var = "MEME_PATH", 
-                                 option_name = "mp", 
-                                 default_path = "bad/path",
-                                 utils = myUtils)
-check_meme_utils(meme_path)
-check_meme_utils(meme_path, util = "dreme")
-
-
-
-full_meme_path <- check_valid_command_path(meme_path)
-check_valid_util("dreme", myUtils, full_meme_path)
-
-# util check accepts only 1 util
-expect_error(check_valid_util(c("dreme", "ame"), myUtils, full_meme_path))
-# generated function check errors same as above
-expect_error(check_meme_utils(meme_path, util = c("dreme", "ame")))
-                 
+# Cleanup temp dir & files
+cleanup_valid_path(check_paths)

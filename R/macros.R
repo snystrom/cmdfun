@@ -29,6 +29,7 @@
 #' 
 #' @return function that returns a valid path to tool or optional utility
 #' 
+#' 
 #' @export
 #' 
 #' @examples
@@ -42,13 +43,23 @@
 #' }
 build_util_checker <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
   
-  if(length(getAllArgs()) == 0) {
-    stop("must define at least one of: environment_var, option_name, default_path")
+  if (is.null(environment_var) & is.null(option_name) & is.null(default_path)){
+    warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
   }
+    
+  requiredArgs <- getAllArgs() %>% 
+    drop_list_by_name("utils")
+  
+  purrr::map(requiredArgs, length) %>% 
+    drop_list_fun(function(x) x <= 1) %>% 
+    names %>% 
+    purrr::walk(~{
+      stop(paste0(.x, " must contain only 1 value"))
+    })
   
   # passing NULL to getOption returns NULL & throws error,
   # safely_ allows catching the NULL in .$result without throwing error
-  safe_getOption <- purrr::safely(getOption)
+  safe_getOption <- purrr::safely(R.utils::getOption)
   
   return_valid_path <- function(path = NULL, util = NULL){
     # Try to use correct path if user doesn't set in call
@@ -56,14 +67,16 @@ build_util_checker <- function(environment_var = NULL, option_name = NULL, defau
       fullPath <- sanitize_path(path) 
       
       } else if (!is.null(safe_getOption(option_name)$result)) {
-      fullPath <- sanitize_path(getOption(option_name))
+        fullPath <- sanitize_path(R.utils::getOption(option_name))
       
       } else if (!identical(Sys.getenv(environment_var), Sys.getenv()) &
                  !identical(Sys.getenv(environment_var), "") &
                  length(Sys.getenv(environment_var)) == 1) {
-      fullPath <- sanitize_path(Sys.getenv(environment_var))
+        fullPath <- sanitize_path(Sys.getenv(environment_var))
+      } else if (!is.null(default_path)) {
+        fullPath <- default_path
       } else {
-      fullPath <- default_path
+        stop("No path defined or detected")
       }
     
     fullPath <- check_valid_command_path(fullPath)
