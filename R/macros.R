@@ -144,10 +144,7 @@ check_valid_util <- function(util, utils = NULL, path = NULL){
 #' check_valid_command_path("~/meme/bin")
 #' }
 check_valid_command_path <- function(path){
-  print('input path')
-  print(path)
-  #path <- sanitize_path(path)
-  print(path)
+  path <- sanitize_path(path)
   command_exists <- file.exists(path)
   
   if (!command_exists){
