@@ -63,26 +63,54 @@ getNamedArgs <- function(){
     drop_list_by_name("...")
 }
 
-
-#' convert list from getDots to vector of formatted shell flags
+#' convert list from get*Args to vector of formatted shell flags
 #'
 #' @param args output from get*Args() family of functions (a named list)
 #' @param flag_lookup optional named vector to convert names from dots to a
 #'   simplified shell flag, useful for providing aliases to single-letter flags
 #' @param prefix flag prefix, usually - or --
-#' @param sep separator to use when passing vector for a single flag
+#' @param sep separator to use when passing vector for a single flag. Default:
+#'   ",". sep = NULL will pass each member as a new entry. Other common values could include: " ", or "\\t".
 #'
-#' @return named vector of shell flags with their values
+#' @return named vector of shell flags followed by their values
 #' @export
-#' 
-#' @importFrom magrittr %>%
-#' @importFrom magrittr %<>%
 #'
 #' @examples
 #' theFunction <- function(...) { getDotArgs() }
 #' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
 #' theFlags <-  argsToFlags(theDots)
 argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
+  
+  flagList <- argsToFlagList(args, flag_lookup = flag_lookup)
+  
+  flags <- flagListToFlags(flagList, prefix = prefix, sep = sep)
+  
+  return(flags)
+}
+
+#' Convert list of function arguments to list of command flags
+#'
+#' Function also handles error checking to ensure args contain valid data types,
+#' and looks for common usage mistakes.
+#' 
+#' For simple shell wrappers, this function isn't needed. However, the list
+#' structure is more amenable to manipulation by package developers for advanced
+#' use before evaluating them to the command flags vector.
+#'
+#' @param args named list output from get*Args family of functions.
+#' @param flag_lookup optional named vector used to convert args to command flags
+#'
+#' @return named list 
+#' @export
+#'
+#' @importFrom magrittr %>%
+#' @importFrom magrittr %<>%
+#' 
+#' @examples
+#' theFunction <- function(...){getAllArgs()}
+#' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
+#' argsToFlagList(theArgs)
+argsToFlagList <- function(args, flag_lookup = NULL){
   
   testthat::expect_type(args, "list")
   
@@ -99,11 +127,10 @@ argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
   }
   
   if (is.null(flag_lookup)) { 
-    flag_lookup <- names(args)
-    names(flag_lookup) <- names(args)
+    flag_lookup <- args_as_lookup(args)
   }
   
-  # Check for illegal characters in dots, print warning
+  # Check for illegal characters in args, print warning
   check_args_contain_illegal_flags(args)
 
   args %<>% 
@@ -122,10 +149,43 @@ argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
     find_multimatched_args() %>% 
     purrr::walk(warn_multimatched_arg)
 
-  # concatenate to vector of flag calls
-  flags <- purrr::imap_chr(args, ~{paste0(prefix, .y, " ", paste0(.x, collapse = sep))}) %>% 
+  return(args)
+}
+
+#' Convert flag list to vector of command flags
+#'
+#' @param flagList output from argsToFlagList(). A named list where names
+#'   correspond to flags and members correspond to the value for the flag.
+#' @param prefix flag prefix, usually "-" or "--".
+#' @param sep seperator to use if flag has a vector of values (default: NULL). 
+#'
+#' @return character vector of parsed commandline flags followed by their values
+#' @export
+#'
+#' @importFrom magrittr %>%
+#' 
+#' @examples
+#' theFunction <- function(...){getAllArgs()}
+#' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
+#' flagList <- argsToFlagList(theArgs)
+#' flags <- flagListToFlags(flagList)
+#' 
+#' # Above is equivalent to:
+#' theFunction <- function(...){getAllArgs()}
+#' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
+#' flags <- argsToFlags(theArgs)
+flagListToFlags <- function(flagList, prefix = "-", sep = ","){
+  
+  if (is.null(flagList)) return(NULL)
+  if (length(flagList) == 0) return(NULL)
+  
+  testthat::expect_named(flagList)
+  
+  flags <- purrr::imap(flagList, ~{c(paste0(prefix, .y), paste0(.x, collapse = sep))}) %>% 
+    unlist() %>% 
     purrr::set_names(NULL)
+  
+  flags <- flags[flags != ""]
   
   return(flags)
 }
-

@@ -228,7 +228,7 @@ error_illegal_flag <- function(name){
 
 #' Checks dots for illegal flag names
 #'
-#' @param dots list output of getDots
+#' @param args list output of get*Args family function
 #'
 #' @return prints warning for each illegal flag
 #'
@@ -241,9 +241,9 @@ error_illegal_flag <- function(name){
 #' theArgs <-  dotsToArgs(theDots)
 #' }
 #' @noRd
-check_args_contain_illegal_flags <- function(dots){
-  is_illegal <- purrr::map_lgl(names(dots), flag_is_illegal) %>% 
-    purrr::set_names(names(dots)) 
+check_args_contain_illegal_flags <- function(args){
+  is_illegal <- purrr::map_lgl(names(args), flag_is_illegal) %>% 
+    purrr::set_names(names(args)) 
   
   illegals <- is_illegal[is_illegal == T]
   
@@ -267,4 +267,20 @@ check_args_contain_illegal_flags <- function(dots){
 #' @noRd
 sanitize_path <- function(path){
   file.path(dirname(path), basename(path))
+}
+
+#' Converts list of arguments to named vector
+#' 
+#' This function is used when a lookup table isn't supplied for arguments converted to flags.
+#' Used to say "all args defined should be kept as their original definition"
+#'
+#' @param args output of get*Args family function
+#'
+#' @return 
+#'
+#' @noRd
+args_as_lookup <- function(args){
+  flag_lookup <- names(args)
+  names(flag_lookup) <- names(args)
+  return(flag_lookup)
 }

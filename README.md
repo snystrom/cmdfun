@@ -53,7 +53,7 @@ myFunction <- function(...){
 myFunction(flag = "var", bool_flag = TRUE)
 ```
 
-    ## [1] "-flag var"   "-bool_flag "
+    ## [1] "-flag"      "var"        "-bool_flag"
 
 This character vector can be passed to `system2` to build shell
 commands.
@@ -105,10 +105,10 @@ shell_ls("R", l = T)
 ```
 
     ## [1] "total 28"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4548 Apr  4 00:37 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 17:45 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6249 Apr  4 17:46 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 00:37 utils.R"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6628 Apr  6 17:18 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 16:25 utils_internal.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -129,10 +129,10 @@ shell_ls_alias("R", long = T)
 ```
 
     ## [1] "total 28"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 4548 Apr  4 00:37 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 17:45 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6249 Apr  4 17:46 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 00:37 utils.R"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6628 Apr  6 17:18 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 16:25 utils_internal.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
 
 ``` r
 shellCut_alias <- function(text, ...){

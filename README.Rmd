@@ -124,7 +124,7 @@ shellCut_alias("hello_world", f = 2, sep = "_")
 
 A common pattern when designing shell interfaces is to ask the user to give an
 absolute path to the target shell utility. It is common to pass this information
-from the user to R by using either R environment variables defined in .Renviron,
+from the user to R by using either R environment variables defined in `.Renviron`,
 using options (set with `option()`, and got with `getOption()`), having the user
 explicitly pass the path in the function call, or failing this, using a default
 install path.
@@ -133,7 +133,7 @@ install path.
 target utility.
 
 For example, to build an interface to the "MEME" suite, which is by default
-installed to "~/meme/bin", one could build the following:
+installed to `~/meme/bin`, one could build the following:
 
 ```{r}
 handle_meme_path <- build_path_handler(default_path = "~/meme/bin")

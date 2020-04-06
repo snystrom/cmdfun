@@ -2,7 +2,7 @@
 % Please edit documentation in R/dots_to_args.R
 \name{argsToFlags}
 \alias{argsToFlags}
-\title{convert list from getDots to vector of formatted shell flags}
+\title{convert list from get*Args to vector of formatted shell flags}
 \usage{
 argsToFlags(args, flag_lookup = NULL, prefix = "-", sep = ",")
 }
@@ -14,13 +14,14 @@ simplified shell flag, useful for providing aliases to single-letter flags}
 
 \item{prefix}{flag prefix, usually - or --}
 
-\item{sep}{separator to use when passing vector for a single flag}
+\item{sep}{separator to use when passing vector for a single flag. Default:
+",". sep = NULL will pass each member as a new entry. Other common values could include: " ", or "\\t".}
 }
 \value{
-named vector of shell flags with their values
+named vector of shell flags followed by their values
 }
 \description{
-convert list from getDots to vector of formatted shell flags
+convert list from get*Args to vector of formatted shell flags
 }
 \examples{
 theFunction <- function(...) { getDotArgs() }

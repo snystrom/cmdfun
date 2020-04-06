@@ -41,12 +41,12 @@ test_that("Output is list", {
 })
 
 test_that("Pipe works", {
-  expect_equal(pipe_test("a"), c("-arg1 a"))
+  expect_equal(pipe_test("a"), c("-arg1", "a"))
 })
 
 test_that("T/F Filtered", {
-  expect_equal(pipe_test(T,arg2 = F), c("-arg1 "))
-  expect_equal(pipe_test(T,arg2 = T), c("-arg1 ", "-arg2 "))
+  expect_equal(pipe_test(T,arg2 = F), c("-arg1"))
+  expect_equal(pipe_test(T,arg2 = T), c("-arg1", "-arg2"))
   expect_error(pipe_test_named(T,arg2 = T, arg2 = F), "formal argument \"arg2\"")
 })
   
