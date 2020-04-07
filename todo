@@ -1,4 +1,0 @@
-TODO:
- - add macro function for constructing full call for passing to system2, etc.
- - add functions for getting all args
-  - rename dotsToArgs -> argsToFlags

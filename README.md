@@ -12,16 +12,30 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 ## A simple framework for building shell interfaces
 
-`dotargs` provides two main functions: `getDotArgs` and `argsToFlags`
-which can act as a useful backend for converting keyword arguments
-passed to `...` in a function call into a vector of shell command flags
-which can be passed to `system2` or `processx`. Together, they can be
-used to build user-friendly R interfaces to shell programs without
-having to manually implement all commandline flags in R functions.
+The purpose of `dotargs` is to significantly reduce the overhead
+involved in wrapping shell programs in R. The tools are intended to be
+intuitive and lightweight enough to use for data scientists trying to
+get things done quickly, but robust and full-fledged enough for
+developers to extend them to more advanced use cases.
 
-Also `getAllArgs` and `getNamedArgs` can be used to get all named
-arguments + dots, or named arguments only (no dots), depending on your
-use-case.
+## Vocabulary to describe operations
+
+Briefly, `dotargs` captures R function arguments (**args**) and converts
+them to a vector of commandline **flags**.
+
+The `dotargs` framework provides three mechanisms for capturing function
+arguments:
+
+  - `getDotArgs` captures all arguments passed to `...`
+  - `getNamedArgs` captures all keyword arguments defined by the user
+  - `getAllArgs` captures both named + dot arguments
+
+`argsToFlags` converts the captured arguments to commandline-style
+flags. This output can be directly fed to `system2` or `processx`.
+
+Together, they can be used to build user-friendly R interfaces to shell
+programs without having to manually implement all commandline flags in R
+functions.
 
 ## Install
 
@@ -137,7 +151,8 @@ shell_ls_alias("R", long = T)
 ``` r
 shellCut_alias <- function(text, ...){
 
-  argsDict <- c("sep" = "d")
+  argsDict <- c("sep" = "d",
+                "fields" = "f")
     
     flags <- getDotArgs() %>%
         argsToFlags(argsDict)
@@ -147,7 +162,7 @@ shellCut_alias <- function(text, ...){
 ```
 
 ``` r
-shellCut_alias("hello_world", f = 2, sep = "_") 
+shellCut_alias("hello_world", fields = 2, sep = "_") 
 ```
 
     ## [1] "world"
@@ -157,15 +172,16 @@ shellCut_alias("hello_world", f = 2, sep = "_")
 A common pattern when designing shell interfaces is to ask the user to
 give an absolute path to the target shell utility. It is common to pass
 this information from the user to R by using either R environment
-variables defined in .Renviron, using options (set with `option()`, and
-got with `getOption()`), having the user explicitly pass the path in the
-function call, or failing this, using a default install path.
+variables defined in `.Renviron`, using options (set with `option()`,
+and got with `getOption()`), having the user explicitly pass the path in
+the function call, or failing this, using a default install path.
 
-`build_path_handler()` returns a function that correctly returns the
-path to the target utility.
+`build_path_handler()` is a macro which returns a function that returns
+a valid path to the target by heirarchically searching a series of
+possible locations.
 
 For example, to build an interface to the “MEME” suite, which is by
-default installed to “~/meme/bin”, one could build the following:
+default installed to `~/meme/bin`, one could build the following:
 
 ``` r
 handle_meme_path <- build_path_handler(default_path = "~/meme/bin")
@@ -182,7 +198,7 @@ handle_meme_path <- build_path_handler(environment_var = "MEME_PATH")
 ```
 
 ``` r
-# Without environment varialbe defined
+# Without environment variable defined
 handle_meme_path()
 ```
 
@@ -244,7 +260,9 @@ handle_meme_path("bad/path")
 
     ## Error in check_valid_command_path(path): Command: bad/path, does not exist.
 
-`util` specifies which utility path to return (if any).
+`util` specifies which utility path to return (if any). The path handler
+will throw an error if the utility is not found in any of the specified
+locations.
 
 ``` r
 handle_meme_path(util = "dreme")
@@ -260,6 +278,13 @@ arguments to commandline flags. The path handler returns the correct
 the flags generated from `argsToFlags`.
 
 This makes for a robust shell wrapper without excess overhead.
+
+In the `runDreme` function below, the user can pass any valid `dreme`
+argument using the rules for command args defined above to `...`.
+Allowing `meme_path` as a function argument and passing it to
+`handle_meme_path` allows the user to override the default search path
+which is: `MEME_PATH` environment variable, followed by the `~/meme/bin`
+default install.
 
 ``` r
 handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
