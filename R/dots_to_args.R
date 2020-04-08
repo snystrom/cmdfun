@@ -78,12 +78,12 @@ getNamedArgs <- function(){
 #' @examples
 #' theFunction <- function(...) { getDotArgs() }
 #' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
-#' theFlags <-  argsToFlags(theDots)
-argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
+#' theFlags <-  legacy_argsToFlags(theDots)
+legacy_argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
   
-  flagList <- argsToFlagList(args, flag_lookup = flag_lookup)
+  flagList <- argsToFlags(args, flag_lookup = flag_lookup)
   
-  flags <- flagListToFlags(flagList, prefix = prefix, sep = sep)
+  flags <- crystalize_flags(flagList, prefix = prefix, sep = sep)
   
   return(flags)
 }
@@ -93,9 +93,9 @@ argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
 #' Function also handles error checking to ensure args contain valid data types,
 #' and looks for common usage mistakes.
 #' 
-#' For simple shell wrappers, this function isn't needed. However, the list
-#' structure is more amenable to manipulation by package developers for advanced
-#' use before evaluating them to the command flags vector.
+#' The list structure is more amenable to manipulation by package developers for
+#' advanced use before evaluating them to the command flags vector with
+#' crystalize_flags().
 #'
 #' @param args named list output from get*Args family of functions.
 #' @param flag_lookup optional named vector used to convert args to command flags
@@ -109,8 +109,9 @@ argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
 #' @examples
 #' theFunction <- function(...){getAllArgs()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
-#' argsToFlagList(theArgs)
-argsToFlagList <- function(args, flag_lookup = NULL){
+#' flagList <- argsToFlags(theArgs)
+#' flags <- crystalize_flags(flagList)
+argsToFlags <- function(args, flag_lookup = NULL){
   
   testthat::expect_type(args, "list")
   
@@ -154,7 +155,7 @@ argsToFlagList <- function(args, flag_lookup = NULL){
 
 #' Convert flag list to vector of command flags
 #'
-#' @param flagList output from argsToFlagList(). A named list where names
+#' @param flagList output from argsToFlags(). A named list where names
 #'   correspond to flags and members correspond to the value for the flag.
 #' @param prefix flag prefix, usually "-" or "--".
 #' @param sep seperator to use if flag has a vector of values (default: NULL). 
@@ -167,14 +168,14 @@ argsToFlagList <- function(args, flag_lookup = NULL){
 #' @examples
 #' theFunction <- function(...){getAllArgs()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
-#' flagList <- argsToFlagList(theArgs)
-#' flags <- flagListToFlags(flagList)
+#' flagList <- argsToFlags(theArgs)
+#' flags <- crystalize_flags(flagList)
 #' 
-#' # Above is equivalent to:
+#' # Above is equivalent to the legacy usage:
 #' theFunction <- function(...){getAllArgs()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
-#' flags <- argsToFlags(theArgs)
-flagListToFlags <- function(flagList, prefix = "-", sep = ","){
+#' flags <- legacy_argsToFlags(theArgs)
+crystalize_flags <- function(flagList, prefix = "-", sep = ","){
   
   if (is.null(flagList)) return(NULL)
   if (length(flagList) == 0) return(NULL)

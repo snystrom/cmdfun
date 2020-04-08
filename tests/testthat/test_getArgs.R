@@ -14,12 +14,14 @@ dot_test <- function(arg1, ...){
 
 pipe_test <- function(arg1, ...){
   getAllArgs() %>% 
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
 }
 
 pipe_test_named <- function(arg1, arg2, ...){
   getNamedArgs() %>% 
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
 }
 
 test_that("Can get Named Args", {

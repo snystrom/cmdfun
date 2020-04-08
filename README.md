@@ -64,19 +64,31 @@ myFunction <- function(...){
 ```
 
 ``` r
-myFunction(flag = "var", bool_flag = TRUE)
+(flagsList <- myFunction(flag = "var", bool_flag = TRUE))
+```
+
+    ## $flag
+    ## [1] "var"
+    ## 
+    ## $bool_flag
+    ## [1] ""
+
+This list can be passed to `crystalize_flags` to generate a vector
+suitable for `system2` to build shell commands.
+
+``` r
+flagsList %>% 
+  crystalize_flags()
 ```
 
     ## [1] "-flag"      "var"        "-bool_flag"
-
-This character vector can be passed to `system2` to build shell
-commands.
 
 ``` r
 shellCut <- function(text, ...){
 
   flags <- getDotArgs() %>%
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
 
     system2("cut", flags, stdout = T, input = text)
 
@@ -102,7 +114,8 @@ shellCut("hello_world_hello", f = c(1,3), d = "_")
 ``` r
 shell_ls <- function(dir = ".", ...){
   flags <- getDotArgs() %>% 
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -119,9 +132,9 @@ shell_ls("R", l = T)
 ```
 
     ## [1] "total 28"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6628 Apr  6 17:18 dots_to_args.R"  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6665 Apr  8 15:18 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 16:25 utils_internal.R"
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 21:37 utils_internal.R"
     ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
@@ -132,7 +145,8 @@ shell_ls_alias <- function(dir = ".", ...){
   argsDict <- c("long" = "l")
   
   flags <- getDotArgs() %>% 
-    argsToFlags(argsDict)
+    argsToFlags(argsDict) %>% 
+    crystalize_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -143,9 +157,9 @@ shell_ls_alias("R", long = T)
 ```
 
     ## [1] "total 28"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6628 Apr  6 17:18 dots_to_args.R"  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6665 Apr  8 15:18 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 16:25 utils_internal.R"
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 21:37 utils_internal.R"
     ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
 
 ``` r
@@ -155,7 +169,8 @@ shellCut_alias <- function(text, ...){
                 "fields" = "f")
     
     flags <- getDotArgs() %>%
-        argsToFlags(argsDict)
+        argsToFlags(argsDict) %>% 
+      crystalize_flags()
 
     system2("cut", flags, stdout = T, input = text)
 }
@@ -293,7 +308,8 @@ handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
 
 runDreme <- function(..., meme_path = NULL){
   flags <- getDotArgs() %>% 
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
   
   command <- handle_meme_path(path = meme_path, util = "dreme")
   
@@ -317,7 +333,8 @@ please be careful how you build system calls.
 shellCut_unsafe <- function(text, ...){
 
   flags <- getDotArgs() %>%
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
 
     system2("echo", c(text , "|", "cut", flags), stdout = T)
 

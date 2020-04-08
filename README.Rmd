@@ -27,8 +27,13 @@ mechanisms for capturing function arguments:
  - `getNamedArgs` captures all keyword arguments defined by the user
  - `getAllArgs` captures both named + dot arguments
  
-`argsToFlags` converts the captured arguments to commandline-style flags. This
-output can be directly fed to `system2` or `processx`.
+`argsToFlags` converts the captured arguments to a parsed list of flag/value
+pairs. This output can be useful for additonal handling of special flag
+assignments from within R.
+
+`crystalize_flags` converts the output of `argsToFlags` to a vector of
+commandline-style flags. This output can be directly fed to `system2` or
+`processx`.
 
 Together, they can be used to build user-friendly R interfaces to shell programs
 without having to manually implement all commandline flags in R functions.
@@ -57,15 +62,22 @@ myFunction <- function(...){
 ```
 
 ```{r}
-myFunction(flag = "var", bool_flag = TRUE)
+(flagsList <- myFunction(flag = "var", bool_flag = TRUE))
 ```
 
-This character vector can be passed to `system2` to build shell commands. 
+This list can be passed to `crystalize_flags` to generate a vector suitable for `system2` to build shell commands. 
+
+```{r}
+flagsList %>% 
+  crystalize_flags()
+```
+
 ```{r}
 shellCut <- function(text, ...){
 
   flags <- getDotArgs() %>%
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
 
 	system2("cut", flags, stdout = T, input = text)
 
@@ -86,7 +98,8 @@ shellCut("hello_world_hello", f = c(1,3), d = "_")
 ```{r}
 shell_ls <- function(dir = ".", ...){
   flags <- getDotArgs() %>% 
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -108,7 +121,8 @@ shell_ls_alias <- function(dir = ".", ...){
   argsDict <- c("long" = "l")
   
   flags <- getDotArgs() %>% 
-    argsToFlags(argsDict)
+    argsToFlags(argsDict) %>% 
+    crystalize_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -125,7 +139,8 @@ shellCut_alias <- function(text, ...){
                 "fields" = "f")
     
 	flags <- getDotArgs() %>%
-		argsToFlags(argsDict)
+		argsToFlags(argsDict) %>% 
+	  crystalize_flags()
 
 	system2("cut", flags, stdout = T, input = text)
 }
@@ -233,7 +248,8 @@ handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
 
 runDreme <- function(..., meme_path = NULL){
   flags <- getDotArgs() %>% 
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
   
   command <- handle_meme_path(path = meme_path, util = "dreme")
   
@@ -254,7 +270,8 @@ runDreme(h = T)
 shellCut_unsafe <- function(text, ...){
 
   flags <- getDotArgs() %>%
-    argsToFlags()
+    argsToFlags() %>% 
+    crystalize_flags()
 
 	system2("echo", c(text , "|", "cut", flags), stdout = T)
 

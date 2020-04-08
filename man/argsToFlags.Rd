@@ -2,29 +2,30 @@
 % Please edit documentation in R/dots_to_args.R
 \name{argsToFlags}
 \alias{argsToFlags}
-\title{convert list from get*Args to vector of formatted shell flags}
+\title{Convert list of function arguments to list of command flags}
 \usage{
-argsToFlags(args, flag_lookup = NULL, prefix = "-", sep = ",")
+argsToFlags(args, flag_lookup = NULL)
 }
 \arguments{
-\item{args}{output from get*Args() family of functions (a named list)}
+\item{args}{named list output from get*Args family of functions.}
 
-\item{flag_lookup}{optional named vector to convert names from dots to a
-simplified shell flag, useful for providing aliases to single-letter flags}
-
-\item{prefix}{flag prefix, usually - or --}
-
-\item{sep}{separator to use when passing vector for a single flag. Default:
-",". sep = NULL will pass each member as a new entry. Other common values could include: " ", or "\\t".}
+\item{flag_lookup}{optional named vector used to convert args to command flags}
 }
 \value{
-named vector of shell flags followed by their values
+named list
 }
 \description{
-convert list from get*Args to vector of formatted shell flags
+Function also handles error checking to ensure args contain valid data types,
+and looks for common usage mistakes.
+}
+\details{
+The list structure is more amenable to manipulation by package developers for
+advanced use before evaluating them to the command flags vector with
+crystalize_flags().
 }
 \examples{
-theFunction <- function(...) { getDotArgs() }
-theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
-theFlags <-  argsToFlags(theDots)
+theFunction <- function(...){getAllArgs()}
+theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
+flagList <- argsToFlags(theArgs)
+flags <- crystalize_flags(flagList)
 }
