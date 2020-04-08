@@ -4,7 +4,12 @@
 \alias{getAllArgs}
 \title{Return all named arguments and arguments passed as dots from parent function call}
 \usage{
-getAllArgs()
+getAllArgs(keep = NULL, drop = NULL)
+}
+\arguments{
+\item{keep}{name of arguments to keep}
+
+\item{drop}{name of arguments to drop (NOTE: keep or drop are mutually exclusive settings)}
 }
 \value{
 named list of all arguments passed to parent

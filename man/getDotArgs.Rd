@@ -4,7 +4,12 @@
 \alias{getDotArgs}
 \title{return function dots from parent function as named list}
 \usage{
-getDotArgs()
+getDotArgs(keep = NULL, drop = NULL)
+}
+\arguments{
+\item{keep}{name of arguments to keep}
+
+\item{drop}{name of arguments to drop (NOTE: keep or drop are mutually exclusive settings)}
 }
 \value{
 named list of kwargs from ...

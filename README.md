@@ -30,8 +30,13 @@ arguments:
   - `getNamedArgs` captures all keyword arguments defined by the user
   - `getAllArgs` captures both named + dot arguments
 
-`argsToFlags` converts the captured arguments to commandline-style
-flags. This output can be directly fed to `system2` or `processx`.
+`argsToFlags` converts the captured arguments to a parsed list of
+flag/value pairs. This output can be useful for additonal handling of
+special flag assignments from within R.
+
+`crystalize_flags` converts the output of `argsToFlags` to a vector of
+commandline-style flags. This output can be directly fed to `system2` or
+`processx`.
 
 Together, they can be used to build user-friendly R interfaces to shell
 programs without having to manually implement all commandline flags in R
@@ -132,9 +137,9 @@ shell_ls("R", l = T)
 ```
 
     ## [1] "total 28"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6665 Apr  8 15:18 dots_to_args.R"  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 21:37 utils_internal.R"
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
     ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
@@ -157,9 +162,9 @@ shell_ls_alias("R", long = T)
 ```
 
     ## [1] "total 28"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 6665 Apr  8 15:18 dots_to_args.R"  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 6692 Apr  6 21:37 utils_internal.R"
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
     ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
 
 ``` r
@@ -323,6 +328,37 @@ arguments.
 ``` r
 runDreme(h = T)
 ```
+
+## Restrict argument matching
+
+each `get*Args` family function accepts a character vector of names to
+`keep` or `drop` arguments which will restrict command argument matches
+to values in `keep` (or ignore those in `drop`). As of now, `keep` and
+`drop` are mutually exclusive.
+
+This can be useful to allow only some function arguments to be captured
+as flags, while others can be used for function logic.
+
+``` r
+myFunction <- function(arg1, arg2, print = T){
+  flags <- getNamedArgs(keep = c("arg1", "arg2")) %>% 
+    argsToFlags() %>% 
+    crystalize_flags()
+  
+  ifelse(print, flags, "nothing")
+  
+}
+
+myFunction(arg1 = "blah", arg2 = "blah")
+```
+
+    ## [1] "-arg1"
+
+``` r
+myFunction(arg1 = "blah", arg2 = "blah", F)
+```
+
+    ## [1] "nothing"
 
 ## Unsafe operations
 

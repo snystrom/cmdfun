@@ -284,3 +284,39 @@ args_as_lookup <- function(args){
   names(flag_lookup) <- names(args)
   return(flag_lookup)
 }
+
+
+#' Drops or keeps items by name from list
+#'
+#' @param list a named list
+#' @param keep names to keep
+#' @param drop names to drop
+#'
+#' @return
+#'
+#' @noRd
+list_keep_or_drop <- function(list, keep = NULL, drop = NULL){
+  
+  if (length(list) == 0){return(list)}
+  
+  testthat::expect_named(list)
+  
+  if (!is.null(keep) & !is.null(drop)) {
+    stop("only one of keep or drop may be defined")
+  }
+  
+  if (is.null(keep) & is.null(drop)) { return(list) }
+  
+  if (!is.null(keep)){
+    testthat::expect_type(keep, "character")
+    filteredList <- keep_list_by_name(list, keep)
+  }
+  
+  if (!is.null(drop)){
+    testthat::expect_type(drop, "character")
+    filteredList <- drop_list_by_name(list, drop)
+  }
+  
+  return(filteredList)
+  
+}

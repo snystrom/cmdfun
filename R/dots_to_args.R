@@ -1,12 +1,15 @@
 #' Return all named arguments and arguments passed as dots from parent function call
 #'
+#' @param keep name of arguments to keep
+#' @param drop name of arguments to drop (NOTE: keep or drop are mutually exclusive settings)
+#' 
 #' @return named list of all arguments passed to parent
 #' @export
 #'
 #' @examples
 #' theFunction <- function(arg1, ...) { getAllArgs() }
 #' theArgs <-  theFunction(arg1 = "test", example = "hello")
-getAllArgs <- function(){
+getAllArgs <- function(keep = NULL, drop = NULL){
   # Modified from:
   # https://stackoverflow.com/questions/17256834/getting-the-arguments-of-a-parent-function-in-r-with-names
   # using callstack position of parent call will always evaluate to function
@@ -21,12 +24,18 @@ getAllArgs <- function(){
   # which in this case would be **within** the lapply loop. 
   # setting envir = parent.frame() will evaluate **before** the loop, so the
   # environment will be the same as the match.call parent as intended.
-  lapply(argList, eval, envir = parent.frame())
+  args <- lapply(argList, eval, envir = parent.frame())
+  
+  list_keep_or_drop(args, keep = keep, drop = drop)
   
 }
 
+
 #' return function dots from parent function as named list
 #'
+#'
+#' @param keep name of arguments to keep
+#' @param drop name of arguments to drop (NOTE: keep or drop are mutually exclusive settings)
 #'
 #' @return named list of kwargs from ...
 #' @export
@@ -36,16 +45,21 @@ getAllArgs <- function(){
 #' @examples
 #' theFunction <- function(...) { getDotArgs() }
 #' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
-getDotArgs <- function(){
+getDotArgs <- function(keep = NULL, drop = NULL){
   
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
                      expand.dots = FALSE))[-1]
   
-  lapply(argList[["..."]], eval, envir = parent.frame()) 
+  args <- lapply(argList[["..."]], eval, envir = parent.frame()) 
+  
+  list_keep_or_drop(args, keep = keep, drop = drop)
 }
 
 #' Return all named arguments from parent function call
+#' 
+#' @param keep name of arguments to keep
+#' @param drop name of arguments to drop (NOTE: keep or drop are mutually exclusive settings)
 #'
 #' @return named list of all defined function arguments from parent
 #' @export
@@ -53,14 +67,16 @@ getDotArgs <- function(){
 #' @examples
 #' theFunction <- function(arg1, ...) { getNamedArgs() }
 #' theNamedArgs <-  theFunction(arg1 = "test", example = "hello")
-getNamedArgs <- function(){
+getNamedArgs <- function(keep = NULL, drop = NULL){
   # see getAllNamedArgs for explanation of how this chunk works
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
                      expand.dots = FALSE))[-1]
   
-  lapply(argList, eval, envir = parent.frame()) %>% 
+  args <- lapply(argList, eval, envir = parent.frame()) %>% 
     drop_list_by_name("...")
+  
+  list_keep_or_drop(args, keep = keep, drop = drop)
 }
 
 #' convert list from get*Args to vector of formatted shell flags

@@ -262,6 +262,34 @@ Commands can now run through `runDreme` by passing flags as function arguments.
 runDreme(h = T)
 ```
 
+## Restrict argument matching
+each `get*Args` family function accepts a character vector of names to `keep` or
+`drop` arguments which will restrict command argument matches to values in
+`keep` (or ignore those in `drop`). As of now, `keep` and `drop` are mutually
+exclusive.
+
+This can be useful to allow only some function arguments to be captured as
+flags, while others can be used for function logic.
+
+```{r}
+myFunction <- function(arg1, arg2, print = T){
+  flags <- getNamedArgs(keep = c("arg1", "arg2")) %>% 
+    argsToFlags() %>% 
+    crystalize_flags()
+  
+  ifelse(print, flags, "nothing")
+  
+}
+
+myFunction(arg1 = "blah", arg2 = "blah")
+```
+
+
+```{r}
+myFunction(arg1 = "blah", arg2 = "blah", F)
+```
+
+
 ## Unsafe operations
 
 **WARNING:** It's still possible to do unsafe operations as follows, so please be careful how you build system calls.
