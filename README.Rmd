@@ -277,8 +277,9 @@ myFunction <- function(arg1, arg2, print = T){
     argsToFlags() %>% 
     crystalize_flags()
   
-  ifelse(print, flags, "nothing")
+  ifelse(print, print("printing"), print("nothing"))
   
+  return(flags)
 }
 
 myFunction(arg1 = "blah", arg2 = "blah")

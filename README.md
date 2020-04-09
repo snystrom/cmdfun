@@ -136,11 +136,11 @@ shell_ls("R")
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 28"                                                                 
+    ## [1] "total 32"                                                                 
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 4459 Apr  9 00:25 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -161,11 +161,11 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 28"                                                                 
+    ## [1] "total 32"                                                                 
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 1418 Apr  4 18:21 utils.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 4459 Apr  9 00:25 utils.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -345,20 +345,58 @@ myFunction <- function(arg1, arg2, print = T){
     argsToFlags() %>% 
     crystalize_flags()
   
-  ifelse(print, flags, "nothing")
+  ifelse(print, print("printing"), print("nothing"))
   
+  return(flags)
 }
 
 myFunction(arg1 = "blah", arg2 = "blah")
 ```
 
-    ## [1] "-arg1"
+    ## [1] "printing"
+
+    ## [1] "-arg1" "blah"  "-arg2" "blah"
 
 ``` r
 myFunction(arg1 = "blah", arg2 = "blah", F)
 ```
 
     ## [1] "nothing"
+
+    ## [1] "-arg1" "blah"  "-arg2" "blah"
+
+## Manupulating flag list objects
+
+For the most part, the [purrr](https://purrr.tidyverse.org/) library is
+the most useful toolkit for operations on list objects.
+
+`dotargs` provides additional helper functions to handle common
+manipulations.
+
+`drop_flags` operates on flag lists to drop all entries corresponding to
+a certain name, or specific name/value pairs. Can be useful for ignoring
+setting certain flags if the user set them to a specific value.
+
+``` r
+myFunction <- function(arg1, arg2){
+  flags <- getNamedArgs() %>% 
+    argsToFlags() %>% 
+    drop_flags(c("arg2" = "baz")) %>% 
+    crystalize_flags()
+  
+  return(flags)
+}
+
+myFunction(arg1 = "foo", arg2 = "bar")
+```
+
+    ## [1] "-arg1" "foo"   "-arg2" "bar"
+
+``` r
+myFunction(arg1 = "foo", arg2 = "baz")
+```
+
+    ## [1] "-arg1" "foo"
 
 ## Unsafe operations
 
