@@ -21,11 +21,11 @@ and looks for common usage mistakes.
 \details{
 The list structure is more amenable to manipulation by package developers for
 advanced use before evaluating them to the command flags vector with
-crystalize_flags().
+crystallize_flags().
 }
 \examples{
 theFunction <- function(...){getAllArgs()}
 theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 flagList <- argsToFlags(theArgs)
-flags <- crystalize_flags(flagList)
+flags <- crystallize_flags(flagList)
 }

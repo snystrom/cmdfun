@@ -34,7 +34,7 @@ arguments:
 flag/value pairs. This output can be useful for additonal handling of
 special flag assignments from within R.
 
-`crystalize_flags` converts the output of `argsToFlags` to a vector of
+`crystallize_flags` converts the output of `argsToFlags` to a vector of
 commandline-style flags. This output can be directly fed to `system2` or
 `processx`.
 
@@ -78,12 +78,12 @@ myFunction <- function(...){
     ## $bool_flag
     ## [1] ""
 
-This list can be passed to `crystalize_flags` to generate a vector
+This list can be passed to `crystallize_flags` to generate a vector
 suitable for `system2` to build shell commands.
 
 ``` r
 flagsList %>% 
-  crystalize_flags()
+  crystallize_flags()
 ```
 
     ## [1] "-flag"      "var"        "-bool_flag"
@@ -93,7 +93,7 @@ shellCut <- function(text, ...){
 
   flags <- getDotArgs() %>%
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
 
     system2("cut", flags, stdout = T, input = text)
 
@@ -120,7 +120,7 @@ shellCut("hello_world_hello", f = c(1,3), d = "_")
 shell_ls <- function(dir = ".", ...){
   flags <- getDotArgs() %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -137,7 +137,7 @@ shell_ls("R", l = T)
 ```
 
     ## [1] "total 32"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7348 Apr  9 16:26 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
     ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7161 Apr  9 15:19 utils.R"
@@ -151,7 +151,7 @@ shell_ls_alias <- function(dir = ".", ...){
   
   flags <- getDotArgs() %>% 
     argsToFlags(argsDict) %>% 
-    crystalize_flags()
+    crystallize_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -162,7 +162,7 @@ shell_ls_alias("R", long = T)
 ```
 
     ## [1] "total 32"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7348 Apr  9 16:26 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
     ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7161 Apr  9 15:19 utils.R"
@@ -175,7 +175,7 @@ shellCut_alias <- function(text, ...){
     
     flags <- getDotArgs() %>%
         argsToFlags(argsDict) %>% 
-      crystalize_flags()
+      crystallize_flags()
 
     system2("cut", flags, stdout = T, input = text)
 }
@@ -314,7 +314,7 @@ handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
 runDreme <- function(..., meme_path = NULL){
   flags <- getDotArgs() %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
   
   command <- handle_meme_path(path = meme_path, util = "dreme")
   
@@ -343,7 +343,7 @@ as flags, while others can be used for function logic.
 myFunction <- function(arg1, arg2, print = T){
   flags <- getNamedArgs(keep = c("arg1", "arg2")) %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
   
   ifelse(print, print("printing"), print("nothing"))
   
@@ -382,7 +382,7 @@ myFunction <- function(arg1, arg2){
   flags <- getNamedArgs() %>% 
     argsToFlags() %>% 
     drop_flags(c("arg2" = "baz")) %>% 
-    crystalize_flags()
+    crystallize_flags()
   
   return(flags)
 }
@@ -445,7 +445,7 @@ shellCut_unsafe <- function(text, ...){
 
   flags <- getDotArgs() %>%
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
 
     system2("echo", c(text , "|", "cut", flags), stdout = T)
 

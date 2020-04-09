@@ -15,25 +15,25 @@ dot_test <- function(arg1, ...){
 pipe_test <- function(arg1, ...){
   getAllArgs() %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
 }
 
 pipe_test_named <- function(arg1, arg2, ...){
   getNamedArgs() %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
 }
 
 keep_test <- function(arg1, arg2, ...){
   getAllArgs(keep = c("arg1", "dot_keep")) %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
 }
 
 drop_test <- function(arg1, arg2, ..){
   getAllArgs(drop = "arg2") %>% 
     argsToFlags() %>% 
-    crystalize_flags()
+    crystallize_flags()
 }
 
 test_that("Can get Named Args", {

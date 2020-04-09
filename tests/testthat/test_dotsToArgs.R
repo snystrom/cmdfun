@@ -12,11 +12,11 @@ expect_failure(argsToFlags(c("a" = 1)))
 expect_equal(argsToFlags(list("b" = NULL)), argsToFlags(list("b" = FALSE)))
 
 # Test multiple inputs sep default is ","
-expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystalize_flags(), c("-a", "1,2,3"))
+expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystallize_flags(), c("-a", "1,2,3"))
 # Test multiple inputs w/ NULL sep
-expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystalize_flags(sep = NULL), c("-a", "1", "2", "3"))
+expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystallize_flags(sep = NULL), c("-a", "1", "2", "3"))
 # Test multiple inputs w/ comma sep
-expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystalize_flags(sep = ","), c("-a", "1,2,3"))
+expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystallize_flags(sep = ","), c("-a", "1,2,3"))
 
 # test quo vs unquoted names, all combinations
 expect_success(argsToFlags(list("a" = 1, "b" = T, "c" = F,
@@ -29,15 +29,15 @@ expect_equal(
 
 # pass non-list to dotsToArgs
 expect_equal(argsToFlags(list("a" = 2)), list("a" = 2))
-expect_equal(argsToFlags(list("a" = 2, "b" = 3, "c" = 4)) %>% crystalize_flags(), c("-a", "2", "-b", "3", "-c", "4"))
+expect_equal(argsToFlags(list("a" = 2, "b" = 3, "c" = 4)) %>% crystallize_flags(), c("-a", "2", "-b", "3", "-c", "4"))
 
 # Check False gets dropped correctly for list and vector
 expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F)), list("a" = 2, "b" = ""))
 expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))), 
              list("a" = 2, "b" = "", "d" = c("1","3","test")))
 
-expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F)) %>% crystalize_flags(), c("-a", "2", "-b"))
-expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))) %>% crystalize_flags(), 
+expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F)) %>% crystallize_flags(), c("-a", "2", "-b"))
+expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))) %>% crystallize_flags(), 
              c("-a" ,"2", "-b", "-d", "1,3,test"))
 
 # Input must be named, should be caught by internal checking
