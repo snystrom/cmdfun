@@ -5,3 +5,4 @@ exampleCode.txt
 .Rhistory
 call_stack_blogpost.Rmd
 scratch.R
+inst/doc

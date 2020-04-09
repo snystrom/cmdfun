@@ -171,3 +171,38 @@ flag_index_named_values <- function(flags, named_values){
     purrr::set_names(NULL)
   return(indices)
 }
+
+
+#' Check that file exits, error if not
+#'
+#' @param files list or vector of paths to check
+#'
+#' @return nothing or error message
+#' @export
+#'
+#' @importFrom magrittr %>%
+#' 
+#' @examples
+#' check_files_exist(tempdir())
+#' \dontrun{
+#' check_files_exist(file.path(tempdir(), "notreal"))
+#' }
+check_files_exist <- function(files){
+  files %>%
+    purrr::map(purrr::discard, file.exists) %>%
+    purrr::compact() %>%
+    purrr::walk(error_file_not_exist)
+}
+
+#' Throw error that file doesn't exist
+#'
+#' @param file path to file
+#'
+#' @return file doesn't exist error
+#'
+#' @examples
+#' 
+#' @noRd
+error_file_not_exist <- function(file){
+  stop(paste0(file, " was not found."))
+}
