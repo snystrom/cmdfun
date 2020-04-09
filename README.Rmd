@@ -289,6 +289,29 @@ myFunction(arg1 = "blah", arg2 = "blah")
 myFunction(arg1 = "blah", arg2 = "blah", F)
 ```
 
+## Manupulating flag list objects
+For the most part, the [purrr](https://purrr.tidyverse.org/) library is the most
+useful toolkit for operations on list objects.
+
+`dotargs` provides additional helper functions to handle common manipulations.
+
+`drop_flags` operates on flag lists to drop all entries corresponding to a
+certain name, or specific name/value pairs. Can be useful for ignoring setting
+certain flags if the user set them to a specific value.
+```{r}
+myFunction <- function(arg1, arg2){
+  flags <- getNamedArgs() %>% 
+    argsToFlags() %>% 
+    drop_flags(c("arg2" = "baz")) %>% 
+    crystalize_flags()
+  
+  return(flags)
+}
+
+myFunction(arg1 = "foo", arg2 = "bar")
+myFunction(arg1 = "foo", arg2 = "baz")
+```
+
 
 ## Unsafe operations
 

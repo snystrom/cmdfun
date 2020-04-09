@@ -51,3 +51,123 @@ drop_flags_regex <- function(flags, regex){
   return(flags)
 }
 
+
+#' Drop entries from list of flags by name or name/value pair.
+#'
+#' @param flags named list output of argsToFlags
+#' @param drop vector of flag entries to drop. Pass an unnamed vector
+#'   to drop flags by name. Pass a named vector to drop flags by name/value
+#'   pairs. Pass a numeric vector to drop by position.
+#'
+#' @return flags list with values in drop removed
+#' @export
+#'
+#' @examples
+#' exFlags <- list("flag1" = 2, "flag2" = "someText")
+#' drop_flags(exFlags, "flag1")
+#' # will drop flag2 because its name and value match 'drop' vector
+#' drop_flags(exFlags, c("flag2" = "someText"))
+#'
+#' # won't drop flag2 because its value isn't 'someText'
+#' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
+#' drop_flags(exFlags, c("flag2" = "someText"))
+drop_flags <- function(flags, drop){
+  
+  testthat::expect_named(flags)
+  
+  if (length(drop) == 0){
+    return(flags)
+  }
+  
+  if (is.numeric(drop)){
+    return(flag_drop_index(flags, drop))
+  }
+  
+  if (is.null(names(drop))){
+    drops <- flag_index_names(flags, drop)
+    return(drop_flags(flags, drops))
+  }
+
+  if (!is.null(names(drop))) {
+    drops <- flag_index_named_values(flags, drop)
+    return(flag_drop_index(flags, drops))
+  }
+  
+}
+
+#' drops list entry by positional index
+#'
+#' @param flags list of flags
+#' @param index position in list to drop
+#'
+#' @return flags dropped at indices
+#'
+#' @examples
+#' 
+#' @noRd
+flag_drop_index <- function(flags, index){
+  
+  if (length(index) == 0 | all(is.na(index))){ return(flags) }
+  
+  index <- index[!is.na(index)]
+  
+  flags[-index]
+}
+
+#' Return index of named list values
+#'
+#' @param flags list of flags
+#' @param names names of list entries
+#'
+#' @return vector of indices corresponding to named values matching names
+#'
+#' @examples
+#' 
+#' @noRd
+flag_index_names <- function(flags, names){
+  i <- which(names(flags) %in% names)
+  names(i) <- NULL
+  
+  if (length(i) == 0) { return(NULL) }
+  
+  return(i)
+}
+
+#' Return index for list entry matching name & value
+#' 
+#' 
+#'
+#' @param flags list of flags
+#' @param named_values named character vector of list objects + their values to be matched.
+#'
+#' @return index in flags list with entries matching name/value pairs in named_values
+#'
+#' @examples
+#' myList <- list(a = 1, b = 2, b = 5)
+#' flag_index_named_values(myList, c("b" = 5))
+#' flag_index_named_values(myList, c("b" = 2, "a" = 1))
+#' 
+#' @noRd
+flag_index_named_values <- function(flags, named_values){
+  
+  testthat::expect_named(named_values)
+  
+  if (any(names(named_values) == "")){
+    warnVals <- named_values[names(named_values) == ""]
+    warning(paste0("The following values have no names associated with them and will be ignored: ", warnVals))
+  }
+  
+  indices <- purrr::imap_int(named_values, ~{
+    i <- which(names(flags) == .y & flags == .x)
+    names(i) <- NULL
+    
+    # NA will mean "no match"
+    if (length(i) == 0){return(NA)}
+    # ignore names of "" to avoid unexpected behavior
+    if (.y == ""){return(NA)}
+    
+    return(i)
+  }) %>% 
+    purrr::set_names(NULL)
+  return(indices)
+}
