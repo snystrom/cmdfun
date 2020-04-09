@@ -140,7 +140,7 @@ shell_ls("R", l = T)
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 4459 Apr  9 00:25 utils.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7161 Apr  9 15:19 utils.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -165,7 +165,7 @@ shell_ls_alias("R", long = T)
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7343 Apr  8 15:56 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 4459 Apr  9 00:25 utils.R"
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7161 Apr  9 15:19 utils.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -397,6 +397,43 @@ myFunction(arg1 = "foo", arg2 = "baz")
 ```
 
     ## [1] "-arg1" "foo"
+
+## Expecting output files
+
+Sometimes a commandline function returns multiple output files you want
+to check for after the run.
+
+`check_files_exist` accepts a vector or list of files & checks that they
+exist.
+
+`dotargs` additionally provides a few convenience functions for
+generating lists of expected files. `expected_outputs` generates
+combinations of extension/prefix file names. The output can be passed to
+`check_files_exist` which will error if a file isn’t found on the
+filesystem.
+
+``` r
+expected_outputs(ext = c("txt", "xml"), prefix = "outFile")
+```
+
+    ## $txt
+    ## [1] "./outFile.txt"
+    ## 
+    ## $xml
+    ## [1] "./outFile.xml"
+
+``` r
+expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
+```
+
+    ## $outFile
+    ## [1] "./outFile.txt"
+    ## 
+    ## $outFile2
+    ## [1] "./outFile2.txt"
+    ## 
+    ## $outFile3
+    ## [1] "./outFile3.txt"
 
 ## Unsafe operations
 

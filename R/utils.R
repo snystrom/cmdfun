@@ -206,3 +206,71 @@ check_files_exist <- function(files){
 error_file_not_exist <- function(file){
   stop(paste0(file, " was not found."))
 }
+
+#' Generates list of expected output files
+#'
+#' See documentation of check_outputs() for more details about how this works
+#'
+#' @param ext file extension (no ".", ie "txt", "html")
+#' @param prefix file name to be given each ext. If a character vector, must be equal length of ext or shorter
+#' @param outdir optional directory where files should exist
+#'
+#' @return list of file paths by each ext or prefix (whichever is longer)
+#' @export
+#'
+#' @examples
+#' # Makes list for many file types of same prefix
+#' # ie myFile.txt, myFile.html, myFile.xml
+#' expected_outputs(c("txt", "html", "xml"), "myFile")
+#' 
+#' # Makes list for many files of same type
+#' # ie myFile1.txt, myFile2.txt, myFile3.txt
+#' expected_outputs("txt", c("myFile1", "myFile2", "myFile3"))
+#'
+expected_outputs <- function(ext, prefix, outdir = "."){
+  files <- purrr::map2(ext, prefix, ~{
+    file.path(outdir, paste0(.y, ".", .x)) %>% 
+      sanitize_path()
+  })
+
+  if (length(ext) < length(prefix)){
+    files %>%
+      purrr::set_names(prefix) %>%
+      return()
+  } else {
+    files %>%
+      purrr::set_names(ext) %>%
+      return()
+  }
+
+}
+
+#' Creates list of paths by file extension & checks they exist
+#'
+#' Ext or prefix can be a vector or single character. The shorter value will be
+#' propagated across all values of the other. See Examples for details.
+#'
+#' @param ext vector of file extensions
+#' @param prefix name of file prefix for each extension.
+#' @param outdir directory the files will be inside
+#'
+#' @return vector of valid file paths
+#' @export
+#'
+#' @importFrom magrittr %T>%
+#'
+#' @examples
+#' \dontrun{
+#' # Checks many file types of same prefix
+#' # ie myFile.txt, myFile.html, myFile.xml
+#' check_outputs(c("txt", "html", "xml"), "myFile")
+#' # Checks many files of same type
+#' # ie myFile1.txt, myFile2.txt, myFile3.txt
+#' check_outputs("txt", c("myFile1", "myFile2", "myFile3"))
+#' }
+#'
+#' 
+check_outputs <- function(ext, prefix, outdir = "."){
+  expected_outputs(ext, prefix, outdir) %T>%
+    check_files_exist()
+}

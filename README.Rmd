@@ -313,6 +313,22 @@ myFunction(arg1 = "foo", arg2 = "bar")
 myFunction(arg1 = "foo", arg2 = "baz")
 ```
 
+## Expecting output files
+Sometimes a commandline function returns multiple output files you want to check for after the run.
+
+`check_files_exist` accepts a vector or list of files & checks that they exist.
+
+`dotargs` additionally provides a few convenience functions for generating lists
+of expected files. `expected_outputs` generates combinations of extension/prefix
+file names. The output can be passed to `check_files_exist` which will error if
+a file isn't found on the filesystem.
+```{r}
+expected_outputs(ext = c("txt", "xml"), prefix = "outFile")
+```
+
+```{r}
+expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
+```
 
 ## Unsafe operations
 
