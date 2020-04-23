@@ -151,12 +151,14 @@ argsToFlags <- function(args, flag_lookup = NULL){
   check_args_contain_illegal_flags(args)
 
   args %<>% 
+    # NULL flags should be removed
+    drop_list_NULL() %>% 
+    # NA flags should be removed
+    purrr::discard(~{all(is.na(.x))}) %>% 
     # collapse logicals, T = include, replace for empty string
     true_to_empty() %>% 
     # only FALSE logicals remain, so they are dropped
     drop_list_logicals() %>% 
-    # NULL flags should be removed
-    drop_list_NULL() %>% 
     # Remove anything with empty names (happens )
     drop_list_by_name("")
   
@@ -165,6 +167,8 @@ argsToFlags <- function(args, flag_lookup = NULL){
     purrr::set_names(concatenate_args(flag_lookup)) %>% 
     find_multimatched_args() %>% 
     purrr::walk(warn_multimatched_arg)
+  
+  if (length(args) == 0) {return(NULL)}
 
   return(args)
 }

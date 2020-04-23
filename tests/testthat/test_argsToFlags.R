@@ -1,8 +1,13 @@
 library(dotargs)
 ## TODO: format tests inside test_that()
 
+
 # test empty list
 expect_equal(argsToFlags(list()), NULL)
+# test named but NULL
+expect_equal(argsToFlags(list("test" = NULL)), NULL)
+# test NA values
+expect_equal(argsToFlags(list("arg" = NA)), NULL)
 
 # Test list vs vec
 expect_success(argsToFlags(list("a" = 1)))
