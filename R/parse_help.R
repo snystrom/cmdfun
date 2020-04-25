@@ -42,13 +42,15 @@ get_help_flag_names <- function(help_lines, processx = FALSE){
   # drop leading whitespace
   flag_lines <- gsub("^ +", "", help_lines) 
   # grab lines beginning with flag prefix
-  flag_lines <- grep("^-", flag_lines, value = T)
+  flag_lines <- grep("^-{1,2}[^-]", flag_lines, value = T)
   # remove flag prefix
   flag_lines <- gsub("^-+", "", flag_lines)
   # remove leading whitespace
   # in case help file uses an unusual prefix
   # I've seen this for some windows CMD help pages.
   flag_lines <- gsub("^ +", "", flag_lines)
+  # Drop empty lines
+  flag_lines <- gsub("^$", "", flag_lines)
 
   flag_names <- strsplit(flag_lines, " ") %>%
     purrr::map_chr(~{
