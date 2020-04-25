@@ -29,3 +29,9 @@ test_that("Parsing Help Works", {
   expect_equal(get_help_flag_names(processxLines, processx = TRUE), c("version", "e", "outdir"))
 })
 
+test_that("Suggestion Error behaves correctly",{
+  # No error if no suggestions
+  expect_null(error_suggest_flag_names(NULL))
+  expect_error(error_suggest_flag_names(c("tst" = "test")), "Did you mean", class = "error")
+  expect_error(error_suggest_flag_names(c("tst" = "test")), class = "usethis_error")
+})
