@@ -16,7 +16,8 @@ Imports:
   purrr,
   R.utils,
   rlang,
-  testthat
+  testthat,
+  usethis
 RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests: 
