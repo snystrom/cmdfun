@@ -145,6 +145,6 @@ error_suggest_flag_names <- function(suggest_names){
                          quote_name(names(suggest_names)), 
                          sep = " instead of: ", 
                          collapse = "\n")
-  stop(paste0("\nInvalid flags. Did you mean:\n", suggestString))
+  usethis::ui_stop(paste0("\nInvalid flags. Did you mean:\n", suggestString))
 }
 
