@@ -330,6 +330,35 @@ expected_outputs(ext = c("txt", "xml"), prefix = "outFile")
 expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 ```
 
+## Error checking user input
+
+When using `dotargs` to write lazy shell wrappers, the user can easily mistype a
+commandline flag since there is not text completion. Some programs behave
+unexpectedly when flags are typed incorrectly, and for this reason return
+uninformative error messages. `dotargs` has built-in methods to automatically
+populate a list of valid flags from a command's help-text.
+
+Alternatively, package builders could pass a vector of allowed flag names to
+check against if they didn't want to parse help text. The goal is maximum flexibility.
+
+The following example demonstrates how to parse help text (in this case from
+`tar`) into a vector of allowed flags. This vector is compared to the user-input
+flags (`user_input_flags` below), and tries to identify misspelled function
+arguments.
+
+Here, the user has accidentally used the argument `delte` instead of `delete`.
+`dotargs` tries to be helpful and identify the misspelling for the user.
+```{r, error=T}
+user_input_flags <- c("delte")
+
+system2("tar", "--help", stdout = T) %>% 
+  get_help_flag_names() %>% 
+  gsub(",", "", .) %>% 
+  suggest_flag_names(user_input_flags) %>% 
+  error_suggest_flag_names()
+```
+
+
 ## Unsafe operations
 
 **WARNING:** It's still possible to do unsafe operations as follows, so please be careful how you build system calls.

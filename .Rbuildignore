@@ -7,3 +7,4 @@ runSingularity.sh
 todo
 call_stack_blogpost.Rmd
 scratch.R
+vignettes/

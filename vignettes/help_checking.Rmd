@@ -1,0 +1,109 @@
+---
+title: "Checking valid arguments"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{help_checking}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dotargs)
+```
+
+Methods to get help lines into R. Examples with processx and system2 (I suggest `processx` because it's handling is better, although it needs more steps)
+```{r}
+# with processx
+o <- processx::run("tar", "--help", error_on_status = FALSE)
+fn_flags <- get_help_flag_names(o$stdout, processx = TRUE)
+
+# with system2
+lines <- system2("tar", "--help", stdout = T) 
+fn_flags <- get_help_flag_names(lines)
+fn_flags %>% 
+  gsub(",", "", .) %>% 
+  gsub("=.+", "", .) %>% 
+  gsub("\\[", "", .) %>% 
+  unique
+```
+
+```{r}
+tar <- function(...){
+  getDotArgs() %>% 
+    argsToFlags()
+}
+
+tar_withCheck <- function(...){
+  tarHelp <- system2("tar", "--help", stdout = T) 
+  tarflags <- get_help_flag_names(tarHelp)
+  
+  inputFlags <- getDotArgs() %>% 
+    argsToFlags() %>% 
+    purrr::set_names(~{gsub("_", "-", .)})
+  
+  # check that inputs are valid
+  suggest_flag_names(tarflags, inputFlags, ~{gsub("-", "_", .)}) %>% 
+    error_suggest_flag_names()
+}
+
+tar_withCheck(utz = "value", exclude_caces = TRUE)
+```
+
+help checking is expensive (relative to not doing it), so it makes sense to only do it if there's an error. 
+
+We can write a simple function to check 
+```{r}
+check_tar_flags <- function(check_flags){
+  tarhelp_out <- processx::run("tar", "--help", error_on_status = F)
+  
+  get_help_flag_names(tarhelp_out$stdout, processx = TRUE) %>% 
+    suggest_flag_names(check_flags, ~{
+      gsub("-", "_", .) %>% 
+        gsub(",", "", .)
+      }) %>% 
+    error_suggest_flag_names()
+}
+```
+```{r}
+check_tar_flags(list("utc" = 1, "utz" = 2))
+```
+
+This is where `processx` shines, but error checking can be done using `system2`
+as well. We catch errors by checking the exit status, where non-zero exit status
+is considered an error.
+```{r}
+tar_withCheck <- function(file, ...){
+  
+  inputFlags <- getDotArgs() %>% 
+    argsToFlags() %>% 
+    purrr::set_names(~{gsub("_", "-", .)})
+  
+  flags <- inputFlags %>% 
+    crystallize_flags()
+  
+  flags <- c(flags, file)
+  ps_out <- processx::run("tar", flags, error_on_status = F)
+  
+  if (ps_out$status != 0){
+    # Print stdout & stderr to user
+    message(ps_out$stdout)
+    message(ps_out$stderror)
+    # Suggest flags
+    check_tar_flags(inputFlags)
+  }
+  
+}
+```
+
+
+```{r}
+tar_withCheck("test.txt", uts = "value") 
+```
+
