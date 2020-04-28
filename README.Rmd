@@ -232,36 +232,38 @@ List all utility paths (but don't check if they're valid). Useful for writing us
 ```{r}
 handle_meme_path(util = TRUE)
 ```
+`dotargs` provides a preexisting utility for this, however. The `check_install`
+function can be lightly wrapped by package builders to verify and print a
+user-friendly series of checks for a valid tool install. it takes as input the
+output of `build_package_handler` and an optional user-override `path`.
+
+Here I build a function for checking a users `meme` install.
 ```{r}
 check_meme_install <- function(path = NULL){
-  message("checking main install")
-  
-  x <- try(handle_meme_path(path = path) %>% ui_file_exists(), silent = TRUE)
-  
-  
-  if (class(x) == "try-error") {
-    ui_file_exists(path)
-    return(invisible(NULL))
-    }
-  
-  
-  message("checking util installs")
-  handle_meme_path(path = path, util = T) %>% 
-    purrr::walk(ui_file_exists)
-  
-  return(invisible(NULL))
+  check_install(handle_meme_path, path = path)
 }
 ```
 
 
 ```{r}
+# searches default meme search locations
 check_meme_install()
 ```
 
 
 ```{r}
+# uses user override
 check_meme_install('bad/path')
 ```
+
+If you want to write your own install checker instead of using the
+`check_install` function, `dotargs` also provides the `ui_file_exists` function
+for printing pretty status messages.
+```{r}
+ui_file_exists("bad/file")
+ui_file_exists("~/meme/bin")
+```
+
 
 ## Bringing it all together
 Using a `get*Args()` family function to get and convert function arguments to

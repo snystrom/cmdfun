@@ -293,3 +293,41 @@ ui_file_exists <- function(file){
   }
   return(invisible(NULL))
 }
+
+
+#' Wrapper function for checking an install
+#' 
+#' This function can be lightly wrapped by package builders to build a user-friendly install checking function.
+#'
+#' @param path_handler `function` output of `build_path_handler()`
+#' @param path user-override path to check (identical to `path` argument of `build_path_handler()` output)
+#'
+#' @return pretty printed message indicating whether files exits or not. Green check = Yes, red X = No.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' 
+#' check_install()
+#' }
+check_install <- function(path_handler, path = NULL){
+  if (!is.function(path_handler)) {
+    stop("path_handler must be a function")
+  }
+  message("checking main install")
+  
+  x <- try(path_handler(path = path) %>% ui_file_exists(), silent = TRUE)
+  
+  
+  if (class(x) == "try-error") {
+    ui_file_exists(path)
+    return(invisible(NULL))
+    }
+  
+  
+  message("checking util installs")
+  path_handler(path = path, util = T) %>% 
+    purrr::walk(ui_file_exists)
+  
+  return(invisible(NULL))
+}

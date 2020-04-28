@@ -137,11 +137,11 @@ shell_ls("R")
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 40"                                                                 
+    ## [1] "total 44"                                                                 
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7517 Apr 28 16:32 utils.R"         
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 8539 Apr 28 17:46 utils.R"         
     ## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
@@ -163,11 +163,11 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 40"                                                                 
+    ## [1] "total 44"                                                                 
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  
     ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        
     ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7517 Apr 28 16:32 utils.R"         
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 8539 Apr 28 17:46 utils.R"         
     ## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
 
 ``` r
@@ -303,28 +303,22 @@ handle_meme_path(util = TRUE)
     ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
     ## [2] "/nas/longleaf/home/snystrom/meme/bin/ame"
 
+`dotargs` provides a preexisting utility for this, however. The
+`check_install` function can be lightly wrapped by package builders to
+verify and print a user-friendly series of checks for a valid tool
+install. it takes as input the output of `build_package_handler` and an
+optional user-override `path`.
+
+Here I build a function for checking a users `meme` install.
+
 ``` r
 check_meme_install <- function(path = NULL){
-  message("checking main install")
-  
-  x <- try(handle_meme_path(path = path) %>% ui_file_exists(), silent = TRUE)
-  
-  
-  if (class(x) == "try-error") {
-    ui_file_exists(path)
-    return(invisible(NULL))
-    }
-  
-  
-  message("checking util installs")
-  handle_meme_path(path = path, util = T) %>% 
-    purrr::walk(ui_file_exists)
-  
-  return(invisible(NULL))
+  check_install(handle_meme_path, path = path)
 }
 ```
 
 ``` r
+# searches default meme search locations
 check_meme_install()
 ```
 
@@ -338,12 +332,29 @@ check_meme_install()
     ## ✔ /nas/longleaf/home/snystrom/meme/bin/ame
 
 ``` r
+# uses user override
 check_meme_install('bad/path')
 ```
 
     ## checking main install
 
     ## ✖ bad/path
+
+If you want to write your own install checker instead of using the
+`check_install` function, `dotargs` also provides the `ui_file_exists`
+function for printing pretty status messages.
+
+``` r
+ui_file_exists("bad/file")
+```
+
+    ## ✖ bad/file
+
+``` r
+ui_file_exists("~/meme/bin")
+```
+
+    ## ✔ ~/meme/bin
 
 ## Bringing it all together
 

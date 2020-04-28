@@ -3,6 +3,7 @@
 export(argsToFlags)
 export(build_path_handler)
 export(check_files_exist)
+export(check_install)
 export(check_outputs)
 export(check_valid_command_path)
 export(check_valid_util)
