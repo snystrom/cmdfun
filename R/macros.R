@@ -28,7 +28,7 @@
 #' @param default_path default install path of target. Can contain shell
 #'   specials like "~" which will be expanded at runtime (as opposed to build time of the handler).
 #' @param utils optional character vector containing names of valid utils inside
-#'   target path, used to populate error checking for valid install
+#'   target path, used to populate error checking for valid install. 
 #' 
 #' @return function that returns a valid path to tool or optional utility.
 #' 
@@ -37,7 +37,9 @@
 #' invalid, this will always throw an error and not search the defined defaults.
 #' 
 #' util must be found within the target path, but does not have to be present in
-#' the original "utils" call. The user will be warned if this is the case.
+#' the original "utils" call. The user will be warned if this is the case. If
+#' `util` is set to `TRUE` will return all paths to utilities without checking
+#' the install. This can be used for writing user-facing install checkers.
 #' 
 #' 
 #' @export
@@ -114,6 +116,9 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
     if (!is.null(util)) {
       if (is.null(utils)){
         stop("this function has no defined utils")
+      }
+      if (util == TRUE){
+        return(file.path(fullPath, utils))
       }
       utilPath <- check_valid_util(util, utils, fullPath)
       return(utilPath)

@@ -228,6 +228,41 @@ throw an error if the utility is not found in any of the specified locations.
 handle_meme_path(util = "dreme")
 ```
 
+List all utility paths (but don't check if they're valid). Useful for writing user-facing install checking functions.
+```{r}
+handle_meme_path(util = TRUE)
+```
+```{r}
+check_meme_install <- function(path = NULL){
+  message("checking main install")
+  
+  x <- try(handle_meme_path(path = path) %>% ui_file_exists(), silent = TRUE)
+  
+  
+  if (class(x) == "try-error") {
+    ui_file_exists(path)
+    return(invisible(NULL))
+    }
+  
+  
+  message("checking util installs")
+  handle_meme_path(path = path, util = T) %>% 
+    purrr::walk(ui_file_exists)
+  
+  return(invisible(NULL))
+}
+```
+
+
+```{r}
+check_meme_install()
+```
+
+
+```{r}
+check_meme_install('bad/path')
+```
+
 ## Bringing it all together
 Using a `get*Args()` family function to get and convert function arguments to
 commandline flags. The path handler returns the correct `command` call which can

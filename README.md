@@ -130,17 +130,19 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("R")
 ```
 
-    ## [1] "dots_to_args.R"   "macros.R"         "utils_internal.R" "utils.R"
+    ## [1] "dots_to_args.R"   "macros.R"         "parse_help.R"     "utils.R"         
+    ## [5] "utils_internal.R"
 
 ``` r
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 32"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7348 Apr  9 16:26 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7161 Apr  9 15:19 utils.R"
+    ## [1] "total 40"                                                                 
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7517 Apr 28 16:32 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -161,11 +163,12 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 32"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7348 Apr  9 16:26 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7635 Apr  4 18:21 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7161 Apr  9 15:19 utils.R"
+    ## [1] "total 40"                                                                 
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 7517 Apr 28 16:32 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -289,6 +292,58 @@ handle_meme_path(util = "dreme")
 ```
 
     ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
+
+List all utility paths (but don’t check if they’re valid). Useful for
+writing user-facing install checking functions.
+
+``` r
+handle_meme_path(util = TRUE)
+```
+
+    ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
+    ## [2] "/nas/longleaf/home/snystrom/meme/bin/ame"
+
+``` r
+check_meme_install <- function(path = NULL){
+  message("checking main install")
+  
+  x <- try(handle_meme_path(path = path) %>% ui_file_exists(), silent = TRUE)
+  
+  
+  if (class(x) == "try-error") {
+    ui_file_exists(path)
+    return(invisible(NULL))
+    }
+  
+  
+  message("checking util installs")
+  handle_meme_path(path = path, util = T) %>% 
+    purrr::walk(ui_file_exists)
+  
+  return(invisible(NULL))
+}
+```
+
+``` r
+check_meme_install()
+```
+
+    ## checking main install
+
+    ## ✔ /nas/longleaf/home/snystrom/meme/bin
+
+    ## checking util installs
+
+    ## ✔ /nas/longleaf/home/snystrom/meme/bin/dreme
+    ## ✔ /nas/longleaf/home/snystrom/meme/bin/ame
+
+``` r
+check_meme_install('bad/path')
+```
+
+    ## checking main install
+
+    ## ✖ bad/path
 
 ## Bringing it all together
 
@@ -434,6 +489,41 @@ expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
     ## 
     ## $outFile3
     ## [1] "./outFile3.txt"
+
+## Error checking user input
+
+When using `dotargs` to write lazy shell wrappers, the user can easily
+mistype a commandline flag since there is not text completion. Some
+programs behave unexpectedly when flags are typed incorrectly, and for
+this reason return uninformative error messages. `dotargs` has built-in
+methods to automatically populate a list of valid flags from a command’s
+help-text.
+
+Alternatively, package builders could pass a vector of allowed flag
+names to check against if they didn’t want to parse help text. The goal
+is maximum flexibility.
+
+The following example demonstrates how to parse help text (in this case
+from `tar`) into a vector of allowed flags. This vector is compared to
+the user-input flags (`user_input_flags` below), and tries to identify
+misspelled function arguments.
+
+Here, the user has accidentally used the argument `delte` instead of
+`delete`. `dotargs` tries to be helpful and identify the misspelling for
+the user.
+
+``` r
+user_input_flags <- c("delte")
+
+system2("tar", "--help", stdout = T) %>% 
+  get_help_flag_names() %>% 
+  gsub(",", "", .) %>% 
+  suggest_flag_names(user_input_flags) %>% 
+  error_suggest_flag_names()
+```
+
+    ## Error: Invalid flags. Did you mean:
+    ## "delete" instead of: "delte"
 
 ## Unsafe operations
 

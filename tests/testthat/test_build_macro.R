@@ -121,6 +121,17 @@ test_that("Util warnings work", {
   expect_error(check_valid_util(util = "tool4", utils = c(myUtils, "tool4"), path = base_path), "invalid path to supported")
 })
 
+test_that("util listing works", {
+  check_build <- build_path_handler(environment_var = NULL, 
+                                   option_name = NULL, 
+                                   default_path = base_path,
+                                   utils = myUtils)
+  valid_utils <- check_paths[2:3]
+  names(valid_utils) <- NULL
+  expect_equal(check_build(util = TRUE), valid_utils)
+})
+
+
 teardown({
   # Cleanup temp dir & files
   cleanup_valid_path(check_paths)

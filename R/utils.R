@@ -274,3 +274,22 @@ check_outputs <- function(ext, prefix, outdir = "."){
   expected_outputs(ext, prefix, outdir) %T>%
     check_files_exist()
 }
+
+
+#' Checks if file exists, returns pretty status message
+#'
+#' @param file path to file
+#'
+#' @return ui_done or ui_oops printed to terminal.
+#' @export
+#'
+#' @examples
+#' ui_file_exists("/path/to/file.txt")
+ui_file_exists <- function(file){
+  if (file.exists(file)) {
+    usethis::ui_done(file)
+  } else {
+    usethis::ui_oops(file)
+  }
+  return(invisible(NULL))
+}

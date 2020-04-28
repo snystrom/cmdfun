@@ -20,7 +20,7 @@ build_path_handler(
 specials like "~" which will be expanded at runtime (as opposed to build time of the handler).}
 
 \item{utils}{optional character vector containing names of valid utils inside
-target path, used to populate error checking for valid install}
+target path, used to populate error checking for valid install.}
 }
 \value{
 function that returns a valid path to tool or optional utility.
@@ -30,7 +30,9 @@ is a user override path for the supported tool. If the user-defined path is
 invalid, this will always throw an error and not search the defined defaults.
 
 util must be found within the target path, but does not have to be present in
-the original "utils" call. The user will be warned if this is the case.
+the original "utils" call. The user will be warned if this is the case. If
+\code{util} is set to \code{TRUE} will return all paths to utilities without checking
+the install. This can be used for writing user-facing install checkers.
 }
 \description{
 A common pattern in designing shell interfaces is to ask the user to give an
