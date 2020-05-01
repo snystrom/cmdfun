@@ -6,6 +6,9 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r}
+knitr::opts_chunk$set(eval = F)
+```
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(

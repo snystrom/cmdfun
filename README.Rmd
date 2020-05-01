@@ -299,6 +299,8 @@ Commands can now run through `runDreme` by passing flags as function arguments.
 runDreme(h = T)
 ```
 
+If users have issues with the install, they can run `check_meme_install()` to verify the tools are being detected by R.
+
 ## Restrict argument matching
 each `get*Args` family function accepts a character vector of names to `keep` or
 `drop` arguments which will restrict command argument matches to values in
