@@ -326,7 +326,7 @@ check_install <- function(path_handler, path = NULL){
   
   
   message("checking util installs")
-  path_handler(path = path, util = T) %>% 
+  path_handler(path = path, util = TRUE) %>% 
     purrr::walk(ui_file_exists)
   
   return(invisible(NULL))
