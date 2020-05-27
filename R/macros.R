@@ -131,6 +131,42 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
   return(return_valid_path)
 }
 
+#' Macro for constructing boolean check for valid path
+#' 
+#' @param path_handler function output of `build_path_handler()` **NOTE:** When
+#'   passing the function, do not pass as: `fun()`, but `fun` to avoid evaluation.
+#'
+#' @return a function returning TRUE or FALSE if a valid install is detected.
+#' 
+#' @export
+#'
+#' @examples
+#' handle <- build_path_handler(option_name = "meme_bin", default_path = "~/meme/bin")
+#' valid_install <- build_is_valid_install(handle)
+#' # Returns TRUE is "~/meme/bin/" exists
+#' valid_install()
+#' # Returns FALSE if "bad/path/" doesn't exist
+#' valid_install("bad/path/")
+#' 
+#' # Also works with options
+#' handle_option_only <- build_path_handler(option_name = "meme_bin")
+#' valid_install2 <- build_is_valid_install(handle_option_only)
+#' options(meme_bin = "~/meme/bin/")
+#' valid_install2()
+build_is_valid_install <- function(path_handler){
+  is_valid <- function(path = NULL){
+    x <- tryCatch(path_handler(path = path),
+             error = function(e) return(FALSE))
+    if (is.character(x)){
+      return(TRUE)
+    } 
+    
+    if (!x){
+      return(FALSE)
+    }
+  }
+}
+
 #' Checks for valid members of subdirectory
 #' 
 #' Not meant to be called directly
