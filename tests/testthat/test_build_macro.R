@@ -131,6 +131,25 @@ test_that("util listing works", {
   expect_equal(check_build(util = TRUE), valid_utils)
 })
 
+test_that("is_valid_install behaves correctly", {
+  check_build_good <- build_path_handler(environment_var = NULL, 
+                                   option_name = NULL, 
+                                   default_path = base_path,
+                                   utils = myUtils)
+  
+  is_valid <- build_is_valid_install(check_build_good)
+  is_valid_util <- build_is_valid_install(check_build_good, util = myUtils[1])
+  is_valid_util_bad <- build_is_valid_install(is_valid_good, util = 'bad_tool')
+  
+  expect_true(is_valid())
+  expect_true(is_valid_util())
+  expect_false(is_valid_util_bad())
+  
+  expect_false(is_valid('bad/path'))
+  expect_false(is_valid_util('bad/path'))
+  expect_false(is_valid_util_bad('bad/path'))
+  
+})
 
 teardown({
   # Cleanup temp dir & files
