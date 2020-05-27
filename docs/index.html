@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dotargs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9001</span>
       </span>
     </div>
 
@@ -156,12 +156,12 @@
 <div class="sourceCode" id="cb15"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">## [1] "dots_to_args.R"   "macros.R"         "parse_help.R"     "utils.R"         </span></a>
 <a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co">## [5] "utils_internal.R"</span></a></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="r"><span class="fu">shell_ls</span>(<span class="st">"R"</span>, <span class="kw">l</span> <span class="kw">=</span> <span class="no">T</span>)</pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">## [1] "total 44"                                                                 </span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  </span></a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        </span></a>
-<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    </span></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">## [5] "-rw-r--r-- 1 snystrom its_employee_psx 8539 Apr 28 17:46 utils.R"         </span></a>
-<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"</span></a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">## [1] "total 48"                                                                  </span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  7467 Apr 23 09:49 dots_to_args.R"  </span></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10323 May 27 11:11 macros.R"        </span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5783 Apr 25 11:10 parse_help.R"    </span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">## [5] "-rw-r--r-- 1 snystrom its_employee_psx  8542 May 27 09:54 utils.R"         </span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7428 Apr  8 15:59 utils_internal.R"</span></a></code></pre></div>
 </div>
 <div id="named-vectors-can-be-used-to-provide-user-friendly-aliases-for-single-letter-flags" class="section level3">
 <h3 class="hasAnchor">
@@ -177,12 +177,12 @@
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">dir</span>, <span class="no">flags</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
 }</pre></div>
 <div class="sourceCode" id="cb19"><pre class="r"><span class="fu">shell_ls_alias</span>(<span class="st">"R"</span>, <span class="kw">long</span> <span class="kw">=</span> <span class="no">T</span>)</pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">## [1] "total 44"                                                                 </span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  </span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        </span></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    </span></a>
-<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">## [5] "-rw-r--r-- 1 snystrom its_employee_psx 8539 Apr 28 17:46 utils.R"         </span></a>
-<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"</span></a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">## [1] "total 48"                                                                  </span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  7467 Apr 23 09:49 dots_to_args.R"  </span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10323 May 27 11:11 macros.R"        </span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5783 Apr 25 11:10 parse_help.R"    </span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">## [5] "-rw-r--r-- 1 snystrom its_employee_psx  8542 May 27 09:54 utils.R"         </span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7428 Apr  8 15:59 utils_internal.R"</span></a></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="r"><span class="no">shellCut_alias</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
 
   <span class="no">argsDict</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sep"</span> <span class="kw">=</span> <span class="st">"d"</span>,
@@ -268,6 +268,18 @@
 <div class="sourceCode" id="cb48"><pre class="r"><span class="fu"><a href="reference/ui_file_exists.html">ui_file_exists</a></span>(<span class="st">"~/meme/bin"</span>)</pre></div>
 <div class="sourceCode" id="cb49"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="co">## ✔ ~/meme/bin</span></a></code></pre></div>
 </div>
+<div id="internal-install-validators" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-install-validators" class="anchor"></a>Internal install validators</h3>
+<p><code>dotargs</code> also provides a macro <code><a href="reference/build_is_valid_install.html">build_is_valid_install()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="reference/build_is_valid_install.html">build_is_valid_install()</a></code> takes a path handler function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
+<div class="sourceCode" id="cb50"><pre class="r"><span class="no">meme_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/build_is_valid_install.html">build_is_valid_install</a></span>(<span class="no">handle_meme_path</span>)
+<span class="fu">meme_installed</span>()</pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co">## [1] TRUE</span></a></code></pre></div>
+<p>This also works on utils defined during path hanlder construction.</p>
+<div class="sourceCode" id="cb52"><pre class="r"><span class="no">ame_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/build_is_valid_install.html">build_is_valid_install</a></span>(<span class="no">handle_meme_path</span>, <span class="kw">util</span> <span class="kw">=</span> <span class="st">"ame"</span>)
+<span class="fu">ame_installed</span>()</pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="co">## [1] TRUE</span></a></code></pre></div>
+</div>
 </div>
 <div id="bringing-it-all-together" class="section level2">
 <h2 class="hasAnchor">
@@ -275,7 +287,7 @@
 <p>Using a <code>get*Args()</code> family function to get and convert function arguments to commandline flags. The path handler returns the correct <code>command</code> call which can be passed to <code>system2</code> or <code>processx</code> along with the flags generated from <code>argsToFlags</code>.</p>
 <p>This makes for a robust shell wrapper without excess overhead.</p>
 <p>In the <code>runDreme</code> function below, the user can pass any valid <code>dreme</code> argument using the rules for command args defined above to <code>...</code>. Allowing <code>meme_path</code> as a function argument and passing it to <code>handle_meme_path</code> allows the user to override the default search path which is: <code>MEME_PATH</code> environment variable, followed by the <code>~/meme/bin</code> default install.</p>
-<div class="sourceCode" id="cb50"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/build_path_handler.html">build_path_handler</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<div class="sourceCode" id="cb54"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/build_path_handler.html">build_path_handler</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>,
                                        <span class="kw">utils</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dreme"</span>, <span class="st">"ame"</span>))
 
@@ -289,14 +301,15 @@
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="no">command</span>, <span class="no">flags</span>)
 }</pre></div>
 <p>Commands can now run through <code>runDreme</code> by passing flags as function arguments.</p>
-<div class="sourceCode" id="cb51"><pre class="r"><span class="fu">runDreme</span>(<span class="kw">h</span> <span class="kw">=</span> <span class="no">T</span>)</pre></div>
+<div class="sourceCode" id="cb55"><pre class="r"><span class="fu">runDreme</span>(<span class="kw">h</span> <span class="kw">=</span> <span class="no">T</span>)</pre></div>
+<p>If users have issues with the install, they can run <code>check_meme_install()</code> to verify the tools are being detected by R.</p>
 </div>
 <div id="restrict-argument-matching" class="section level2">
 <h2 class="hasAnchor">
 <a href="#restrict-argument-matching" class="anchor"></a>Restrict argument matching</h2>
 <p>each <code>get*Args</code> family function accepts a character vector of names to <code>keep</code> or <code>drop</code> arguments which will restrict command argument matches to values in <code>keep</code> (or ignore those in <code>drop</code>). As of now, <code>keep</code> and <code>drop</code> are mutually exclusive.</p>
 <p>This can be useful to allow only some function arguments to be captured as flags, while others can be used for function logic.</p>
-<div class="sourceCode" id="cb52"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">print</span> <span class="kw">=</span> <span class="no">T</span>){
+<div class="sourceCode" id="cb56"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">print</span> <span class="kw">=</span> <span class="no">T</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/getNamedArgs.html">getNamedArgs</a></span>(<span class="kw">keep</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"arg1"</span>, <span class="st">"arg2"</span>)) <span class="kw">%&gt;%</span>
     <span class="fu"><a href="reference/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="reference/crystallize_flags.html">crystallize_flags</a></span>()
@@ -307,13 +320,13 @@
 }
 
 <span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"blah"</span>)</pre></div>
-<div class="sourceCode" id="cb53"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="co">## [1] "printing"</span></a>
-<a class="sourceLine" id="cb53-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb53-3" data-line-number="3"><span class="co">## [1] "-arg1" "blah"  "-arg2" "blah"</span></a></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="r"><span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="no">F</span>)</pre></div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="co">## [1] "nothing"</span></a>
-<a class="sourceLine" id="cb55-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb55-3" data-line-number="3"><span class="co">## [1] "-arg1" "blah"  "-arg2" "blah"</span></a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1"><span class="co">## [1] "printing"</span></a>
+<a class="sourceLine" id="cb57-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb57-3" data-line-number="3"><span class="co">## [1] "-arg1" "blah"  "-arg2" "blah"</span></a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="r"><span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="no">F</span>)</pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1"><span class="co">## [1] "nothing"</span></a>
+<a class="sourceLine" id="cb59-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb59-3" data-line-number="3"><span class="co">## [1] "-arg1" "blah"  "-arg2" "blah"</span></a></code></pre></div>
 </div>
 <div id="manupulating-flag-list-objects" class="section level2">
 <h2 class="hasAnchor">
@@ -321,7 +334,7 @@
 <p>For the most part, the <a href="https://purrr.tidyverse.org/">purrr</a> library is the most useful toolkit for operations on list objects.</p>
 <p><code>dotargs</code> provides additional helper functions to handle common manipulations.</p>
 <p><code>drop_flags</code> operates on flag lists to drop all entries corresponding to a certain name, or specific name/value pairs. Can be useful for ignoring setting certain flags if the user set them to a specific value.</p>
-<div class="sourceCode" id="cb56"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>){
+<div class="sourceCode" id="cb60"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/getNamedArgs.html">getNamedArgs</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="reference/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="reference/drop_flags.html">drop_flags</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"arg2"</span> <span class="kw">=</span> <span class="st">"baz"</span>)) <span class="kw">%&gt;%</span>
@@ -331,9 +344,9 @@
 }
 
 <span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"foo"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"bar"</span>)</pre></div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1"><span class="co">## [1] "-arg1" "foo"   "-arg2" "bar"</span></a></code></pre></div>
-<div class="sourceCode" id="cb58"><pre class="r"><span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"foo"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"baz"</span>)</pre></div>
-<div class="sourceCode" id="cb59"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1"><span class="co">## [1] "-arg1" "foo"</span></a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co">## [1] "-arg1" "foo"   "-arg2" "bar"</span></a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="r"><span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"foo"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"baz"</span>)</pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="co">## [1] "-arg1" "foo"</span></a></code></pre></div>
 </div>
 <div id="expecting-output-files" class="section level2">
 <h2 class="hasAnchor">
@@ -341,21 +354,21 @@
 <p>Sometimes a commandline function returns multiple output files you want to check for after the run.</p>
 <p><code>check_files_exist</code> accepts a vector or list of files &amp; checks that they exist.</p>
 <p><code>dotargs</code> additionally provides a few convenience functions for generating lists of expected files. <code>expected_outputs</code> generates combinations of extension/prefix file names. The output can be passed to <code>check_files_exist</code> which will error if a file isn’t found on the filesystem.</p>
-<div class="sourceCode" id="cb60"><pre class="r"><span class="fu"><a href="reference/expected_outputs.html">expected_outputs</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)</pre></div>
-<div class="sourceCode" id="cb61"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co">## $txt</span></a>
-<a class="sourceLine" id="cb61-2" data-line-number="2"><span class="co">## [1] "./outFile.txt"</span></a>
-<a class="sourceLine" id="cb61-3" data-line-number="3"><span class="co">## </span></a>
-<a class="sourceLine" id="cb61-4" data-line-number="4"><span class="co">## $xml</span></a>
-<a class="sourceLine" id="cb61-5" data-line-number="5"><span class="co">## [1] "./outFile.xml"</span></a></code></pre></div>
-<div class="sourceCode" id="cb62"><pre class="r"><span class="fu"><a href="reference/expected_outputs.html">expected_outputs</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="st">"txt"</span>, <span class="kw">prefix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"outFile"</span>, <span class="st">"outFile2"</span>, <span class="st">"outFile3"</span>))</pre></div>
-<div class="sourceCode" id="cb63"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="co">## $outFile</span></a>
-<a class="sourceLine" id="cb63-2" data-line-number="2"><span class="co">## [1] "./outFile.txt"</span></a>
-<a class="sourceLine" id="cb63-3" data-line-number="3"><span class="co">## </span></a>
-<a class="sourceLine" id="cb63-4" data-line-number="4"><span class="co">## $outFile2</span></a>
-<a class="sourceLine" id="cb63-5" data-line-number="5"><span class="co">## [1] "./outFile2.txt"</span></a>
-<a class="sourceLine" id="cb63-6" data-line-number="6"><span class="co">## </span></a>
-<a class="sourceLine" id="cb63-7" data-line-number="7"><span class="co">## $outFile3</span></a>
-<a class="sourceLine" id="cb63-8" data-line-number="8"><span class="co">## [1] "./outFile3.txt"</span></a></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="r"><span class="fu"><a href="reference/expected_outputs.html">expected_outputs</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)</pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1"><span class="co">## $txt</span></a>
+<a class="sourceLine" id="cb65-2" data-line-number="2"><span class="co">## [1] "./outFile.txt"</span></a>
+<a class="sourceLine" id="cb65-3" data-line-number="3"><span class="co">## </span></a>
+<a class="sourceLine" id="cb65-4" data-line-number="4"><span class="co">## $xml</span></a>
+<a class="sourceLine" id="cb65-5" data-line-number="5"><span class="co">## [1] "./outFile.xml"</span></a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="r"><span class="fu"><a href="reference/expected_outputs.html">expected_outputs</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="st">"txt"</span>, <span class="kw">prefix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"outFile"</span>, <span class="st">"outFile2"</span>, <span class="st">"outFile3"</span>))</pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1"><span class="co">## $outFile</span></a>
+<a class="sourceLine" id="cb67-2" data-line-number="2"><span class="co">## [1] "./outFile.txt"</span></a>
+<a class="sourceLine" id="cb67-3" data-line-number="3"><span class="co">## </span></a>
+<a class="sourceLine" id="cb67-4" data-line-number="4"><span class="co">## $outFile2</span></a>
+<a class="sourceLine" id="cb67-5" data-line-number="5"><span class="co">## [1] "./outFile2.txt"</span></a>
+<a class="sourceLine" id="cb67-6" data-line-number="6"><span class="co">## </span></a>
+<a class="sourceLine" id="cb67-7" data-line-number="7"><span class="co">## $outFile3</span></a>
+<a class="sourceLine" id="cb67-8" data-line-number="8"><span class="co">## [1] "./outFile3.txt"</span></a></code></pre></div>
 </div>
 <div id="error-checking-user-input" class="section level2">
 <h2 class="hasAnchor">
@@ -364,21 +377,21 @@
 <p>Alternatively, package builders could pass a vector of allowed flag names to check against if they didn’t want to parse help text. The goal is maximum flexibility.</p>
 <p>The following example demonstrates how to parse help text (in this case from <code>tar</code>) into a vector of allowed flags. This vector is compared to the user-input flags (<code>user_input_flags</code> below), and tries to identify misspelled function arguments.</p>
 <p>Here, the user has accidentally used the argument <code>delte</code> instead of <code>delete</code>. <code>dotargs</code> tries to be helpful and identify the misspelling for the user.</p>
-<div class="sourceCode" id="cb64"><pre class="r"><span class="no">user_input_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"delte"</span>)
+<div class="sourceCode" id="cb68"><pre class="r"><span class="no">user_input_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"delte"</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="reference/get_help_flag_names.html">get_help_flag_names</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">","</span>, <span class="st">""</span>, <span class="no">.</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="reference/suggest_flag_names.html">suggest_flag_names</a></span>(<span class="no">user_input_flags</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="reference/error_suggest_flag_names.html">error_suggest_flag_names</a></span>()</pre></div>
-<div class="sourceCode" id="cb65"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1"><span class="co">## Error: Invalid flags. Did you mean:</span></a>
-<a class="sourceLine" id="cb65-2" data-line-number="2"><span class="co">## "delete" instead of: "delte"</span></a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="co">## Error: Invalid flags. Did you mean:</span></a>
+<a class="sourceLine" id="cb69-2" data-line-number="2"><span class="co">## "delete" instead of: "delte"</span></a></code></pre></div>
 </div>
 <div id="unsafe-operations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#unsafe-operations" class="anchor"></a>Unsafe operations</h2>
 <p><strong>WARNING:</strong> It’s still possible to do unsafe operations as follows, so please be careful how you build system calls.</p>
-<div class="sourceCode" id="cb66"><pre class="r"><span class="no">shellCut_unsafe</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
+<div class="sourceCode" id="cb70"><pre class="r"><span class="no">shellCut_unsafe</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="reference/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
@@ -389,11 +402,11 @@
 }
 
 <span class="fu">shellCut_unsafe</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; echo test"</span>)</pre></div>
-<div class="sourceCode" id="cb67"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1"><span class="co">## [1] "world" "test"</span></a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="co">## [1] "world" "test"</span></a></code></pre></div>
 <p><strong>NOTE</strong> even if when setting <code>stdout = TRUE</code> the second command doesn’t appear in the output, it will still have run.</p>
 <p>A more extreme example of what can happen is here, where <code>~/deleteme.txt</code> will be removed silently.</p>
 <p>I promise I’ll get around to sanitizing user input eventually.</p>
-<div class="sourceCode" id="cb68"><pre class="r"><span class="fu">shellCut</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; rm ~/deleteme.txt"</span>)</pre></div>
+<div class="sourceCode" id="cb72"><pre class="r"><span class="fu">shellCut</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; rm ~/deleteme.txt"</span>)</pre></div>
 </div>
 </div>
   </div>

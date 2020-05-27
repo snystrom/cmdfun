@@ -1,7 +1,7 @@
 Package: dotargs
 Type: Package
 Title: Framework for Building R Interfaces to Shell Commands
-Version: 0.0.9000
+Version: 0.0.9001
 Authors@R: person("Spencer", "Nystrom", 
     email = "snystrom@email.unc.edu", 
     role = c("aut", "cre", "cph"),

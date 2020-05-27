@@ -264,6 +264,25 @@ ui_file_exists("bad/file")
 ui_file_exists("~/meme/bin")
 ```
 
+### Internal install validators
+`dotargs` also provides a macro `build_is_valid_install()` to construct
+functions returning boolean values testing for an install path. These are useful
+in function logic, or package development for setting conditional examples or
+function hooks that depend on a command install. `build_is_valid_install()`
+takes a path handler function as input, so any `options`, `.Renviron`, or
+default install location logic propagates to these funtions as well.
+
+```{r}
+meme_installed <- build_is_valid_install(handle_meme_path)
+meme_installed()
+```
+
+This also works on utils defined during path hanlder construction.
+```{r}
+ame_installed <- build_is_valid_install(handle_meme_path, util = "ame")
+ame_installed()
+```
+
 
 ## Bringing it all together
 Using a `get*Args()` family function to get and convert function arguments to

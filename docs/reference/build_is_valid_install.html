@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Suggest alternative name by Levenshtein edit distance — suggest_flag_names • dotargs</title>
+<title>Macro for constructing boolean check for valid path — build_is_valid_install • dotargs</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Suggest alternative name by Levenshtein edit distance — suggest_flag_names" />
-<meta property="og:description" content="Suggest alternative name by Levenshtein edit distance" />
+<meta property="og:title" content="Macro for constructing boolean check for valid path — build_is_valid_install" />
+<meta property="og:description" content="Macro for constructing boolean check for valid path" />
 
 
 
@@ -115,56 +115,56 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Suggest alternative name by Levenshtein edit distance</h1>
+    <h1>Macro for constructing boolean check for valid path</h1>
     
-    <div class="hidden name"><code>suggest_flag_names.Rd</code></div>
+    <div class="hidden name"><code>build_is_valid_install.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Suggest alternative name by Levenshtein edit distance</p>
+    <p>Macro for constructing boolean check for valid path</p>
     </div>
 
-    <pre class="usage"><span class='fu'>suggest_flag_names</span>(<span class='no'>command_flag_names</span>, <span class='no'>flags</span>, <span class='kw'>.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>build_is_valid_install</span>(<span class='no'>path_handler</span>, <span class='kw'>util</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>command_flag_names</th>
-      <td><p>character vector of valid names (can be output of <code><a href='get_help_flag_names.html'>get_help_flag_names</a></code>)</p></td>
+      <th>path_handler</th>
+      <td><p>function output of <code><a href='build_path_handler.html'>build_path_handler()</a></code> <strong>NOTE:</strong> When
+passing the function, do not pass as: <code>fun()</code>, but <code>fun</code> to avoid evaluation.</p></td>
     </tr>
     <tr>
-      <th>flags</th>
-      <td><p>a vector names correspond to values to be checked against <code>command_flag_names</code></p></td>
-    </tr>
-    <tr>
-      <th>.fun</th>
-      <td><p>optional function to apply to <code>command_flag_names</code> and <code>flags</code>
-before checking their values. If using a function to rename flags after
-<code>argsToFlags</code>, use that same function here. Can be useful for parsing help
-lines into R-friendly variable names for user-convenience. Can be function
-or <code>rlang</code>-style formula defintion (ie <code>.fun = ~{foo(.x)}</code> is the same as
-<code>.fun = function(x){foo(x)}</code>). Note: if command_flag_names need additional
-parsing after <code><a href='get_help_flag_names.html'>get_help_flag_names</a></code>, it is best to do that
-preprocessing before passing them to this function.</p></td>
+      <th>util</th>
+      <td><p>value to pass to <code>util</code> argument of <code>path_handler</code>, allows
+building individual functions for each util (if passing one of each),
+or for simultaneously checking all utils if setting <code>util = TRUE</code>. Will
+cause error if <code>util = TRUE</code> but no utils are defined. <strong>NOTE:</strong> There is
+no error checking for whether <code>util</code> is set correctly during the build
+process, so ensure correct spelling, etc. to avoid cryptic failures.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>named vector where names are names from <code>flags</code> and their values are the suggested best match from <code>command_flag_names</code></p>
+    <p>a function returning TRUE or FALSE if a valid install is detected.
+With arguments: <code>path</code> (a path to install location), <code>util</code> an optional <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> to</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># with a flagsList, need to pass names()</span>
-<span class='no'>flagsList</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"output"</span> <span class='kw'>=</span> <span class='st'>"somevalue"</span>, <span class='st'>"missplld"</span> <span class='kw'>=</span> <span class='st'>"anotherValue"</span>)
-<span class='fu'>suggest_flag_names</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"output"</span>, <span class='st'>"misspelled"</span>), <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>flagsList</span>))</div><div class='output co'>#&gt;     missplld 
-#&gt; "misspelled" </div><div class='input'>
-<span class='no'>command_flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"long-flag-name"</span>)
-<span class='no'>flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"long_flag_naee"</span>)
-<span class='fu'>suggest_flag_names</span>(<span class='no'>command_flags</span>, <span class='no'>flags</span>, <span class='kw'>.fun</span> <span class='kw'>=</span> ~{<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span>(<span class='st'>"-"</span>, <span class='st'>"_"</span>, <span class='no'>.x</span>)})</div><div class='output co'>#&gt;   long_flag_naee 
-#&gt; "long_flag_name" </div><div class='input'>
-<span class='co'># returns NULL if no errors</span>
-<span class='fu'>suggest_flag_names</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"test"</span>), <span class='st'>"test"</span>)</div><div class='output co'>#&gt; NULL</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>handle</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='build_path_handler.html'>build_path_handler</a></span>(<span class='kw'>option_name</span> <span class='kw'>=</span> <span class='st'>"meme_bin"</span>, <span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"~/meme/bin"</span>)
+<span class='no'>valid_install</span> <span class='kw'>&lt;-</span> <span class='fu'>build_is_valid_install</span>(<span class='no'>handle</span>)
+<span class='co'># Returns TRUE is "~/meme/bin/" exists</span>
+<span class='fu'>valid_install</span>()</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># Returns FALSE if "bad/path/" doesn't exist</span>
+<span class='fu'>valid_install</span>(<span class='st'>"bad/path/"</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='co'># Also works with options</span>
+<span class='no'>handle_option_only</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='build_path_handler.html'>build_path_handler</a></span>(<span class='kw'>option_name</span> <span class='kw'>=</span> <span class='st'>"meme_bin"</span>)
+<span class='no'>valid_install2</span> <span class='kw'>&lt;-</span> <span class='fu'>build_is_valid_install</span>(<span class='no'>handle_option_only</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='kw'>meme_bin</span> <span class='kw'>=</span> <span class='st'>"~/meme/bin/"</span>)
+<span class='fu'>valid_install2</span>()</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='co'># Setting util = TRUE will check that all utils are also installed</span>
+<span class='no'>handle_with_utils</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='build_path_handler.html'>build_path_handler</a></span>(<span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"~/meme/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ame"</span>, <span class='st'>"fimo"</span>))
+<span class='no'>valid_install_all</span> <span class='kw'>&lt;-</span> <span class='fu'>build_is_valid_install</span>(<span class='no'>handle_with_utils</span>, <span class='kw'>util</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>valid_install_all</span>()</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

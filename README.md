@@ -137,12 +137,12 @@ shell_ls("R")
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 44"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 8539 Apr 28 17:46 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
+    ## [1] "total 48"                                                                  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  7467 Apr 23 09:49 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10323 May 27 11:11 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5783 Apr 25 11:10 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  8542 May 27 09:54 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7428 Apr  8 15:59 utils_internal.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -163,12 +163,12 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 44"                                                                 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx 7467 Apr 23 09:49 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7870 Apr 28 16:17 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx 5783 Apr 25 11:10 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 8539 Apr 28 17:46 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx 7428 Apr  8 15:59 utils_internal.R"
+    ## [1] "total 48"                                                                  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  7467 Apr 23 09:49 dots_to_args.R"  
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10323 May 27 11:11 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5783 Apr 25 11:10 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  8542 May 27 09:54 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7428 Apr  8 15:59 utils_internal.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -356,6 +356,32 @@ ui_file_exists("~/meme/bin")
 
     ## ✔ ~/meme/bin
 
+### Internal install validators
+
+`dotargs` also provides a macro `build_is_valid_install()` to construct
+functions returning boolean values testing for an install path. These
+are useful in function logic, or package development for setting
+conditional examples or function hooks that depend on a command install.
+`build_is_valid_install()` takes a path handler function as input, so
+any `options`, `.Renviron`, or default install location logic propagates
+to these funtions as well.
+
+``` r
+meme_installed <- build_is_valid_install(handle_meme_path)
+meme_installed()
+```
+
+    ## [1] TRUE
+
+This also works on utils defined during path hanlder construction.
+
+``` r
+ame_installed <- build_is_valid_install(handle_meme_path, util = "ame")
+ame_installed()
+```
+
+    ## [1] TRUE
+
 ## Bringing it all together
 
 Using a `get*Args()` family function to get and convert function
@@ -394,6 +420,9 @@ arguments.
 ``` r
 runDreme(h = T)
 ```
+
+If users have issues with the install, they can run
+`check_meme_install()` to verify the tools are being detected by R.
 
 ## Restrict argument matching
 
