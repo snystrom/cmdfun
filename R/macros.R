@@ -135,8 +135,15 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 #' 
 #' @param path_handler function output of `build_path_handler()` **NOTE:** When
 #'   passing the function, do not pass as: `fun()`, but `fun` to avoid evaluation.
+#' @param util value to pass to `util` argument of `path_handler`, allows
+#'   building individual functions for each util (if passing one of each),
+#'   or for simultaneously checking all utils if setting `util = TRUE`. Will
+#'   cause error if `util = TRUE` but no utils are defined. **NOTE:** There is
+#'   no error checking for whether `util` is set correctly during the build
+#'   process, so ensure correct spelling, etc. to avoid cryptic failures.
 #'
 #' @return a function returning TRUE or FALSE if a valid install is detected.
+#'   With arguments: `path` (a path to install location), `util` an optional `character(1)` to 
 #' 
 #' @export
 #'
@@ -153,18 +160,44 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 #' valid_install2 <- build_is_valid_install(handle_option_only)
 #' options(meme_bin = "~/meme/bin/")
 #' valid_install2()
-build_is_valid_install <- function(path_handler){
+#'
+#' # Setting util = TRUE will check that all utils are also installed
+#' handle_with_utils <- build_path_handler(default_path = "~/meme/bin", utils = c("ame", "fimo"))
+#' valid_install_all <- build_is_valid_install(handle_with_utils, util = TRUE)
+#' valid_install_all()
+build_is_valid_install <- function(path_handler, util = NULL){
+  
+  util_check <- !is.null(util)
+  util_true <- FALSE
+  
+  # This looks like bad code, but it's necessary since util can be `NULL`,
+  # `logical(1)`, or a `character(1)`, so can't just use the value of util here.
+  if (util_check){
+    if (util == TRUE){
+      util_true <- TRUE
+    }
+  }
+  
   is_valid <- function(path = NULL){
-    x <- tryCatch(path_handler(path = path),
+    x <- tryCatch(path_handler(path = path, util = util),
              error = function(e) return(FALSE))
-    if (is.character(x)){
+    
+    if (is.character(x) & !util_true){
       return(TRUE)
     } 
+    
+    if (util_true){
+      # util = TRUE will list all utils without checking
+      # so have to check here
+      return(all(file.exists(x)))
+    }
     
     if (!x){
       return(FALSE)
     }
   }
+  
+  return(is_valid)
 }
 
 #' Checks for valid members of subdirectory

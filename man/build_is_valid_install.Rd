@@ -4,14 +4,22 @@
 \alias{build_is_valid_install}
 \title{Macro for constructing boolean check for valid path}
 \usage{
-build_is_valid_install(path_handler)
+build_is_valid_install(path_handler, util = NULL)
 }
 \arguments{
 \item{path_handler}{function output of \code{build_path_handler()} \strong{NOTE:} When
 passing the function, do not pass as: \code{fun()}, but \code{fun} to avoid evaluation.}
+
+\item{util}{value to pass to \code{util} argument of \code{path_handler}, allows
+building individual functions for each util (if passing one of each),
+or for simultaneously checking all utils if setting \code{util = TRUE}. Will
+cause error if \code{util = TRUE} but no utils are defined. \strong{NOTE:} There is
+no error checking for whether \code{util} is set correctly during the build
+process, so ensure correct spelling, etc. to avoid cryptic failures.}
 }
 \value{
 a function returning TRUE or FALSE if a valid install is detected.
+With arguments: \code{path} (a path to install location), \code{util} an optional \code{character(1)} to
 }
 \description{
 Macro for constructing boolean check for valid path
@@ -29,4 +37,9 @@ handle_option_only <- build_path_handler(option_name = "meme_bin")
 valid_install2 <- build_is_valid_install(handle_option_only)
 options(meme_bin = "~/meme/bin/")
 valid_install2()
+
+# Setting util = TRUE will check that all utils are also installed
+handle_with_utils <- build_path_handler(default_path = "~/meme/bin", utils = c("ame", "fimo"))
+valid_install_all <- build_is_valid_install(handle_with_utils, util = TRUE)
+valid_install_all()
 }
