@@ -79,31 +79,6 @@ getNamedArgs <- function(keep = NULL, drop = NULL){
   list_keep_or_drop(args, keep = keep, drop = drop)
 }
 
-#' convert list from get*Args to vector of formatted shell flags
-#'
-#' @param args output from get*Args() family of functions (a named list)
-#' @param flag_lookup optional named vector to convert names from dots to a
-#'   simplified shell flag, useful for providing aliases to single-letter flags
-#' @param prefix flag prefix, usually - or --
-#' @param sep separator to use when passing vector for a single flag. Default:
-#'   ",". sep = NULL will pass each member as a new entry. Other common values could include: " ", or "\\t".
-#'
-#' @return named vector of shell flags followed by their values
-#' @export
-#'
-#' @examples
-#' theFunction <- function(...) { getDotArgs() }
-#' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
-#' theFlags <-  legacy_argsToFlags(theDots)
-legacy_argsToFlags <- function(args, flag_lookup = NULL, prefix = "-", sep = ","){
-  
-  flagList <- argsToFlags(args, flag_lookup = flag_lookup)
-  
-  flags <- crystallize_flags(flagList, prefix = prefix, sep = sep)
-  
-  return(flags)
-}
-
 #' Convert list of function arguments to list of command flags
 #'
 #' Function also handles error checking to ensure args contain valid data types,
