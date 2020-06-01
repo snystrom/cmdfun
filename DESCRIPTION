@@ -1,4 +1,4 @@
-Package: dotargs
+Package: cmdlr
 Type: Package
 Title: Framework for Building R Interfaces to Shell Commands
 Version: 0.0.9001

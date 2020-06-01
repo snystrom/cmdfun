@@ -1,5 +1,5 @@
 ---
-title: "dotargs"
+title: "cmdlr"
 output: github_document
 ---
 
@@ -10,17 +10,17 @@ output: github_document
 
 ## A simple framework for building shell interfaces
 
-The purpose of `dotargs` is to significantly reduce the overhead involved in
+The purpose of `cmdlr` is to significantly reduce the overhead involved in
 wrapping shell programs in R. The tools are intended to be intuitive and
 lightweight enough to use for data scientists trying to get things done quickly,
 but robust and full-fledged enough for developers to extend them to more
 advanced use cases.
 
 ## Vocabulary to describe operations
-Briefly, `dotargs` captures R function arguments (**args**) and converts them to
+Briefly, `cmdlr` captures R function arguments (**args**) and converts them to
 a vector of commandline **flags**. 
 
-The `dotargs` framework provides three
+The `cmdlr` framework provides three
 mechanisms for capturing function arguments:
 
  - `getDotArgs` captures all arguments passed to `...`
@@ -40,13 +40,13 @@ without having to manually implement all commandline flags in R functions.
 
 ## Install
 ```{r, eval=F}
-remotes::install_github("snystrom/dotargs")
+remotes::install_github("snystrom/cmdlr")
 ```
 
 ## Examples
 ```{r}
 library(magrittr)
-library(dotargs)
+library(cmdlr)
 ```
 
 variables defined in `...` are converted to character vector of flags appropriate for shell commands.
@@ -232,7 +232,7 @@ List all utility paths (but don't check if they're valid). Useful for writing us
 ```{r}
 handle_meme_path(util = TRUE)
 ```
-`dotargs` provides a preexisting utility for this, however. The `check_install`
+`cmdlr` provides a preexisting utility for this, however. The `check_install`
 function can be lightly wrapped by package builders to verify and print a
 user-friendly series of checks for a valid tool install. it takes as input the
 output of `build_package_handler` and an optional user-override `path`.
@@ -257,7 +257,7 @@ check_meme_install('bad/path')
 ```
 
 If you want to write your own install checker instead of using the
-`check_install` function, `dotargs` also provides the `ui_file_exists` function
+`check_install` function, `cmdlr` also provides the `ui_file_exists` function
 for printing pretty status messages.
 ```{r}
 ui_file_exists("bad/file")
@@ -265,7 +265,7 @@ ui_file_exists("~/meme/bin")
 ```
 
 ### Internal install validators
-`dotargs` also provides a macro `build_is_valid_install()` to construct
+`cmdlr` also provides a macro `build_is_valid_install()` to construct
 functions returning boolean values testing for an install path. These are useful
 in function logic, or package development for setting conditional examples or
 function hooks that depend on a command install. `build_is_valid_install()`
@@ -352,7 +352,7 @@ myFunction(arg1 = "blah", arg2 = "blah", F)
 For the most part, the [purrr](https://purrr.tidyverse.org/) library is the most
 useful toolkit for operations on list objects.
 
-`dotargs` provides additional helper functions to handle common manipulations.
+`cmdlr` provides additional helper functions to handle common manipulations.
 
 `drop_flags` operates on flag lists to drop all entries corresponding to a
 certain name, or specific name/value pairs. Can be useful for ignoring setting
@@ -376,7 +376,7 @@ Sometimes a commandline function returns multiple output files you want to check
 
 `check_files_exist` accepts a vector or list of files & checks that they exist.
 
-`dotargs` additionally provides a few convenience functions for generating lists
+`cmdlr` additionally provides a few convenience functions for generating lists
 of expected files. `expected_outputs` generates combinations of extension/prefix
 file names. The output can be passed to `check_files_exist` which will error if
 a file isn't found on the filesystem.
@@ -390,10 +390,10 @@ expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 
 ## Error checking user input
 
-When using `dotargs` to write lazy shell wrappers, the user can easily mistype a
+When using `cmdlr` to write lazy shell wrappers, the user can easily mistype a
 commandline flag since there is not text completion. Some programs behave
 unexpectedly when flags are typed incorrectly, and for this reason return
-uninformative error messages. `dotargs` has built-in methods to automatically
+uninformative error messages. `cmdlr` has built-in methods to automatically
 populate a list of valid flags from a command's help-text.
 
 Alternatively, package builders could pass a vector of allowed flag names to
@@ -405,7 +405,7 @@ flags (`user_input_flags` below), and tries to identify misspelled function
 arguments.
 
 Here, the user has accidentally used the argument `delte` instead of `delete`.
-`dotargs` tries to be helpful and identify the misspelling for the user.
+`cmdlr` tries to be helpful and identify the misspelling for the user.
 ```{r, error=T}
 user_input_flags <- c("delte")
 
