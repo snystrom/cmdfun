@@ -8,8 +8,8 @@
 #' @export
 #'
 #' @examples
-#' keep_list_by_name(list("a" = 1, "b" = 2), "a")
-keep_list_by_name <- function(list, names){
+#' cmd_keep_list_by_name(list("a" = 1, "b" = 2), "a")
+cmd_keep_list_by_name <- function(list, names){
   list[(names(list) %in% names)]
 }
 
@@ -284,8 +284,8 @@ cmd_check_outputs <- function(ext, prefix, outdir = "."){
 #' @export
 #'
 #' @examples
-#' ui_file_exists("/path/to/file.txt")
-ui_file_exists <- function(file){
+#' cmd_ui_file_exists("/path/to/file.txt")
+cmd_ui_file_exists <- function(file){
   if (file.exists(file)) {
     usethis::ui_done(file)
   } else {
@@ -316,18 +316,18 @@ cmd_check_install <- function(path_handler, path = NULL){
   }
   message("checking main install")
   
-  x <- try(path_handler(path = path) %>% ui_file_exists(), silent = TRUE)
+  x <- try(path_handler(path = path) %>% cmd_ui_file_exists(), silent = TRUE)
   
   
   if (class(x) == "try-error") {
-    ui_file_exists(path)
+    cmd_ui_file_exists(path)
     return(invisible(NULL))
     }
   
   
   message("checking util installs")
   path_handler(path = path, util = TRUE) %>% 
-    purrr::walk(ui_file_exists)
+    purrr::walk(cmd_ui_file_exists)
   
   return(invisible(NULL))
 }

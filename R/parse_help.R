@@ -4,9 +4,9 @@
 #' a commandline flag since there is not text completion. Some programs behave
 #' unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages.
 #'
-#' `get_help_flag_names` tries to grab flags from --help documentation which can be used for error checking.
+#' `cmd_help_flag_names` tries to grab flags from --help documentation which can be used for error checking.
 #'
-#' @seealso \code{\link{suggest_flag_names}} \code{\link{cmd_error_suggest_flag_names}}
+#' @seealso \code{\link{cmd_suggest_flag_names}} \code{\link{cmd_error_cmd_suggest_flag_names}}
 #'
 #' @param help_lines `character` vector contianing the output of "command
 #'   --help", or similar output. Optional: pass either `stdout`, or `stderr` output from
@@ -24,14 +24,14 @@
 #' # with processx
 #' out <- processx::run("tar", "--help", error_on_status = F)
 #' lines <- strsplit(out$stderr, "\n")[[1]]
-#' fn_flags <- get_help_flag_names(lines)
+#' fn_flags <- cmd_help_flag_names(lines)
 #'
 #' # with system2
 #' lines <- system2("tar", "--help", stderr = T)
-#' fn_flags <- get_help_flag_names(lines)
+#' fn_flags <- cmd_help_flag_names(lines)
 #' }
 #'
-get_help_flag_names <- function(help_lines, processx = FALSE){
+cmd_help_flag_names <- function(help_lines, processx = FALSE){
   
   stopifnot(is.logical(processx))
   
@@ -61,7 +61,7 @@ get_help_flag_names <- function(help_lines, processx = FALSE){
 
 #' Suggest alternative name by Levenshtein edit distance
 #'
-#' @param command_flag_names character vector of valid names (can be output of \code{\link{get_help_flag_names}})
+#' @param command_flag_names character vector of valid names (can be output of \code{\link{cmd_help_flag_names}})
 #' @param flags a vector names correspond to values to be checked against `command_flag_names`
 #' @param .fun optional function to apply to `command_flag_names` and `flags`
 #'   before checking their values. If using a function to rename flags after
@@ -69,7 +69,7 @@ get_help_flag_names <- function(help_lines, processx = FALSE){
 #'   lines into R-friendly variable names for user-convenience. Can be function
 #'   or `rlang`-style formula defintion (ie `.fun = ~{foo(.x)}` is the same as
 #'   `.fun = function(x){foo(x)}`). Note: if command_flag_names need additional
-#'   parsing after \code{\link{get_help_flag_names}}, it is best to do that
+#'   parsing after \code{\link{cmd_help_flag_names}}, it is best to do that
 #'   preprocessing before passing them to this function.
 #'
 #' @return named vector where names are names from `flags` and their values are the suggested best match from `command_flag_names`
@@ -80,15 +80,15 @@ get_help_flag_names <- function(help_lines, processx = FALSE){
 #' @examples
 #' # with a flagsList, need to pass names()
 #' flagsList <- list("output" = "somevalue", "missplld" = "anotherValue")
-#' suggest_flag_names(c("output", "misspelled"), names(flagsList))
+#' cmd_suggest_flag_names(c("output", "misspelled"), names(flagsList))
 #' 
 #' command_flags <- c("long-flag-name")
 #' flags <- c("long_flag_naee")
-#' suggest_flag_names(command_flags, flags, .fun = ~{gsub("-", "_", .x)})
+#' cmd_suggest_flag_names(command_flags, flags, .fun = ~{gsub("-", "_", .x)})
 #' 
 #' # returns NULL if no errors
-#' suggest_flag_names(c("test"), "test")
-suggest_flag_names <- function(command_flag_names, flags, .fun = NULL){
+#' cmd_suggest_flag_names(c("test"), "test")
+cmd_suggest_flag_names <- function(command_flag_names, flags, .fun = NULL){
 
   if (!is.null(.fun)){
     if (class(.fun) == "formula"){.fun <- rlang::as_function(.fun)}
@@ -133,11 +133,11 @@ suggest_flag_names <- function(command_flag_names, flags, .fun = NULL){
 #'
 #' @examples
 #' flags <- list("output" = "somevalue", "missplld" = "anotherValue")
-#' suggestions <- suggest_flag_names(c("output", "misspelled"), flags)
+#' suggestions <- cmd_suggest_flag_names(c("output", "misspelled"), flags)
 #' \dontrun{
-#' cmd_error_suggest_flag_names(suggestions)
+#' cmd_error_cmd_suggest_flag_names(suggestions)
 #' }
-cmd_error_suggest_flag_names <- function(suggest_names){
+cmd_error_cmd_suggest_flag_names <- function(suggest_names){
   if (is.null(suggest_names)){return(NULL)}
   
   quote_name <- function(name) paste0("\"", name, "\"")
