@@ -137,7 +137,7 @@ cmd_suggest_flag_names <- function(command_flag_names, flags, .fun = NULL){
 #' \dontrun{
 #' cmd_error_cmd_suggest_flag_names(suggestions)
 #' }
-cmd_error_cmd_suggest_flag_names <- function(suggest_names){
+cmd_error_suggest_flag_names <- function(suggest_names){
   if (is.null(suggest_names)){return(NULL)}
   
   quote_name <- function(name) paste0("\"", name, "\"")
