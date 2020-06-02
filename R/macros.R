@@ -149,7 +149,7 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 #'
 #' @examples
 #' handle <- build_path_handler(option_name = "meme_bin", default_path = "~/meme/bin")
-#' valid_install <- build_is_valid_install(handle)
+#' valid_install <- cmd_build_is_valid_install(handle)
 #' # Returns TRUE is "~/meme/bin/" exists
 #' valid_install()
 #' # Returns FALSE if "bad/path/" doesn't exist
@@ -157,15 +157,15 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 #' 
 #' # Also works with options
 #' handle_option_only <- build_path_handler(option_name = "meme_bin")
-#' valid_install2 <- build_is_valid_install(handle_option_only)
+#' valid_install2 <- cmd_build_is_valid_install(handle_option_only)
 #' options(meme_bin = "~/meme/bin/")
 #' valid_install2()
 #'
 #' # Setting util = TRUE will check that all utils are also installed
 #' handle_with_utils <- build_path_handler(default_path = "~/meme/bin", utils = c("ame", "fimo"))
-#' valid_install_all <- build_is_valid_install(handle_with_utils, util = TRUE)
+#' valid_install_all <- cmd_build_is_valid_install(handle_with_utils, util = TRUE)
 #' valid_install_all()
-build_is_valid_install <- function(path_handler, util = NULL){
+cmd_build_is_valid_install <- function(path_handler, util = NULL){
   
   util_check <- !is.null(util)
   util_true <- FALSE

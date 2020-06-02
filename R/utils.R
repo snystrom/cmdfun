@@ -34,7 +34,7 @@ drop_list_by_name <- function(list, names){
 #' removing known invalid entries or special circumstances. This function allows
 #' quick removal of values by scanning the flags vector with multiple regexes.
 #'
-#' @param flags character vector of flags (typically output of argsToFlags())
+#' @param flags character vector of flags (typically output of cmd_args_to_flags())
 #' @param regex vector of regexes to scan flags. Will remove any flags matching the regex.
 #'
 #' @return flags without flags matching regexes
@@ -54,7 +54,7 @@ drop_flags_regex <- function(flags, regex){
 
 #' Drop entries from list of flags by name or name/value pair.
 #'
-#' @param flags named list output of argsToFlags
+#' @param flags named list output of cmd_args_to_flags
 #' @param drop vector of flag entries to drop. Pass an unnamed vector
 #'   to drop flags by name. Pass a named vector to drop flags by name/value
 #'   pairs. Pass a numeric vector to drop by position.
