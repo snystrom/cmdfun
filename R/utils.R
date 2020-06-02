@@ -183,11 +183,11 @@ flag_index_named_values <- function(flags, named_values){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' check_files_exist(tempdir())
+#' cmd_check_files_exist(tempdir())
 #' \dontrun{
-#' check_files_exist(file.path(tempdir(), "notreal"))
+#' cmd_check_files_exist(file.path(tempdir(), "notreal"))
 #' }
-check_files_exist <- function(files){
+cmd_check_files_exist <- function(files){
   files %>%
     purrr::map(purrr::discard, file.exists) %>%
     purrr::compact() %>%
@@ -209,7 +209,7 @@ error_file_not_exist <- function(file){
 
 #' Generates list of expected output files
 #'
-#' See documentation of check_outputs() for more details about how this works
+#' See documentation of cmd_check_outputs() for more details about how this works
 #'
 #' @param ext file extension (no ".", ie "txt", "html")
 #' @param prefix file name to be given each ext. If a character vector, must be equal length of ext or shorter
@@ -263,16 +263,16 @@ expected_outputs <- function(ext, prefix, outdir = "."){
 #' \dontrun{
 #' # Checks many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' check_outputs(c("txt", "html", "xml"), "myFile")
+#' cmd_check_outputs(c("txt", "html", "xml"), "myFile")
 #' # Checks many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' check_outputs("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_check_outputs("txt", c("myFile1", "myFile2", "myFile3"))
 #' }
 #'
 #' 
-check_outputs <- function(ext, prefix, outdir = "."){
+cmd_check_outputs <- function(ext, prefix, outdir = "."){
   expected_outputs(ext, prefix, outdir) %T>%
-    check_files_exist()
+    cmd_check_files_exist()
 }
 
 
@@ -299,8 +299,8 @@ ui_file_exists <- function(file){
 #' 
 #' This function can be lightly wrapped by package builders to build a user-friendly install checking function.
 #'
-#' @param path_handler `function` output of `build_path_handler()`
-#' @param path user-override path to check (identical to `path` argument of `build_path_handler()` output)
+#' @param path_handler `function` output of `cmd_build_path_handler()`
+#' @param path user-override path to check (identical to `path` argument of `cmd_build_path_handler()` output)
 #'
 #' @return pretty printed message indicating whether files exits or not. Green check = Yes, red X = No.
 #' @export
@@ -308,9 +308,9 @@ ui_file_exists <- function(file){
 #' @examples
 #' \dontrun{
 #' 
-#' check_install()
+#' cmd_check_install()
 #' }
-check_install <- function(path_handler, path = NULL){
+cmd_check_install <- function(path_handler, path = NULL){
   if (!is.function(path_handler)) {
     stop("path_handler must be a function")
   }

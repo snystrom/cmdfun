@@ -46,14 +46,14 @@
 #' 
 #' @examples
 #' \dontrun{
-#' cool_checker <- build_path_handler(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
+#' cool_checker <- cmd_build_path_handler(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
 #' # returns path to coolpackage
 #' cool_checker()
 #' # returns path to coolpackage/tool1
 #' cool_checker(util = "tool1")
 #' 
 #' }
-build_path_handler <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
+cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
   
   if (is.null(environment_var) & is.null(option_name) & is.null(default_path)){
     warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
@@ -133,7 +133,7 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 
 #' Macro for constructing boolean check for valid path
 #' 
-#' @param path_handler function output of `build_path_handler()` **NOTE:** When
+#' @param path_handler function output of `cmd_build_path_handler()` **NOTE:** When
 #'   passing the function, do not pass as: `fun()`, but `fun` to avoid evaluation.
 #' @param util value to pass to `util` argument of `path_handler`, allows
 #'   building individual functions for each util (if passing one of each),
@@ -148,7 +148,7 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 #' @export
 #'
 #' @examples
-#' handle <- build_path_handler(option_name = "meme_bin", default_path = "~/meme/bin")
+#' handle <- cmd_build_path_handler(option_name = "meme_bin", default_path = "~/meme/bin")
 #' valid_install <- cmd_build_is_valid_install(handle)
 #' # Returns TRUE is "~/meme/bin/" exists
 #' valid_install()
@@ -156,13 +156,13 @@ build_path_handler <- function(environment_var = NULL, option_name = NULL, defau
 #' valid_install("bad/path/")
 #' 
 #' # Also works with options
-#' handle_option_only <- build_path_handler(option_name = "meme_bin")
+#' handle_option_only <- cmd_build_path_handler(option_name = "meme_bin")
 #' valid_install2 <- cmd_build_is_valid_install(handle_option_only)
 #' options(meme_bin = "~/meme/bin/")
 #' valid_install2()
 #'
 #' # Setting util = TRUE will check that all utils are also installed
-#' handle_with_utils <- build_path_handler(default_path = "~/meme/bin", utils = c("ame", "fimo"))
+#' handle_with_utils <- cmd_build_path_handler(default_path = "~/meme/bin", utils = c("ame", "fimo"))
 #' valid_install_all <- cmd_build_is_valid_install(handle_with_utils, util = TRUE)
 #' valid_install_all()
 cmd_build_is_valid_install <- function(path_handler, util = NULL){
