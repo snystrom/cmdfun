@@ -59,7 +59,7 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
     warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
   }
     
-  requiredArgs <- getAllArgs() %>% 
+  requiredArgs <- cmd_args_all() %>% 
     cmd_drop_list_by_name("utils")
   
   purrr::map(requiredArgs, length) %>% 

@@ -235,7 +235,7 @@ error_illegal_flag <- function(name){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' theFunction <- function(...) { getDotArgs() }
+#' theFunction <- function(...) { cmd_args_dots() }
 #' theDots <-  theFunction(validFlag = TRUE, `&illegalFlag` = "will error")
 #' \dontrun{
 #' theArgs <-  dotsToArgs(theDots)

@@ -221,13 +221,13 @@ error_file_not_exist <- function(file){
 #' @examples
 #' # Makes list for many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' expected_outputs(c("txt", "html", "xml"), "myFile")
+#' cmd_expected_outputs(c("txt", "html", "xml"), "myFile")
 #' 
 #' # Makes list for many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' expected_outputs("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_expected_outputs("txt", c("myFile1", "myFile2", "myFile3"))
 #'
-expected_outputs <- function(ext, prefix, outdir = "."){
+cmd_expected_outputs <- function(ext, prefix, outdir = "."){
   files <- purrr::map2(ext, prefix, ~{
     file.path(outdir, paste0(.y, ".", .x)) %>% 
       sanitize_path()
@@ -271,7 +271,7 @@ expected_outputs <- function(ext, prefix, outdir = "."){
 #'
 #' 
 cmd_check_outputs <- function(ext, prefix, outdir = "."){
-  expected_outputs(ext, prefix, outdir) %T>%
+  cmd_expected_outputs(ext, prefix, outdir) %T>%
     cmd_check_files_exist()
 }
 

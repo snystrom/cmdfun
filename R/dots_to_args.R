@@ -7,9 +7,9 @@
 #' @export
 #'
 #' @examples
-#' theFunction <- function(arg1, ...) { getAllArgs() }
+#' theFunction <- function(arg1, ...) { cmd_args_all() }
 #' theArgs <-  theFunction(arg1 = "test", example = "hello")
-getAllArgs <- function(keep = NULL, drop = NULL){
+cmd_args_all <- function(keep = NULL, drop = NULL){
   # Modified from:
   # https://stackoverflow.com/questions/17256834/getting-the-arguments-of-a-parent-function-in-r-with-names
   # using callstack position of parent call will always evaluate to function
@@ -43,9 +43,9 @@ getAllArgs <- function(keep = NULL, drop = NULL){
 #' @importFrom magrittr %>%
 #'
 #' @examples
-#' theFunction <- function(...) { getDotArgs() }
+#' theFunction <- function(...) { cmd_args_dots() }
 #' theDots <-  theFunction(example = "hello", boolFlag = TRUE, vectorFlag = c(1,2,3))
-getDotArgs <- function(keep = NULL, drop = NULL){
+cmd_args_dots <- function(keep = NULL, drop = NULL){
   
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
@@ -65,9 +65,9 @@ getDotArgs <- function(keep = NULL, drop = NULL){
 #' @export
 #'
 #' @examples
-#' theFunction <- function(arg1, ...) { getNamedArgs() }
+#' theFunction <- function(arg1, ...) { cmd_args_named() }
 #' theNamedArgs <-  theFunction(arg1 = "test", example = "hello")
-getNamedArgs <- function(keep = NULL, drop = NULL){
+cmd_args_named <- function(keep = NULL, drop = NULL){
   # see getAllNamedArgs for explanation of how this chunk works
   argList <- as.list(match.call(definition = sys.function(sys.parent()),
                      call = sys.call(sys.parent()), 
@@ -98,7 +98,7 @@ getNamedArgs <- function(keep = NULL, drop = NULL){
 #' @importFrom magrittr %<>%
 #' 
 #' @examples
-#' theFunction <- function(...){getAllArgs()}
+#' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flagList <- cmd_args_to_flags(theArgs)
 #' flags <- cmd_crystallize_flags(flagList)
@@ -161,13 +161,13 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' theFunction <- function(...){getAllArgs()}
+#' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flagList <- cmd_args_to_flags(theArgs)
 #' flags <- cmd_crystallize_flags(flagList)
 #' 
 #' # Above is equivalent to the legacy usage:
-#' theFunction <- function(...){getAllArgs()}
+#' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flags <- legacy_cmd_args_to_flags(theArgs)
 cmd_crystallize_flags <- function(flagList, prefix = "-", sep = ","){
