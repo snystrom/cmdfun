@@ -74,7 +74,7 @@ getNamedArgs <- function(keep = NULL, drop = NULL){
                      expand.dots = FALSE))[-1]
   
   args <- lapply(argList, eval, envir = parent.frame()) %>% 
-    drop_list_by_name("...")
+    cmd_drop_list_by_name("...")
   
   list_keep_or_drop(args, keep = keep, drop = drop)
 }
@@ -135,7 +135,7 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
     # only FALSE logicals remain, so they are dropped
     drop_list_logicals() %>% 
     # Remove anything with empty names (happens )
-    drop_list_by_name("")
+    cmd_drop_list_by_name("")
   
   # Warn if arguments are defined multiple times
   purrr::imap_dbl(flag_lookup, count_matched_args, args) %>% 

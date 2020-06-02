@@ -23,8 +23,8 @@ keep_list_by_name <- function(list, names){
 #' @export
 #' 
 #' @examples
-#' drop_list_by_name(list("a" = 1, "b" = 2), "a")
-drop_list_by_name <- function(list, names){
+#' cmd_drop_list_by_name(list("a" = 1, "b" = 2), "a")
+cmd_drop_list_by_name <- function(list, names){
   list[!(names(list) %in% names)]
 }
 
@@ -42,9 +42,9 @@ drop_list_by_name <- function(list, names){
 #'
 #' @examples
 #' flags <- c("-n value", "-f")
-#' drop_flags_regex(flags, "-n")
-#' drop_flags_regex(flags, "-n value")
-drop_flags_regex <- function(flags, regex){
+#' cmd_drop_flags_regex(flags, "-n")
+#' cmd_drop_flags_regex(flags, "-n value")
+cmd_drop_flags_regex <- function(flags, regex){
   lapply(regex, function(re){
     flags <<- flags[!grepl(re, flags)]
   })
@@ -64,14 +64,14 @@ drop_flags_regex <- function(flags, regex){
 #'
 #' @examples
 #' exFlags <- list("flag1" = 2, "flag2" = "someText")
-#' drop_flags(exFlags, "flag1")
+#' cmd_drop_flags(exFlags, "flag1")
 #' # will drop flag2 because its name and value match 'drop' vector
-#' drop_flags(exFlags, c("flag2" = "someText"))
+#' cmd_drop_flags(exFlags, c("flag2" = "someText"))
 #'
 #' # won't drop flag2 because its value isn't 'someText'
 #' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
-#' drop_flags(exFlags, c("flag2" = "someText"))
-drop_flags <- function(flags, drop){
+#' cmd_drop_flags(exFlags, c("flag2" = "someText"))
+cmd_drop_flags <- function(flags, drop){
   
   testthat::expect_named(flags)
   
@@ -85,7 +85,7 @@ drop_flags <- function(flags, drop){
   
   if (is.null(names(drop))){
     drops <- flag_index_names(flags, drop)
-    return(drop_flags(flags, drops))
+    return(cmd_drop_flags(flags, drops))
   }
 
   if (!is.null(names(drop))) {

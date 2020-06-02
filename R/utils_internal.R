@@ -314,7 +314,7 @@ list_keep_or_drop <- function(list, keep = NULL, drop = NULL){
   
   if (!is.null(drop)){
     testthat::expect_type(drop, "character")
-    filteredList <- drop_list_by_name(list, drop)
+    filteredList <- cmd_drop_list_by_name(list, drop)
   }
   
   return(filteredList)

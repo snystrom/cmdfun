@@ -60,7 +60,7 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
   }
     
   requiredArgs <- getAllArgs() %>% 
-    drop_list_by_name("utils")
+    cmd_drop_list_by_name("utils")
   
   purrr::map(requiredArgs, length) %>% 
     drop_list_fun(fun = function(x) x <= 1) %>% 

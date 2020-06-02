@@ -6,7 +6,7 @@
 #'
 #' `get_help_flag_names` tries to grab flags from --help documentation which can be used for error checking.
 #'
-#' @seealso \code{\link{suggest_flag_names}} \code{\link{error_suggest_flag_names}}
+#' @seealso \code{\link{suggest_flag_names}} \code{\link{cmd_error_suggest_flag_names}}
 #'
 #' @param help_lines `character` vector contianing the output of "command
 #'   --help", or similar output. Optional: pass either `stdout`, or `stderr` output from
@@ -135,9 +135,9 @@ suggest_flag_names <- function(command_flag_names, flags, .fun = NULL){
 #' flags <- list("output" = "somevalue", "missplld" = "anotherValue")
 #' suggestions <- suggest_flag_names(c("output", "misspelled"), flags)
 #' \dontrun{
-#' error_suggest_flag_names(suggestions)
+#' cmd_error_suggest_flag_names(suggestions)
 #' }
-error_suggest_flag_names <- function(suggest_names){
+cmd_error_suggest_flag_names <- function(suggest_names){
   if (is.null(suggest_names)){return(NULL)}
   
   quote_name <- function(name) paste0("\"", name, "\"")
