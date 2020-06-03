@@ -1,5 +1,5 @@
 library(testthat)
-library(cmdlr)
+library(cmdr)
 library(magrittr)
 
-test_check("cmdlr")
+test_check("cmdr")

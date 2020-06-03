@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Framework for Building R Interfaces to Shell Commands • cmdlr</title>
+<title>Framework for Building R Interfaces to Shell Commands • cmdr</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">cmdlr</a>
+        <a class="navbar-link" href="index.html">cmdr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9001</span>
       </span>
     </div>
@@ -72,21 +72,21 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="cmdlr" class="section level1">
+<div id="cmdr" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#cmdlr" class="anchor"></a>cmdlr</h1></div>
+<a href="#cmdr" class="anchor"></a>cmdr</h1></div>
 <!-- badges: start -->
 
 <div id="a-simple-framework-for-building-shell-interfaces" class="section level2">
 <h2 class="hasAnchor">
 <a href="#a-simple-framework-for-building-shell-interfaces" class="anchor"></a>A simple framework for building shell interfaces</h2>
-<p>The purpose of <code>cmdlr</code> is to significantly reduce the overhead involved in wrapping shell programs in R. The tools are intended to be intuitive and lightweight enough to use for data scientists trying to get things done quickly, but robust and full-fledged enough for developers to extend them to more advanced use cases.</p>
+<p>The purpose of <code>cmdr</code> is to significantly reduce the overhead involved in wrapping shell programs in R. The tools are intended to be intuitive and lightweight enough to use for data scientists trying to get things done quickly, but robust and full-fledged enough for developers to extend them to more advanced use cases.</p>
 </div>
 <div id="vocabulary-to-describe-operations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#vocabulary-to-describe-operations" class="anchor"></a>Vocabulary to describe operations</h2>
-<p>Briefly, <code>cmdlr</code> captures R function arguments (<strong>args</strong>) and converts them to a vector of commandline <strong>flags</strong>.</p>
-<p>The <code>cmdlr</code> framework provides three mechanisms for capturing function arguments:</p>
+<p>Briefly, <code>cmdr</code> captures R function arguments (<strong>args</strong>) and converts them to a vector of commandline <strong>flags</strong>.</p>
+<p>The <code>cmdr</code> framework provides three mechanisms for capturing function arguments:</p>
 <ul>
 <li>
 <code><a href="reference/cmd_args_dots.html">cmd_args_dots()</a></code> captures all arguments passed to <code>...</code>
@@ -103,13 +103,13 @@
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"></a>Install</h2>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"snystrom/cmdlr"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"snystrom/cmdr"</span>)</pre></div>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">cmdlr</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">cmdr</span>)</pre></div>
 <p>variables defined in <code>...</code> are converted to character vector of flags appropriate for shell commands.</p>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">...</span>){
 
@@ -242,7 +242,7 @@
 <div class="sourceCode" id="cb39"><pre class="r"><span class="fu">handle_meme_path</span>(<span class="kw">util</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
 <div class="sourceCode" id="cb40"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="co">## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"</span></a>
 <a class="sourceLine" id="cb40-2" data-line-number="2"><span class="co">## [2] "/nas/longleaf/home/snystrom/meme/bin/ame"</span></a></code></pre></div>
-<p><code>cmdlr</code> provides a preexisting utility for this, however. The <code>cmd_install_check</code> function can be lightly wrapped by package builders to verify and print a user-friendly series of checks for a valid tool install. it takes as input the output of <code>build_package_handler</code> and an optional user-override <code>path</code>.</p>
+<p><code>cmdr</code> provides a preexisting utility for this, however. The <code>cmd_install_check</code> function can be lightly wrapped by package builders to verify and print a user-friendly series of checks for a valid tool install. it takes as input the output of <code>build_package_handler</code> and an optional user-override <code>path</code>.</p>
 <p>Here I build a function for checking a users <code>meme</code> install.</p>
 <div class="sourceCode" id="cb41"><pre class="r"><span class="no">check_meme_install</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">path</span> <span class="kw">=</span> <span class="kw">NULL</span>){
   <span class="fu"><a href="reference/cmd_install_check.html">cmd_install_check</a></span>(<span class="no">handle_meme_path</span>, <span class="kw">path</span> <span class="kw">=</span> <span class="no">path</span>)
@@ -262,7 +262,7 @@
 <div class="sourceCode" id="cb45"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co">## checking main install</span></a>
 <a class="sourceLine" id="cb45-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb45-3" data-line-number="3"><span class="co">## ✖ bad/path</span></a></code></pre></div>
-<p>If you want to write your own install checker instead of using the <code>cmd_install_check</code> function, <code>cmdlr</code> also provides the <code>cmd_ui_file_exists</code> function for printing pretty status messages.</p>
+<p>If you want to write your own install checker instead of using the <code>cmd_install_check</code> function, <code>cmdr</code> also provides the <code>cmd_ui_file_exists</code> function for printing pretty status messages.</p>
 <div class="sourceCode" id="cb46"><pre class="r"><span class="fu"><a href="reference/cmd_ui_file_exists.html">cmd_ui_file_exists</a></span>(<span class="st">"bad/file"</span>)</pre></div>
 <div class="sourceCode" id="cb47"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co">## ✖ bad/file</span></a></code></pre></div>
 <div class="sourceCode" id="cb48"><pre class="r"><span class="fu"><a href="reference/cmd_ui_file_exists.html">cmd_ui_file_exists</a></span>(<span class="st">"~/meme/bin"</span>)</pre></div>
@@ -271,7 +271,7 @@
 <div id="internal-install-validators" class="section level3">
 <h3 class="hasAnchor">
 <a href="#internal-install-validators" class="anchor"></a>Internal install validators</h3>
-<p><code>cmdlr</code> also provides a macro <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path handler function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
+<p><code>cmdr</code> also provides a macro <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path handler function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
 <div class="sourceCode" id="cb50"><pre class="r"><span class="no">meme_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">handle_meme_path</span>)
 <span class="fu">meme_installed</span>()</pre></div>
 <div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co">## [1] TRUE</span></a></code></pre></div>
@@ -332,7 +332,7 @@
 <h2 class="hasAnchor">
 <a href="#manupulating-flag-list-objects" class="anchor"></a>Manupulating flag list objects</h2>
 <p>For the most part, the <a href="https://purrr.tidyverse.org/">purrr</a> library is the most useful toolkit for operations on list objects.</p>
-<p><code>cmdlr</code> provides additional helper functions to handle common manipulations.</p>
+<p><code>cmdr</code> provides additional helper functions to handle common manipulations.</p>
 <p><code>cmd_list_drop</code> operates on flag lists to drop all entries corresponding to a certain name, specific name/value pairs, or by index position. Can be useful for ignoring setting certain flags if the user set them to a specific value. Conversely, <code>cmd_list_keep</code> functions identically but for keeping entries.</p>
 <div class="sourceCode" id="cb60"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_named.html">cmd_args_named</a></span>() <span class="kw">%&gt;%</span>
@@ -353,7 +353,7 @@
 <a href="#expecting-output-files" class="anchor"></a>Expecting output files</h2>
 <p>Sometimes a commandline function returns multiple output files you want to check for after the run.</p>
 <p><code>cmd_files_exist</code> accepts a vector or list of files &amp; checks that they exist.</p>
-<p><code>cmdlr</code> additionally provides a few convenience functions for generating lists of expected files. <code>cmd_output_expect</code> generates combinations of extension/prefix file names. The output can be passed to <code>cmd_files_exist</code> which will error if a file isn’t found on the filesystem.</p>
+<p><code>cmdr</code> additionally provides a few convenience functions for generating lists of expected files. <code>cmd_output_expect</code> generates combinations of extension/prefix file names. The output can be passed to <code>cmd_files_exist</code> which will error if a file isn’t found on the filesystem.</p>
 <div class="sourceCode" id="cb64"><pre class="r"><span class="fu"><a href="reference/cmd_output_expect.html">cmd_output_expect</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)</pre></div>
 <div class="sourceCode" id="cb65"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1"><span class="co">## $txt</span></a>
 <a class="sourceLine" id="cb65-2" data-line-number="2"><span class="co">## [1] "./outFile.txt"</span></a>
@@ -373,10 +373,10 @@
 <div id="error-checking-user-input" class="section level2">
 <h2 class="hasAnchor">
 <a href="#error-checking-user-input" class="anchor"></a>Error checking user input</h2>
-<p>When using <code>cmdlr</code> to write lazy shell wrappers, the user can easily mistype a commandline flag since there is not text completion. Some programs behave unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages. <code>cmdlr</code> has built-in methods to automatically populate a list of valid flags from a command’s help-text.</p>
+<p>When using <code>cmdr</code> to write lazy shell wrappers, the user can easily mistype a commandline flag since there is not text completion. Some programs behave unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages. <code>cmdr</code> has built-in methods to automatically populate a list of valid flags from a command’s help-text.</p>
 <p>Alternatively, package builders could pass a vector of allowed flag names to check against if they didn’t want to parse help text. The goal is maximum flexibility.</p>
 <p>The following example demonstrates how to parse help text (in this case from <code>tar</code>) into a vector of allowed flags. This vector is compared to the user-input flags (<code>user_input_flags</code> below), and tries to identify misspelled function arguments.</p>
-<p>Here, the user has accidentally used the argument <code>delte</code> instead of <code>delete</code>. <code>cmdlr</code> tries to be helpful and identify the misspelling for the user.</p>
+<p>Here, the user has accidentally used the argument <code>delte</code> instead of <code>delete</code>. <code>cmdr</code> tries to be helpful and identify the misspelling for the user.</p>
 <div class="sourceCode" id="cb68"><pre class="r"><span class="no">user_input_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"delte"</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>) <span class="kw">%&gt;%</span>

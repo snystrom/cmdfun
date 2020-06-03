@@ -1,4 +1,4 @@
-Package: cmdlr
+Package: cmdr
 Type: Package
 Title: Framework for Building R Interfaces to Shell Commands
 Version: 0.0.9001

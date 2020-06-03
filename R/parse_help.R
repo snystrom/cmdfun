@@ -1,6 +1,6 @@
 #' Parses commandline help options to return vector of valid flag names
 #'
-#' When using cmdlr to write lazy shell wrappers, the user can easily mistype
+#' When using cmdr to write lazy shell wrappers, the user can easily mistype
 #' a commandline flag since there is not text completion. Some programs behave
 #' unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages.
 #'

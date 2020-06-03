@@ -44,7 +44,7 @@ test_that("Default path only, noUtils works",{
                                      default_path = NULL)
   )
 # TODO: will this error R CMD CHECK?
-  expect_equal(check_build(base_path), cmdlr:::sanitize_path(base_path))
+  expect_equal(check_build(base_path), cmdr:::sanitize_path(base_path))
   expect_error(check_build(base_path, util = myUtils[1]), "no defined utils")
 })
 
@@ -54,7 +54,7 @@ test_that("Passing invalid user path throws error", {
                                    default_path = base_path,
                                    utils = myUtils)
   
-  expect_equal(check_build(), cmdlr:::sanitize_path(base_path))
+  expect_equal(check_build(), cmdr:::sanitize_path(base_path))
   expect_error(check_build("bad/path"), "does not exist")
   
 })
@@ -65,8 +65,8 @@ test_that("Defining & checking utils works", {
                                    default_path = base_path,
                                    utils = myUtils)
   
-  expect_equal(check_build(), cmdlr:::sanitize_path(base_path))
-  expect_equal(check_build(base_path, util = myUtils[1]), cmdlr:::sanitize_path(file.path(base_path, myUtils[1])))
+  expect_equal(check_build(), cmdr:::sanitize_path(base_path))
+  expect_equal(check_build(base_path, util = myUtils[1]), cmdr:::sanitize_path(file.path(base_path, myUtils[1])))
   # Expect errror with many utils
   expect_error(check_build(base_path, util = myUtils), class = "expectation_failure")
 })
@@ -81,8 +81,8 @@ test_that("Options definition works",{
   
   R.utils::setOption(test_option, base_path)
   
-  expect_equal(check_build(), cmdlr:::sanitize_path(base_path))
-  expect_equal(check_build(util = myUtils[1]), cmdlr:::sanitize_path(file.path(base_path, myUtils[1])))
+  expect_equal(check_build(), cmdr:::sanitize_path(base_path))
+  expect_equal(check_build(util = myUtils[1]), cmdr:::sanitize_path(file.path(base_path, myUtils[1])))
   
   # Test inheritance of default w/ bad option
   R.utils::setOption(test_option, "wrong_path")
@@ -100,8 +100,8 @@ test_that("Environment definition works", {
   check_build <- cmd_path_handle(environment_var = test_env_var, 
                                    utils = myUtils)
   
-  expect_equal(check_build(base_path), cmdlr:::sanitize_path(base_path))
-  expect_equal(check_build(base_path, util = myUtils[1]), cmdlr:::sanitize_path(file.path(base_path, myUtils[1])))
+  expect_equal(check_build(base_path), cmdr:::sanitize_path(base_path))
+  expect_equal(check_build(base_path, util = myUtils[1]), cmdr:::sanitize_path(file.path(base_path, myUtils[1])))
   
   # Test inheritance of default w/ bad environment var
   Sys.setenv(test_env_var = "wrong_path")
@@ -114,7 +114,7 @@ test_that("Environment definition works", {
 
 test_that("Util warnings work", {
   expect_equal(.check_valid_util(util = myUtils[1], utils = myUtils, path = base_path), 
-               cmdlr:::sanitize_path(file.path(base_path, myUtils[1])))
+               cmdr:::sanitize_path(file.path(base_path, myUtils[1])))
   expect_error(.check_valid_util(util = "badUtil", utils = myUtils, path = base_path), "invalid path to an unsupported")
   expect_warning(.check_valid_util(util = allUtils[3], utils = myUtils, path = base_path), "exists but is not supported")
   # error when tool supported but not exist
