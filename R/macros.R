@@ -46,21 +46,21 @@
 #' 
 #' @examples
 #' \dontrun{
-#' cool_checker <- cmd_build_path_handler(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
+#' cool_checker <- cmd_path_handle(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
 #' # returns path to coolpackage
 #' cool_checker()
 #' # returns path to coolpackage/tool1
 #' cool_checker(util = "tool1")
 #' 
 #' }
-cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
+cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
   
   if (is.null(environment_var) & is.null(option_name) & is.null(default_path)){
     warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
   }
     
   requiredArgs <- cmd_args_all() %>% 
-    cmd_drop_list_by_name("utils")
+    cmd_list_drop_named("utils")
   
   purrr::map(requiredArgs, length) %>% 
     drop_list_fun(fun = function(x) x <= 1) %>% 
@@ -78,7 +78,7 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
     pathList <- list()
     
     if (!is.null(path)) {
-      pathList$user <- check_valid_command_path(path) 
+      pathList$user <- .check_valid_command_path(path) 
       
     } 
     
@@ -111,7 +111,7 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
     # This check is to mostly to evaluate default_path at runtime 
     # if all other options fail. This is so that default_path values 
     # like "~/path/to/file" won't expand at compile-time.
-    fullPath <- check_valid_command_path(validPathHeirarchy[[1]])
+    fullPath <- .check_valid_command_path(validPathHeirarchy[[1]])
     
     if (!is.null(util)) {
       if (is.null(utils)){
@@ -120,7 +120,7 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
       if (util == TRUE){
         return(file.path(fullPath, utils))
       }
-      utilPath <- check_valid_util(util, utils, fullPath)
+      utilPath <- .check_valid_util(util, utils, fullPath)
       return(utilPath)
     } else {
       return(fullPath)
@@ -133,7 +133,7 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
 
 #' Macro for constructing boolean check for valid path
 #' 
-#' @param path_handler function output of `cmd_build_path_handler()` **NOTE:** When
+#' @param path_handler function output of `cmd_path_handle()` **NOTE:** When
 #'   passing the function, do not pass as: `fun()`, but `fun` to avoid evaluation.
 #' @param util value to pass to `util` argument of `path_handler`, allows
 #'   building individual functions for each util (if passing one of each),
@@ -148,24 +148,24 @@ cmd_build_path_handler <- function(environment_var = NULL, option_name = NULL, d
 #' @export
 #'
 #' @examples
-#' handle <- cmd_build_path_handler(option_name = "meme_bin", default_path = "~/meme/bin")
-#' valid_install <- cmd_build_is_valid_install(handle)
+#' handle <- cmd_path_handle(option_name = "meme_bin", default_path = "~/meme/bin")
+#' valid_install <- cmd_install_is_valid(handle)
 #' # Returns TRUE is "~/meme/bin/" exists
 #' valid_install()
 #' # Returns FALSE if "bad/path/" doesn't exist
 #' valid_install("bad/path/")
 #' 
 #' # Also works with options
-#' handle_option_only <- cmd_build_path_handler(option_name = "meme_bin")
-#' valid_install2 <- cmd_build_is_valid_install(handle_option_only)
+#' handle_option_only <- cmd_path_handle(option_name = "meme_bin")
+#' valid_install2 <- cmd_install_is_valid(handle_option_only)
 #' options(meme_bin = "~/meme/bin/")
 #' valid_install2()
 #'
 #' # Setting util = TRUE will check that all utils are also installed
-#' handle_with_utils <- cmd_build_path_handler(default_path = "~/meme/bin", utils = c("ame", "fimo"))
-#' valid_install_all <- cmd_build_is_valid_install(handle_with_utils, util = TRUE)
+#' handle_with_utils <- cmd_path_handle(default_path = "~/meme/bin", utils = c("ame", "fimo"))
+#' valid_install_all <- cmd_install_is_valid(handle_with_utils, util = TRUE)
 #' valid_install_all()
-cmd_build_is_valid_install <- function(path_handler, util = NULL){
+cmd_install_is_valid <- function(path_handler, util = NULL){
   
   util_check <- !is.null(util)
   util_true <- FALSE
@@ -216,12 +216,12 @@ cmd_build_is_valid_install <- function(path_handler, util = NULL){
 #' # this will return /full/path/to/meme/bin/dreme
 #' # or return an error for all values of util that are not "dreme" and "ame"
 #' # or error if "dreme" does not exist in "~/meme/bin/"
-#' check_valid_util("dreme", utils = c("dreme", "ame"), "~/meme/bin")
+#' .check_valid_util("dreme", utils = c("dreme", "ame"), "~/meme/bin")
 #' 
 #' # This will throw error
-#' check_valid_util("badUtil", utils = c("dreme", "ame"), "~/meme/bin")
+#' .check_valid_util("badUtil", utils = c("dreme", "ame"), "~/meme/bin")
 #' }
-check_valid_util <- function(util, utils = NULL, path = NULL){
+.check_valid_util <- function(util, utils = NULL, path = NULL){
   testthat::expect_length(util, 1)
   # check util is valid
   needs_util_warning = !util %in% utils
@@ -262,9 +262,9 @@ check_valid_util <- function(util, utils = NULL, path = NULL){
 #' @examples
 #' \dontrun{
 #' # will return /full/path/to/meme/bin, or error if path doesn't exist
-#' check_valid_command_path("~/meme/bin")
+#' .check_valid_command_path("~/meme/bin")
 #' }
-check_valid_command_path <- function(path){
+.check_valid_command_path <- function(path){
   path <- sanitize_path(path)
   command_exists <- file.exists(path)
   

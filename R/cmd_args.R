@@ -74,7 +74,7 @@ cmd_args_named <- function(keep = NULL, drop = NULL){
                      expand.dots = FALSE))[-1]
   
   args <- lapply(argList, eval, envir = parent.frame()) %>% 
-    cmd_drop_list_by_name("...")
+    cmd_list_drop_named("...")
   
   list_keep_or_drop(args, keep = keep, drop = drop)
 }
@@ -86,7 +86,7 @@ cmd_args_named <- function(keep = NULL, drop = NULL){
 #' 
 #' The list structure is more amenable to manipulation by package developers for
 #' advanced use before evaluating them to the command flags vector with
-#' cmd_crystallize_flags().
+#' cmd_list_crystallize().
 #'
 #' @param args named list output from get*Args family of functions.
 #' @param flag_lookup optional named vector used to convert args to command flags
@@ -101,7 +101,7 @@ cmd_args_named <- function(keep = NULL, drop = NULL){
 #' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flagList <- cmd_args_to_flags(theArgs)
-#' flags <- cmd_crystallize_flags(flagList)
+#' flags <- cmd_list_crystallize(flagList)
 cmd_args_to_flags <- function(args, flag_lookup = NULL){
   
   testthat::expect_type(args, "list")
@@ -135,7 +135,7 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
     # only FALSE logicals remain, so they are dropped
     drop_list_logicals() %>% 
     # Remove anything with empty names (happens )
-    cmd_drop_list_by_name("")
+    cmd_list_drop_named("")
   
   # Warn if arguments are defined multiple times
   purrr::imap_dbl(flag_lookup, count_matched_args, args) %>% 
@@ -164,13 +164,13 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
 #' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flagList <- cmd_args_to_flags(theArgs)
-#' flags <- cmd_crystallize_flags(flagList)
+#' flags <- cmd_list_crystallize(flagList)
 #' 
 #' # Above is equivalent to the legacy usage:
 #' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flags <- legacy_cmd_args_to_flags(theArgs)
-cmd_crystallize_flags <- function(flagList, prefix = "-", sep = ","){
+cmd_list_crystallize <- function(flagList, prefix = "-", sep = ","){
   
   if (is.null(flagList)) return(NULL)
   if (length(flagList) == 0) return(NULL)

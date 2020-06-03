@@ -8,8 +8,8 @@
 #' @export
 #'
 #' @examples
-#' cmd_keep_list_by_name(list("a" = 1, "b" = 2), "a")
-cmd_keep_list_by_name <- function(list, names){
+#' cmd_list_keep_named(list("a" = 1, "b" = 2), "a")
+cmd_list_keep_named <- function(list, names){
   list[(names(list) %in% names)]
 }
 
@@ -23,8 +23,8 @@ cmd_keep_list_by_name <- function(list, names){
 #' @export
 #' 
 #' @examples
-#' cmd_drop_list_by_name(list("a" = 1, "b" = 2), "a")
-cmd_drop_list_by_name <- function(list, names){
+#' cmd_list_drop_named(list("a" = 1, "b" = 2), "a")
+cmd_list_drop_named <- function(list, names){
   list[!(names(list) %in% names)]
 }
 
@@ -40,16 +40,16 @@ cmd_drop_list_by_name <- function(list, names){
 #'
 #' @examples
 #' exFlags <- list("flag1" = 2, "flag2" = "someText")
-#' cmd_keep_flags(exFlags, "flag1")
+#' cmd_list_keep(exFlags, "flag1")
 #' # will keep flag2 because its name and value match 'keep' vector
-#' cmd_keep_flags(exFlags, c("flag2" = "someText"))
+#' cmd_list_keep(exFlags, c("flag2" = "someText"))
 #' # Will keep "flag1" by position index
-#' cmd_keep_flags(exFlags, 1)
+#' cmd_list_keep(exFlags, 1)
 #'
 #' # won't keep flag2 because its value isn't 'someText'
 #' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
-#' cmd_keep_flags(exFlags, c("flag2" = "someText"))
-cmd_keep_flags <- function(flags, keep){
+#' cmd_list_keep(exFlags, c("flag2" = "someText"))
+cmd_list_keep <- function(flags, keep){
   
   testthat::expect_named(flags)
   
@@ -63,7 +63,7 @@ cmd_keep_flags <- function(flags, keep){
   
   if (is.null(names(keep))){
     keeps <- list_index_names(flags, keep)
-    return(cmd_keep_flags(flags, keeps))
+    return(cmd_list_keep(flags, keeps))
   }
 
   if (!is.null(names(keep))) {
@@ -85,16 +85,16 @@ cmd_keep_flags <- function(flags, keep){
 #'
 #' @examples
 #' exFlags <- list("flag1" = 2, "flag2" = "someText")
-#' cmd_drop_flags(exFlags, "flag1")
+#' cmd_list_drop(exFlags, "flag1")
 #' # will drop flag2 because its name and value match 'drop' vector
-#' cmd_drop_flags(exFlags, c("flag2" = "someText"))
+#' cmd_list_drop(exFlags, c("flag2" = "someText"))
 #' # Will drop "flag1" by position index
-#' cmd_keep_flags(exFlags, 1)
+#' cmd_list_keep(exFlags, 1)
 #'
 #' # won't drop flag2 because its value isn't 'someText'
 #' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
-#' cmd_drop_flags(exFlags, c("flag2" = "someText"))
-cmd_drop_flags <- function(flags, drop){
+#' cmd_list_drop(exFlags, c("flag2" = "someText"))
+cmd_list_drop <- function(flags, drop){
   
   testthat::expect_named(flags)
   
@@ -108,7 +108,7 @@ cmd_drop_flags <- function(flags, drop){
   
   if (is.null(names(drop))){
     drops <- list_index_names(flags, drop)
-    return(cmd_drop_flags(flags, drops))
+    return(cmd_list_drop(flags, drops))
   }
 
   if (!is.null(names(drop))) {
@@ -225,11 +225,11 @@ list_index_named_values <- function(list, named_values){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' cmd_check_files_exist(tempdir())
+#' cmd_files_exist(tempdir())
 #' \dontrun{
-#' cmd_check_files_exist(file.path(tempdir(), "notreal"))
+#' cmd_files_exist(file.path(tempdir(), "notreal"))
 #' }
-cmd_check_files_exist <- function(files){
+cmd_files_exist <- function(files){
   files %>%
     purrr::map(purrr::discard, file.exists) %>%
     purrr::compact() %>%
@@ -251,7 +251,7 @@ error_file_not_exist <- function(file){
 
 #' Generates list of expected output files
 #'
-#' See documentation of cmd_check_outputs() for more details about how this works
+#' See documentation of cmd_output_check() for more details about how this works
 #'
 #' @param ext file extension (no ".", ie "txt", "html")
 #' @param prefix file name to be given each ext. If a character vector, must be equal length of ext or shorter
@@ -263,13 +263,13 @@ error_file_not_exist <- function(file){
 #' @examples
 #' # Makes list for many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' cmd_expected_outputs(c("txt", "html", "xml"), "myFile")
+#' cmd_output_expect(c("txt", "html", "xml"), "myFile")
 #' 
 #' # Makes list for many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' cmd_expected_outputs("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_output_expect("txt", c("myFile1", "myFile2", "myFile3"))
 #'
-cmd_expected_outputs <- function(ext, prefix, outdir = "."){
+cmd_output_expect <- function(ext, prefix, outdir = "."){
   files <- purrr::map2(ext, prefix, ~{
     file.path(outdir, paste0(.y, ".", .x)) %>% 
       sanitize_path()
@@ -305,16 +305,16 @@ cmd_expected_outputs <- function(ext, prefix, outdir = "."){
 #' \dontrun{
 #' # Checks many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' cmd_check_outputs(c("txt", "html", "xml"), "myFile")
+#' cmd_output_check(c("txt", "html", "xml"), "myFile")
 #' # Checks many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' cmd_check_outputs("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_output_check("txt", c("myFile1", "myFile2", "myFile3"))
 #' }
 #'
 #' 
-cmd_check_outputs <- function(ext, prefix, outdir = "."){
-  cmd_expected_outputs(ext, prefix, outdir) %T>%
-    cmd_check_files_exist()
+cmd_output_check <- function(ext, prefix, outdir = "."){
+  cmd_output_expect(ext, prefix, outdir) %T>%
+    cmd_files_exist()
 }
 
 
@@ -341,8 +341,8 @@ cmd_ui_file_exists <- function(file){
 #' 
 #' This function can be lightly wrapped by package builders to build a user-friendly install checking function.
 #'
-#' @param path_handler `function` output of `cmd_build_path_handler()`
-#' @param path user-override path to check (identical to `path` argument of `cmd_build_path_handler()` output)
+#' @param path_handler `function` output of `cmd_path_handle()`
+#' @param path user-override path to check (identical to `path` argument of `cmd_path_handle()` output)
 #'
 #' @return pretty printed message indicating whether files exits or not. Green check = Yes, red X = No.
 #' @export
@@ -350,9 +350,9 @@ cmd_ui_file_exists <- function(file){
 #' @examples
 #' \dontrun{
 #' 
-#' cmd_check_install()
+#' cmd_install_check()
 #' }
-cmd_check_install <- function(path_handler, path = NULL){
+cmd_install_check <- function(path_handler, path = NULL){
   if (!is.function(path_handler)) {
     stop("path_handler must be a function")
   }

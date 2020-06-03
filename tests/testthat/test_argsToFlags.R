@@ -17,11 +17,11 @@ expect_failure(cmd_args_to_flags(c("a" = 1)))
 expect_equal(cmd_args_to_flags(list("b" = NULL)), cmd_args_to_flags(list("b" = FALSE)))
 
 # Test multiple inputs sep default is ","
-expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_crystallize_flags(), c("-a", "1,2,3"))
+expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_list_crystallize(), c("-a", "1,2,3"))
 # Test multiple inputs w/ NULL sep
-expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_crystallize_flags(sep = NULL), c("-a", "1", "2", "3"))
+expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_list_crystallize(sep = NULL), c("-a", "1", "2", "3"))
 # Test multiple inputs w/ comma sep
-expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_crystallize_flags(sep = ","), c("-a", "1,2,3"))
+expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_list_crystallize(sep = ","), c("-a", "1,2,3"))
 
 # test quo vs unquoted names, all combinations
 expect_success(cmd_args_to_flags(list("a" = 1, "b" = T, "c" = F,
@@ -34,15 +34,15 @@ expect_equal(
 
 # pass non-list to dotsToArgs
 expect_equal(cmd_args_to_flags(list("a" = 2)), list("a" = 2))
-expect_equal(cmd_args_to_flags(list("a" = 2, "b" = 3, "c" = 4)) %>% cmd_crystallize_flags(), c("-a", "2", "-b", "3", "-c", "4"))
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = 3, "c" = 4)) %>% cmd_list_crystallize(), c("-a", "2", "-b", "3", "-c", "4"))
 
 # Check False gets dropped correctly for list and vector
 expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F)), list("a" = 2, "b" = ""))
 expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))), 
              list("a" = 2, "b" = "", "d" = c("1","3","test")))
 
-expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F)) %>% cmd_crystallize_flags(), c("-a", "2", "-b"))
-expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))) %>% cmd_crystallize_flags(), 
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F)) %>% cmd_list_crystallize(), c("-a", "2", "-b"))
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))) %>% cmd_list_crystallize(), 
              c("-a" ,"2", "-b", "-d", "1,3,test"))
 
 # Input must be named, should be caught by internal checking
