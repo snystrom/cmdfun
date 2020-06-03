@@ -153,7 +153,7 @@ cmd_drop_flags <- function(flags, drop){
 #' @noRd
 list_keep_index <- function(flags, index){
   
-  if (length(index) == 0 | all(is.na(index))){ return(flags) }
+  if (length(index) == 0 | all(is.na(index))){ return(list()) }
   
   index <- index[!is.na(index)]
   

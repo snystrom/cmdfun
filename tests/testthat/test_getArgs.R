@@ -1,37 +1,37 @@
 library(dotargs)
 
 named_test <- function(arg1, ...){
-  getNamedArgs()
+  cmd_args_named()
 }
 
 all_test <- function(arg1, ...){
-  getAllArgs()
+  cmd_args_all()
 }
 
 dot_test <- function(arg1, ...){
-  getDotArgs()
+  cmd_args_dots()
 }
 
 pipe_test <- function(arg1, ...){
-  getAllArgs() %>% 
+  cmd_args_all() %>% 
     argsToFlags() %>% 
     crystallize_flags()
 }
 
 pipe_test_named <- function(arg1, arg2, ...){
-  getNamedArgs() %>% 
+  cmd_args_named() %>% 
     argsToFlags() %>% 
     crystallize_flags()
 }
 
 keep_test <- function(arg1, arg2, ...){
-  getAllArgs(keep = c("arg1", "dot_keep")) %>% 
+  cmd_args_all(keep = c("arg1", "dot_keep")) %>% 
     argsToFlags() %>% 
     crystallize_flags()
 }
 
 drop_test <- function(arg1, arg2, ..){
-  getAllArgs(drop = "arg2") %>% 
+  cmd_args_all(drop = "arg2") %>% 
     argsToFlags() %>% 
     crystallize_flags()
 }

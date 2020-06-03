@@ -3,51 +3,51 @@ library(dotargs)
 
 
 # test empty list
-expect_equal(argsToFlags(list()), NULL)
+expect_equal(cmd_args_to_flags(list()), NULL)
 # test named but NULL
-expect_equal(argsToFlags(list("test" = NULL)), NULL)
+expect_equal(cmd_args_to_flags(list("test" = NULL)), NULL)
 # test NA values
-expect_equal(argsToFlags(list("arg" = NA)), NULL)
+expect_equal(cmd_args_to_flags(list("arg" = NA)), NULL)
 
 # Test list vs vec
-expect_success(argsToFlags(list("a" = 1)))
-expect_failure(argsToFlags(c("a" = 1)))
+expect_success(cmd_args_to_flags(list("a" = 1)))
+expect_failure(cmd_args_to_flags(c("a" = 1)))
 
 # Null is dropped like FALSE
-expect_equal(argsToFlags(list("b" = NULL)), argsToFlags(list("b" = FALSE)))
+expect_equal(cmd_args_to_flags(list("b" = NULL)), cmd_args_to_flags(list("b" = FALSE)))
 
 # Test multiple inputs sep default is ","
-expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystallize_flags(), c("-a", "1,2,3"))
+expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_crystallize_flags(), c("-a", "1,2,3"))
 # Test multiple inputs w/ NULL sep
-expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystallize_flags(sep = NULL), c("-a", "1", "2", "3"))
+expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_crystallize_flags(sep = NULL), c("-a", "1", "2", "3"))
 # Test multiple inputs w/ comma sep
-expect_equal(argsToFlags(list("a" = c(1,2,3))) %>% crystallize_flags(sep = ","), c("-a", "1,2,3"))
+expect_equal(cmd_args_to_flags(list("a" = c(1,2,3))) %>% cmd_crystallize_flags(sep = ","), c("-a", "1,2,3"))
 
 # test quo vs unquoted names, all combinations
-expect_success(argsToFlags(list("a" = 1, "b" = T, "c" = F,
+expect_success(cmd_args_to_flags(list("a" = 1, "b" = T, "c" = F,
                                d = 1, e = T, f = F)))
 
 expect_equal(
-  argsToFlags(list("a" = 2, "b"= T, "x" = "x", "c" = NULL, "d" = F)),
+  cmd_args_to_flags(list("a" = 2, "b"= T, "x" = "x", "c" = NULL, "d" = F)),
               list("a" = 2, "b" = "", "x" = "x")
 )
 
 # pass non-list to dotsToArgs
-expect_equal(argsToFlags(list("a" = 2)), list("a" = 2))
-expect_equal(argsToFlags(list("a" = 2, "b" = 3, "c" = 4)) %>% crystallize_flags(), c("-a", "2", "-b", "3", "-c", "4"))
+expect_equal(cmd_args_to_flags(list("a" = 2)), list("a" = 2))
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = 3, "c" = 4)) %>% cmd_crystallize_flags(), c("-a", "2", "-b", "3", "-c", "4"))
 
 # Check False gets dropped correctly for list and vector
-expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F)), list("a" = 2, "b" = ""))
-expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))), 
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F)), list("a" = 2, "b" = ""))
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))), 
              list("a" = 2, "b" = "", "d" = c("1","3","test")))
 
-expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F)) %>% crystallize_flags(), c("-a", "2", "-b"))
-expect_equal(argsToFlags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))) %>% crystallize_flags(), 
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F)) %>% cmd_crystallize_flags(), c("-a", "2", "-b"))
+expect_equal(cmd_args_to_flags(list("a" = 2, "b" = T, "c" = F, "d" = c(1,3,"test"))) %>% cmd_crystallize_flags(), 
              c("-a" ,"2", "-b", "-d", "1,3,test"))
 
 # Input must be named, should be caught by internal checking
-expect_error(argsToFlags(list(2,3)), class = "expectation_failure")
-expect_error(argsToFlags(c(2,3)), class = "expectation_failure")
+expect_error(cmd_args_to_flags(list(2,3)), class = "expectation_failure")
+expect_error(cmd_args_to_flags(c(2,3)), class = "expectation_failure")
 
 # Dictionary tests
 argsDict <- c("long1" = "l",
@@ -57,12 +57,12 @@ argsDict_bool <- c(argsDict,
 
 
 ## List & vector (modify when conversion complete to warn, etc.)
-expect_equal(argsToFlags(list("long1" = 2, "long2" = T), argsDict), 
+expect_equal(cmd_args_to_flags(list("long1" = 2, "long2" = T), argsDict), 
              list("l"= 2, "ll" = ""))
 
 ## Should warn if dict contains BOOL values, invalid entry
-expect_warning(argsToFlags(list("a" = 2), argsDict_bool))
-expect_warning(argsToFlags(list("long1" = 2, "long2" = T, "test" = "abc"), argsDict_bool))
+expect_warning(cmd_args_to_flags(list("a" = 2), argsDict_bool))
+expect_warning(cmd_args_to_flags(list("long1" = 2, "long2" = T, "test" = "abc"), argsDict_bool))
 
 ## should warn if flag has both T & F ?
 #expect_warning(dotsToArgs(list("b" = T, "b" = F)))
@@ -71,17 +71,17 @@ expect_warning(argsToFlags(list("long1" = 2, "long2" = T, "test" = "abc"), argsD
 #expect_warning(dotsToArgs(list("long1" = T, "long1" = F), argsDict))
 
 ## Should also catch if long & short version of flags are both set
-expect_equal(argsToFlags(list("long1" = 2, "l" = T)), 
+expect_equal(cmd_args_to_flags(list("long1" = 2, "l" = T)), 
              list("long1" = 2, "l" = ""))
-expect_message(argsToFlags(list("long1" = 2, "l" = T), argsDict))
+expect_message(cmd_args_to_flags(list("long1" = 2, "l" = T), argsDict))
 
-expect_message(argsToFlags(list("l" = T, "l" = T), argsDict))
-expect_message(argsToFlags(list("l" = T, "l" = T)))
+expect_message(cmd_args_to_flags(list("l" = T, "l" = T), argsDict))
+expect_message(cmd_args_to_flags(list("l" = T, "l" = T)))
 
 test_that("Illegal flags detected", {
-  expect_error(argsToFlags(list("&&echo" = "test")))
-  expect_error(argsToFlags(list("$(echo hello world)" = T)))
-  expect_error(argsToFlags(list("test flag" = T)))
-  expect_error(argsToFlags(list("<(cat.)" = T)))
+  expect_error(cmd_args_to_flags(list("&&echo" = "test")))
+  expect_error(cmd_args_to_flags(list("$(echo hello world)" = T)))
+  expect_error(cmd_args_to_flags(list("test flag" = T)))
+  expect_error(cmd_args_to_flags(list("<(cat.)" = T)))
 })
 
