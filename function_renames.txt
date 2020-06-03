@@ -5,7 +5,7 @@ s/cmd_check_install/cmd_install_check/g
 #
 # Build path handler
 # I NEED A BETTER NAME FOR THIS
-cmd_build_path_handler/cmd_path_handle
+s/cmd_build_path_handler/cmd_path_handle/g
 #
 s/cmd_check_files_exist/cmd_files_exist/g
 #
