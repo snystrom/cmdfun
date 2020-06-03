@@ -26,11 +26,12 @@ s/check_valid_command_path/.check_valid_command_path/g
 s/check_valid_util/.check_valid_util/g
 
 # cmd_flags
-s/cmd_crystallize_flags/cmd_flags_crystallize/g
-s/cmd_drop_flags/cmd_flags_drop/g
+s/cmd_crystallize_flags/cmd_list_crystallize/g
+s/cmd_drop_flags/cmd_list_drop/g
+s/cmd_keep_flags/cmd_list_keep/g
 s/cmd_drop_flags_regex/cmd_flags_drop_regex/g
-s/cmd_drop_list_by_name/cmd_flags_drop_named/g
-s/cmd_keep_list_by_name/cmd_flags_keep_named/g
+s/cmd_drop_list_by_name/cmd_list_drop_named/g
+s/cmd_keep_list_by_name/cmd_list_keep_named/g
 
 # help parsing & error suggestion/handling
 s/cmd_help_flag_names/cmd_help_parse_flags/g
