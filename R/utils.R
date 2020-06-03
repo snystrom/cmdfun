@@ -28,29 +28,6 @@ cmd_drop_list_by_name <- function(list, names){
   list[!(names(list) %in% names)]
 }
 
-#' Drop values from vector matching one or more regexes
-#' 
-#' Sometimes it is easier to preprocess arguments to commandline flags before
-#' removing known invalid entries or special circumstances. This function allows
-#' quick removal of values by scanning the flags vector with multiple regexes.
-#'
-#' @param flags character vector of flags (typically output of cmd_args_to_flags())
-#' @param regex vector of regexes to scan flags. Will remove any flags matching the regex.
-#'
-#' @return flags without flags matching regexes
-#' @export
-#'
-#' @examples
-#' flags <- c("-n value", "-f")
-#' cmd_drop_flags_regex(flags, "-n")
-#' cmd_drop_flags_regex(flags, "-n value")
-cmd_drop_flags_regex <- function(flags, regex){
-  lapply(regex, function(re){
-    flags <<- flags[!grepl(re, flags)]
-  })
-  return(flags)
-}
-
 #' keep entries from list of flags by name or name/value pair.
 #'
 #' @param flags named list output of cmd_args_to_flags
