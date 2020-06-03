@@ -165,11 +165,6 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
 #' flagList <- cmd_args_to_flags(theArgs)
 #' flags <- cmd_list_crystallize(flagList)
-#' 
-#' # Above is equivalent to the legacy usage:
-#' theFunction <- function(...){cmd_args_all()}
-#' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
-#' flags <- legacy_cmd_args_to_flags(theArgs)
 cmd_list_crystallize <- function(flagList, prefix = "-", sep = ","){
   
   if (is.null(flagList)) return(NULL)

@@ -1,5 +1,5 @@
 library(testthat)
-library(dotargs)
+library(cmdlr)
 library(magrittr)
 
-test_check("dotargs")
+test_check("cmdlr")

@@ -11,3 +11,4 @@ vignettes/
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+function_renames.txt

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • cmdlr</title>
+<title>Parses commandline help options to return vector of valid flag names — cmd_help_parse_flags • cmdlr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Parses commandline help options to return vector of valid flag names — cmd_help_parse_flags" />
+<meta property="og:description" content="When using cmdlr to write lazy shell wrappers, the user can easily mistype
+a commandline flag since there is not text completion. Some programs behave
+unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages." />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -114,18 +117,63 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Parses commandline help options to return vector of valid flag names</h1>
+    
+    <div class="hidden name"><code>cmd_help_parse_flags.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="help_checking.html">Checking valid arguments</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>When using cmdlr to write lazy shell wrappers, the user can easily mistype
+a commandline flag since there is not text completion. Some programs behave
+unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages.</p>
     </div>
+
+    <pre class="usage"><span class='fu'>cmd_help_parse_flags</span>(<span class='no'>help_lines</span>, <span class='kw'>processx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>help_lines</th>
+      <td><p><code>character</code> vector contianing the output of "command
+--help", or similar output. Optional: pass either <code>stdout</code>, or <code>stderr</code> output from
+processx::run(), must set <code>processx = TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>processx</th>
+      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> if set to TRUE will split string on "\n" before
+parsing.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>first word entry of each line prefixed by "-". typically this grabs
+all flags from --help output, but often times will require extra
+postprocessing to remove commas or equal signs, for example.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>cmd_help_parse_flags</code> tries to grab flags from --help documentation which can be used for error checking.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='cmd_help_flags_similar.html'>cmd_help_flags_similar</a></code> <code><a href='cmd_help_flags_suggest.html'>cmd_help_flags_suggest</a></code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># with processx</span>
+<span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>processx</span><span class='kw ns'>::</span><span class='fu'><a href='http://processx.r-lib.org/reference/run.html'>run</a></span>(<span class='st'>"tar"</span>, <span class='st'>"--help"</span>, <span class='kw'>error_on_status</span> <span class='kw'>=</span> <span class='no'>F</span>)
+<span class='no'>lines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/strsplit.html'>strsplit</a></span>(<span class='no'>out</span>$<span class='no'>stderr</span>, <span class='st'>"\n"</span>)<span class='kw'>[[</span><span class='fl'>1</span>]]
+<span class='no'>fn_flags</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_help_parse_flags</span>(<span class='no'>lines</span>)
+
+<span class='co'># with system2</span>
+<span class='no'>lines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system2.html'>system2</a></span>(<span class='st'>"tar"</span>, <span class='st'>"--help"</span>, <span class='kw'>stderr</span> <span class='kw'>=</span> <span class='no'>T</span>)
+<span class='no'>fn_flags</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_help_parse_flags</span>(<span class='no'>lines</span>)
+}</div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

@@ -1,4 +1,4 @@
-library(dotargs)
+#library(cmdlr)
 
 named_test <- function(arg1, ...){
   cmd_args_named()
@@ -14,26 +14,26 @@ dot_test <- function(arg1, ...){
 
 pipe_test <- function(arg1, ...){
   cmd_args_all() %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
 }
 
 pipe_test_named <- function(arg1, arg2, ...){
   cmd_args_named() %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
 }
 
 keep_test <- function(arg1, arg2, ...){
   cmd_args_all(keep = c("arg1", "dot_keep")) %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
 }
 
 drop_test <- function(arg1, arg2, ..){
   cmd_args_all(drop = "arg2") %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
 }
 
 test_that("Can get Named Args", {

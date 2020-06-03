@@ -1,4 +1,4 @@
-dotargs
+cmdlr
 ================
 
 <!-- badges: start -->
@@ -12,31 +12,32 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 ## A simple framework for building shell interfaces
 
-The purpose of `dotargs` is to significantly reduce the overhead
-involved in wrapping shell programs in R. The tools are intended to be
-intuitive and lightweight enough to use for data scientists trying to
-get things done quickly, but robust and full-fledged enough for
-developers to extend them to more advanced use cases.
+The purpose of `cmdlr` is to significantly reduce the overhead involved
+in wrapping shell programs in R. The tools are intended to be intuitive
+and lightweight enough to use for data scientists trying to get things
+done quickly, but robust and full-fledged enough for developers to
+extend them to more advanced use cases.
 
 ## Vocabulary to describe operations
 
-Briefly, `dotargs` captures R function arguments (**args**) and converts
+Briefly, `cmdlr` captures R function arguments (**args**) and converts
 them to a vector of commandline **flags**.
 
-The `dotargs` framework provides three mechanisms for capturing function
+The `cmdlr` framework provides three mechanisms for capturing function
 arguments:
 
-  - `getDotArgs` captures all arguments passed to `...`
-  - `getNamedArgs` captures all keyword arguments defined by the user
-  - `getAllArgs` captures both named + dot arguments
+  - `cmd_args_dots()` captures all arguments passed to `...`
+  - `cmd_args_named()` captures all keyword arguments defined by the
+    user
+  - `cmd_args_all()` captures both named + dot arguments
 
-`argsToFlags` converts the captured arguments to a parsed list of
+`cmd_args_to_flags` converts the captured arguments to a parsed list of
 flag/value pairs. This output can be useful for additonal handling of
 special flag assignments from within R.
 
-`crystallize_flags` converts the output of `argsToFlags` to a vector of
-commandline-style flags. This output can be directly fed to `system2` or
-`processx`.
+`cmd_list_crystallize` converts the output of `cmd_args_to_flags` to a
+vector of commandline-style flags. This output can be directly fed to
+`system2` or `processx`.
 
 Together, they can be used to build user-friendly R interfaces to shell
 programs without having to manually implement all commandline flags in R
@@ -45,14 +46,14 @@ functions.
 ## Install
 
 ``` r
-remotes::install_github("snystrom/dotargs")
+remotes::install_github("snystrom/cmdlr")
 ```
 
 ## Examples
 
 ``` r
 library(magrittr)
-library(dotargs)
+library(cmdlr)
 ```
 
 variables defined in `...` are converted to character vector of flags
@@ -61,8 +62,8 @@ appropriate for shell commands.
 ``` r
 myFunction <- function(...){
 
-  flags <- getDotArgs() %>%
-    argsToFlags()
+  flags <- cmd_args_dots() %>%
+    cmd_args_to_flags()
   
   return(flags)
 }
@@ -78,12 +79,12 @@ myFunction <- function(...){
     ## $bool_flag
     ## [1] ""
 
-This list can be passed to `crystallize_flags` to generate a vector
+This list can be passed to `cmd_list_crystallize` to generate a vector
 suitable for `system2` to build shell commands.
 
 ``` r
 flagsList %>% 
-  crystallize_flags()
+  cmd_list_crystallize()
 ```
 
     ## [1] "-flag"      "var"        "-bool_flag"
@@ -91,9 +92,9 @@ flagsList %>%
 ``` r
 shellCut <- function(text, ...){
 
-  flags <- getDotArgs() %>%
-    argsToFlags() %>% 
-    crystallize_flags()
+  flags <- cmd_args_dots() %>%
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
 
     system2("cut", flags, stdout = T, input = text)
 
@@ -118,9 +119,9 @@ shellCut("hello_world_hello", f = c(1,3), d = "_")
 
 ``` r
 shell_ls <- function(dir = ".", ...){
-  flags <- getDotArgs() %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+  flags <- cmd_args_dots() %>% 
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -130,7 +131,7 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("R")
 ```
 
-    ## [1] "dots_to_args.R"   "macros.R"         "parse_help.R"     "utils.R"         
+    ## [1] "cmd_args.R"       "macros.R"         "parse_help.R"     "utils.R"         
     ## [5] "utils_internal.R"
 
 ``` r
@@ -138,11 +139,11 @@ shell_ls("R", l = T)
 ```
 
     ## [1] "total 48"                                                                  
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  7467 Apr 23 09:49 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10323 May 27 11:11 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5783 Apr 25 11:10 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  8542 May 27 09:54 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7428 Apr  8 15:59 utils_internal.R"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Jun  3 16:03 cmd_args.R"      
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10309 Jun  3 15:35 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5821 Jun  3 16:00 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9521 Jun  3 15:35 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7435 Jun  3 15:35 utils_internal.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -151,9 +152,9 @@ shell_ls_alias <- function(dir = ".", ...){
   
   argsDict <- c("long" = "l")
   
-  flags <- getDotArgs() %>% 
-    argsToFlags(argsDict) %>% 
-    crystallize_flags()
+  flags <- cmd_args_dots() %>% 
+    cmd_args_to_flags(argsDict) %>% 
+    cmd_list_crystallize()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -164,11 +165,11 @@ shell_ls_alias("R", long = T)
 ```
 
     ## [1] "total 48"                                                                  
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  7467 Apr 23 09:49 dots_to_args.R"  
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10323 May 27 11:11 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5783 Apr 25 11:10 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  8542 May 27 09:54 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7428 Apr  8 15:59 utils_internal.R"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Jun  3 16:03 cmd_args.R"      
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10309 Jun  3 15:35 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5821 Jun  3 16:00 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9521 Jun  3 15:35 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7435 Jun  3 15:35 utils_internal.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -176,9 +177,9 @@ shellCut_alias <- function(text, ...){
   argsDict <- c("sep" = "d",
                 "fields" = "f")
     
-    flags <- getDotArgs() %>%
-        argsToFlags(argsDict) %>% 
-      crystallize_flags()
+    flags <- cmd_args_dots() %>%
+        cmd_args_to_flags(argsDict) %>% 
+      cmd_list_crystallize()
 
     system2("cut", flags, stdout = T, input = text)
 }
@@ -199,15 +200,15 @@ variables defined in `.Renviron`, using options (set with `option()`,
 and got with `getOption()`), having the user explicitly pass the path in
 the function call, or failing this, using a default install path.
 
-`build_path_handler()` is a macro which returns a function that returns
-a valid path to the target by heirarchically searching a series of
+`cmd_path_handle()` is a macro which returns a function that returns a
+valid path to the target by heirarchically searching a series of
 possible locations.
 
 For example, to build an interface to the “MEME” suite, which is by
 default installed to `~/meme/bin`, one could build the following:
 
 ``` r
-handle_meme_path <- build_path_handler(default_path = "~/meme/bin")
+handle_meme_path <- cmd_path_handle(default_path = "~/meme/bin")
 
 handle_meme_path()
 ```
@@ -217,7 +218,7 @@ handle_meme_path()
 To only search the R environment variable “MEME\_PATH”, one could build:
 
 ``` r
-handle_meme_path <- build_path_handler(environment_var = "MEME_PATH")
+handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH")
 ```
 
 ``` r
@@ -239,7 +240,7 @@ Multiple arguments can be used, and they will be searched from
 most-specific, to most-general.
 
 ``` r
-handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin")
 ```
 
@@ -265,7 +266,7 @@ Here, I will include two tools from the MEME suite, AME, and DREME
 (distributed as binaries named “ame”, and “dreme”).
 
 ``` r
-handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin",
                                        utils = c("dreme", "ame"))
 ```
@@ -281,7 +282,7 @@ unexpected user-level
 handle_meme_path("bad/path")
 ```
 
-    ## Error in check_valid_command_path(path): Command: bad/path, does not exist.
+    ## Error in .check_valid_command_path(path): Command: bad/path, does not exist.
 
 `util` specifies which utility path to return (if any). The path handler
 will throw an error if the utility is not found in any of the specified
@@ -303,9 +304,9 @@ handle_meme_path(util = TRUE)
     ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
     ## [2] "/nas/longleaf/home/snystrom/meme/bin/ame"
 
-`dotargs` provides a preexisting utility for this, however. The
-`check_install` function can be lightly wrapped by package builders to
-verify and print a user-friendly series of checks for a valid tool
+`cmdlr` provides a preexisting utility for this, however. The
+`cmd_install_check` function can be lightly wrapped by package builders
+to verify and print a user-friendly series of checks for a valid tool
 install. it takes as input the output of `build_package_handler` and an
 optional user-override `path`.
 
@@ -313,7 +314,7 @@ Here I build a function for checking a users `meme` install.
 
 ``` r
 check_meme_install <- function(path = NULL){
-  check_install(handle_meme_path, path = path)
+  cmd_install_check(handle_meme_path, path = path)
 }
 ```
 
@@ -341,33 +342,33 @@ check_meme_install('bad/path')
     ## ✖ bad/path
 
 If you want to write your own install checker instead of using the
-`check_install` function, `dotargs` also provides the `ui_file_exists`
-function for printing pretty status messages.
+`cmd_install_check` function, `cmdlr` also provides the
+`cmd_ui_file_exists` function for printing pretty status messages.
 
 ``` r
-ui_file_exists("bad/file")
+cmd_ui_file_exists("bad/file")
 ```
 
     ## ✖ bad/file
 
 ``` r
-ui_file_exists("~/meme/bin")
+cmd_ui_file_exists("~/meme/bin")
 ```
 
     ## ✔ ~/meme/bin
 
 ### Internal install validators
 
-`dotargs` also provides a macro `build_is_valid_install()` to construct
+`cmdlr` also provides a macro `cmd_install_is_valid()` to construct
 functions returning boolean values testing for an install path. These
 are useful in function logic, or package development for setting
 conditional examples or function hooks that depend on a command install.
-`build_is_valid_install()` takes a path handler function as input, so
-any `options`, `.Renviron`, or default install location logic propagates
-to these funtions as well.
+`cmd_install_is_valid()` takes a path handler function as input, so any
+`options`, `.Renviron`, or default install location logic propagates to
+these funtions as well.
 
 ``` r
-meme_installed <- build_is_valid_install(handle_meme_path)
+meme_installed <- cmd_install_is_valid(handle_meme_path)
 meme_installed()
 ```
 
@@ -376,7 +377,7 @@ meme_installed()
 This also works on utils defined during path hanlder construction.
 
 ``` r
-ame_installed <- build_is_valid_install(handle_meme_path, util = "ame")
+ame_installed <- cmd_install_is_valid(handle_meme_path, util = "ame")
 ame_installed()
 ```
 
@@ -384,10 +385,10 @@ ame_installed()
 
 ## Bringing it all together
 
-Using a `get*Args()` family function to get and convert function
+Using a `cmd_args_` family function to get and convert function
 arguments to commandline flags. The path handler returns the correct
 `command` call which can be passed to `system2` or `processx` along with
-the flags generated from `argsToFlags`.
+the flags generated from `cmd_args_to_flags`.
 
 This makes for a robust shell wrapper without excess overhead.
 
@@ -399,14 +400,14 @@ which is: `MEME_PATH` environment variable, followed by the `~/meme/bin`
 default install.
 
 ``` r
-handle_meme_path <- build_path_handler(environment_var = "MEME_PATH",
+handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin",
                                        utils = c("dreme", "ame"))
 
 runDreme <- function(..., meme_path = NULL){
-  flags <- getDotArgs() %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+  flags <- cmd_args_dots() %>% 
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
   
   command <- handle_meme_path(path = meme_path, util = "dreme")
   
@@ -426,7 +427,7 @@ If users have issues with the install, they can run
 
 ## Restrict argument matching
 
-each `get*Args` family function accepts a character vector of names to
+each `cmd_args_` family function accepts a character vector of names to
 `keep` or `drop` arguments which will restrict command argument matches
 to values in `keep` (or ignore those in `drop`). As of now, `keep` and
 `drop` are mutually exclusive.
@@ -436,9 +437,9 @@ as flags, while others can be used for function logic.
 
 ``` r
 myFunction <- function(arg1, arg2, print = T){
-  flags <- getNamedArgs(keep = c("arg1", "arg2")) %>% 
-    argsToFlags() %>% 
-    crystallize_flags()
+  flags <- cmd_args_named(keep = c("arg1", "arg2")) %>% 
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
   
   ifelse(print, print("printing"), print("nothing"))
   
@@ -465,19 +466,21 @@ myFunction(arg1 = "blah", arg2 = "blah", F)
 For the most part, the [purrr](https://purrr.tidyverse.org/) library is
 the most useful toolkit for operations on list objects.
 
-`dotargs` provides additional helper functions to handle common
+`cmdlr` provides additional helper functions to handle common
 manipulations.
 
-`drop_flags` operates on flag lists to drop all entries corresponding to
-a certain name, or specific name/value pairs. Can be useful for ignoring
-setting certain flags if the user set them to a specific value.
+`cmd_list_drop` operates on flag lists to drop all entries corresponding
+to a certain name, specific name/value pairs, or by index position. Can
+be useful for ignoring setting certain flags if the user set them to a
+specific value. Conversely, `cmd_list_keep` functions identically but
+for keeping entries.
 
 ``` r
 myFunction <- function(arg1, arg2){
-  flags <- getNamedArgs() %>% 
-    argsToFlags() %>% 
-    drop_flags(c("arg2" = "baz")) %>% 
-    crystallize_flags()
+  flags <- cmd_args_named() %>% 
+    cmd_args_to_flags() %>% 
+    cmd_list_drop(c("arg2" = "baz")) %>% 
+    cmd_list_crystallize()
   
   return(flags)
 }
@@ -498,17 +501,17 @@ myFunction(arg1 = "foo", arg2 = "baz")
 Sometimes a commandline function returns multiple output files you want
 to check for after the run.
 
-`check_files_exist` accepts a vector or list of files & checks that they
+`cmd_files_exist` accepts a vector or list of files & checks that they
 exist.
 
-`dotargs` additionally provides a few convenience functions for
-generating lists of expected files. `expected_outputs` generates
-combinations of extension/prefix file names. The output can be passed to
-`check_files_exist` which will error if a file isn’t found on the
+`cmdlr` additionally provides a few convenience functions for generating
+lists of expected files. `cmd_output_expect` generates combinations of
+extension/prefix file names. The output can be passed to
+`cmd_files_exist` which will error if a file isn’t found on the
 filesystem.
 
 ``` r
-expected_outputs(ext = c("txt", "xml"), prefix = "outFile")
+cmd_output_expect(ext = c("txt", "xml"), prefix = "outFile")
 ```
 
     ## $txt
@@ -518,7 +521,7 @@ expected_outputs(ext = c("txt", "xml"), prefix = "outFile")
     ## [1] "./outFile.xml"
 
 ``` r
-expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
+cmd_output_expect(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 ```
 
     ## $outFile
@@ -532,10 +535,10 @@ expected_outputs(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 
 ## Error checking user input
 
-When using `dotargs` to write lazy shell wrappers, the user can easily
+When using `cmdlr` to write lazy shell wrappers, the user can easily
 mistype a commandline flag since there is not text completion. Some
 programs behave unexpectedly when flags are typed incorrectly, and for
-this reason return uninformative error messages. `dotargs` has built-in
+this reason return uninformative error messages. `cmdlr` has built-in
 methods to automatically populate a list of valid flags from a command’s
 help-text.
 
@@ -549,17 +552,20 @@ the user-input flags (`user_input_flags` below), and tries to identify
 misspelled function arguments.
 
 Here, the user has accidentally used the argument `delte` instead of
-`delete`. `dotargs` tries to be helpful and identify the misspelling for
+`delete`. `cmdlr` tries to be helpful and identify the misspelling for
 the user.
 
 ``` r
 user_input_flags <- c("delte")
 
 system2("tar", "--help", stdout = T) %>% 
-  get_help_flag_names() %>% 
+  cmd_help_parse_flags() %>% 
   gsub(",", "", .) %>% 
-  suggest_flag_names(user_input_flags) %>% 
-  error_suggest_flag_names()
+  # Compares User-input flags to parsed commandline flags
+  # returns flags that match based on edit distance
+  cmd_help_flags_similar(user_input_flags) %>% 
+  # Prints error message suggesting the most similar flag name
+  cmd_help_flags_suggest()
 ```
 
     ## Error: Invalid flags. Did you mean:
@@ -573,9 +579,9 @@ please be careful how you build system calls.
 ``` r
 shellCut_unsafe <- function(text, ...){
 
-  flags <- getDotArgs() %>%
-    argsToFlags() %>% 
-    crystallize_flags()
+  flags <- cmd_args_dots() %>%
+    cmd_args_to_flags() %>% 
+    cmd_list_crystallize()
 
     system2("echo", c(text , "|", "cut", flags), stdout = T)
 

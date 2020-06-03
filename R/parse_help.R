@@ -6,7 +6,7 @@
 #'
 #' `cmd_help_parse_flags` tries to grab flags from --help documentation which can be used for error checking.
 #'
-#' @seealso \code{\link{cmd_help_flags_similar}} \code{\link{cmd_error_cmd_help_flags_similar}}
+#' @seealso \code{\link{cmd_help_flags_similar}} \code{\link{cmd_help_flags_suggest}}
 #'
 #' @param help_lines `character` vector contianing the output of "command
 #'   --help", or similar output. Optional: pass either `stdout`, or `stderr` output from

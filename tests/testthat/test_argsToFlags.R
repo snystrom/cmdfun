@@ -1,4 +1,4 @@
-library(dotargs)
+#library(cmdlr)
 ## TODO: format tests inside test_that()
 
 

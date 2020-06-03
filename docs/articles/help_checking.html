@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checking valid arguments • dotargs</title>
+<title>Checking valid arguments • cmdlr</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Checking valid arguments">
-<meta property="og:description" content="dotargs">
+<meta property="og:description" content="cmdlr">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -30,7 +30,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">dotargs</a>
+        <a class="navbar-link" href="../index.html">cmdlr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9001</span>
       </span>
     </div>
@@ -87,32 +87,32 @@
 <p>Methods to get help lines into R. Examples with processx and system2 (I suggest <code>processx</code> because it’s handling is better, although it needs more steps)</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># with processx</span>
 <span class="no">o</span> <span class="kw">&lt;-</span> <span class="kw pkg">processx</span><span class="kw ns">::</span><span class="fu"><a href="http://processx.r-lib.org/reference/run.html">run</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">error_on_status</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="no">fn_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">o</span>$<span class="no">stdout</span>, <span class="kw">processx</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="no">fn_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">o</span>$<span class="no">stdout</span>, <span class="kw">processx</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
 <span class="co"># with system2</span>
 <span class="no">lines</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
-<span class="no">fn_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">lines</span>)
+<span class="no">fn_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">lines</span>)
 <span class="no">fn_flags</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">","</span>, <span class="st">""</span>, <span class="no">.</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"=.+"</span>, <span class="st">""</span>, <span class="no">.</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"\\["</span>, <span class="st">""</span>, <span class="no">.</span>) <span class="kw">%&gt;%</span>
   <span class="no">unique</span></pre></body></html></div>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">tar</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">...</span>){
-  <span class="fu"><a href="../reference/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/argsToFlags.html">argsToFlags</a></span>()
+  <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/argsToFlags.html">argsToFlags</a></span>()
 }
 
 <span class="no">tar_withCheck</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">...</span>){
   <span class="no">tarHelp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
-  <span class="no">tarflags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">tarHelp</span>)
+  <span class="no">tarflags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">tarHelp</span>)
 
-  <span class="no">inputFlags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
+  <span class="no">inputFlags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
     <span class="kw pkg">purrr</span><span class="kw ns">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span>(~{<span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"_"</span>, <span class="st">"-"</span>, <span class="no">.</span>)})
 
   <span class="co"># check that inputs are valid</span>
-  <span class="fu"><a href="../reference/suggest_flag_names.html">suggest_flag_names</a></span>(<span class="no">tarflags</span>, <span class="no">inputFlags</span>, ~{<span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"-"</span>, <span class="st">"_"</span>, <span class="no">.</span>)}) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/error_suggest_flag_names.html">error_suggest_flag_names</a></span>()
+  <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/suggest_flag_names.html">suggest_flag_names</a></span>(<span class="no">tarflags</span>, <span class="no">inputFlags</span>, ~{<span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"-"</span>, <span class="st">"_"</span>, <span class="no">.</span>)}) <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/error_suggest_flag_names.html">error_suggest_flag_names</a></span>()
 }
 
 <span class="fu">tar_withCheck</span>(<span class="kw">utz</span> <span class="kw">=</span> <span class="st">"value"</span>, <span class="kw">exclude_caces</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
@@ -121,23 +121,23 @@
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">check_tar_flags</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">check_flags</span>){
   <span class="no">tarhelp_out</span> <span class="kw">&lt;-</span> <span class="kw pkg">processx</span><span class="kw ns">::</span><span class="fu"><a href="http://processx.r-lib.org/reference/run.html">run</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">error_on_status</span> <span class="kw">=</span> <span class="no">F</span>)
 
-  <span class="fu"><a href="../reference/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">tarhelp_out</span>$<span class="no">stdout</span>, <span class="kw">processx</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/suggest_flag_names.html">suggest_flag_names</a></span>(<span class="no">check_flags</span>, ~{
+  <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/get_help_flag_names.html">get_help_flag_names</a></span>(<span class="no">tarhelp_out</span>$<span class="no">stdout</span>, <span class="kw">processx</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/suggest_flag_names.html">suggest_flag_names</a></span>(<span class="no">check_flags</span>, ~{
       <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"-"</span>, <span class="st">"_"</span>, <span class="no">.</span>) <span class="kw">%&gt;%</span>
         <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">","</span>, <span class="st">""</span>, <span class="no">.</span>)
       }) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/error_suggest_flag_names.html">error_suggest_flag_names</a></span>()
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/error_suggest_flag_names.html">error_suggest_flag_names</a></span>()
 }</pre></body></html></div>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu">check_tar_flags</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"utc"</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="st">"utz"</span> <span class="kw">=</span> <span class="fl">2</span>))</pre></body></html></div>
 <p>This is where <code>processx</code> shines, but error checking can be done using <code>system2</code> as well. We catch errors by checking the exit status, where non-zero exit status is considered an error.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">tar_withCheck</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">file</span>, <span class="no">...</span>){
 
-  <span class="no">inputFlags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
+  <span class="no">inputFlags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/getDotArgs.html">getDotArgs</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/argsToFlags.html">argsToFlags</a></span>() <span class="kw">%&gt;%</span>
     <span class="kw pkg">purrr</span><span class="kw ns">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span>(~{<span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"_"</span>, <span class="st">"-"</span>, <span class="no">.</span>)})
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="no">inputFlags</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/crystallize_flags.html">crystallize_flags</a></span>()
+    <span class="fu"><a href="https://rdrr.io/pkg/dotargs/man/crystallize_flags.html">crystallize_flags</a></span>()
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">file</span>)
   <span class="no">ps_out</span> <span class="kw">&lt;-</span> <span class="kw pkg">processx</span><span class="kw ns">::</span><span class="fu"><a href="http://processx.r-lib.org/reference/run.html">run</a></span>(<span class="st">"tar"</span>, <span class="no">flags</span>, <span class="kw">error_on_status</span> <span class="kw">=</span> <span class="no">F</span>)
