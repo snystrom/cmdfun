@@ -51,6 +51,50 @@ cmd_drop_flags_regex <- function(flags, regex){
   return(flags)
 }
 
+#' keep entries from list of flags by name or name/value pair.
+#'
+#' @param flags named list output of cmd_args_to_flags
+#' @param keep vector of flag entries to keep. Pass an unnamed vector
+#'   to keep flags by name. Pass a named vector to keep flags by name/value
+#'   pairs. Pass a numeric vector to keep by position.
+#'
+#' @return flags list with values not in keep removed
+#' @export
+#'
+#' @examples
+#' exFlags <- list("flag1" = 2, "flag2" = "someText")
+#' cmd_keep_flags(exFlags, "flag1")
+#' # will keep flag2 because its name and value match 'keep' vector
+#' cmd_keep_flags(exFlags, c("flag2" = "someText"))
+#' # Will keep "flag1" by position index
+#' cmd_keep_flags(exFlags, 1)
+#'
+#' # won't keep flag2 because its value isn't 'someText'
+#' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
+#' cmd_keep_flags(exFlags, c("flag2" = "someText"))
+cmd_keep_flags <- function(flags, keep){
+  
+  testthat::expect_named(flags)
+  
+  if (length(keep) == 0){
+    return(list())
+  }
+  
+  if (is.numeric(keep)){
+    return(list_keep_index(flags, keep))
+  }
+  
+  if (is.null(names(keep))){
+    keeps <- list_index_names(flags, keep)
+    return(cmd_keep_flags(flags, keeps))
+  }
+
+  if (!is.null(names(keep))) {
+    keeps <- list_index_named_values(flags, keep)
+    return(list_keep_index(flags, keeps))
+  }
+  
+}
 
 #' Drop entries from list of flags by name or name/value pair.
 #'
@@ -67,6 +111,8 @@ cmd_drop_flags_regex <- function(flags, regex){
 #' cmd_drop_flags(exFlags, "flag1")
 #' # will drop flag2 because its name and value match 'drop' vector
 #' cmd_drop_flags(exFlags, c("flag2" = "someText"))
+#' # Will drop "flag1" by position index
+#' cmd_keep_flags(exFlags, 1)
 #'
 #' # won't drop flag2 because its value isn't 'someText'
 #' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
@@ -80,43 +126,62 @@ cmd_drop_flags <- function(flags, drop){
   }
   
   if (is.numeric(drop)){
-    return(flag_drop_index(flags, drop))
+    return(list_drop_index(flags, drop))
   }
   
   if (is.null(names(drop))){
-    drops <- flag_index_names(flags, drop)
+    drops <- list_index_names(flags, drop)
     return(cmd_drop_flags(flags, drops))
   }
 
   if (!is.null(names(drop))) {
-    drops <- flag_index_named_values(flags, drop)
-    return(flag_drop_index(flags, drops))
+    drops <- list_index_named_values(flags, drop)
+    return(list_drop_index(flags, drops))
   }
   
 }
 
-#' drops list entry by positional index
+#' keeps list entry by positional index
 #'
 #' @param flags list of flags
-#' @param index position in list to drop
+#' @param index position in list to keep
 #'
-#' @return flags dropped at indices
+#' @return flags kept at indices
 #'
 #' @examples
 #' 
 #' @noRd
-flag_drop_index <- function(flags, index){
+list_keep_index <- function(flags, index){
   
   if (length(index) == 0 | all(is.na(index))){ return(flags) }
   
   index <- index[!is.na(index)]
   
-  flags[-index]
+  flags[index]
+}
+
+#' drops list entry by positional index
+#'
+#' @param list a `list`
+#' @param index position in list to drop
+#'
+#' @return list w/ values dropped at indices
+#'
+#' @examples
+#' 
+#' @noRd
+list_drop_index <- function(list, index){
+  
+  if (length(index) == 0 | all(is.na(index))){ return(list) }
+  
+  index <- index[!is.na(index)]
+  
+  list[-index]
 }
 
 #' Return index of named list values
 #'
-#' @param flags list of flags
+#' @param list a named list
 #' @param names names of list entries
 #'
 #' @return vector of indices corresponding to named values matching names
@@ -124,8 +189,8 @@ flag_drop_index <- function(flags, index){
 #' @examples
 #' 
 #' @noRd
-flag_index_names <- function(flags, names){
-  i <- which(names(flags) %in% names)
+list_index_names <- function(list, names){
+  i <- which(names(list) %in% names)
   names(i) <- NULL
   
   if (length(i) == 0) { return(NULL) }
@@ -137,18 +202,18 @@ flag_index_names <- function(flags, names){
 #' 
 #' 
 #'
-#' @param flags list of flags
+#' @param list a named list
 #' @param named_values named character vector of list objects + their values to be matched.
 #'
 #' @return index in flags list with entries matching name/value pairs in named_values
 #'
 #' @examples
 #' myList <- list(a = 1, b = 2, b = 5)
-#' flag_index_named_values(myList, c("b" = 5))
-#' flag_index_named_values(myList, c("b" = 2, "a" = 1))
+#' list_index_named_values(myList, c("b" = 5))
+#' list_index_named_values(myList, c("b" = 2, "a" = 1))
 #' 
 #' @noRd
-flag_index_named_values <- function(flags, named_values){
+list_index_named_values <- function(list, named_values){
   
   testthat::expect_named(named_values)
   
@@ -158,7 +223,7 @@ flag_index_named_values <- function(flags, named_values){
   }
   
   indices <- purrr::imap_int(named_values, ~{
-    i <- which(names(flags) == .y & flags == .x)
+    i <- which(names(list) == .y & list == .x)
     names(i) <- NULL
     
     # NA will mean "no match"
