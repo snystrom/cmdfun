@@ -1,1 +1,54 @@
+url: https://snystrom.github.io/cmdr/
+
 destination: docs
+
+template:
+  params:
+    bootswatch: flatly
+    
+reference:
+- title: Selecting Function Arguments
+  contents:
+  - cmd_args_all
+  - cmd_args_dots
+  - cmd_args_named
+
+- title: Manipulating Argument Lists
+  contents:
+  - cmd_list_drop
+  - cmd_list_keep
+  - cmd_list_drop_named
+  - cmd_list_keep_named
+
+- title: Coercing Arguments to Commandline Flags
+  contents:
+  - cmd_args_to_flags
+  - cmd_list_crystallize
+
+- title: Macros
+  contents:
+  - cmd_path_handle
+  - cmd_install_is_valid
+
+- title: Command output helpers
+  contents:
+  - cmd_output_check
+  - cmd_output_expect
+  - cmd_files_exist
+
+- title: Commandline Help Parsing
+  contents:
+  - cmd_help_parse_flags
+  - cmd_help_flags_similar
+  - cmd_help_flags_suggest
+
+- title: User-Facing Helpers
+  contents:
+  - cmd_install_check
+  - cmd_ui_file_exists
+
+- title: Macro utilities
+  contents: 
+  - .check_valid_command_path
+  - .check_valid_util
+  

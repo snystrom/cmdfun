@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -100,7 +100,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/snystrom/cmdr/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,7 +133,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-selecting-function-arguments" class="hasAnchor"><a href="#section-selecting-function-arguments" class="anchor"></a>Selecting Function Arguments</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -155,66 +160,25 @@
           <p><code><a href="cmd_args_named.html">cmd_args_named()</a></code> </p>
         </td>
         <td><p>Return all named arguments from parent function call</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_args_to_flags.html">cmd_args_to_flags()</a></code> </p>
-        </td>
-        <td><p>Convert list of function arguments to list of command flags</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_files_exist.html">cmd_files_exist()</a></code> </p>
-        </td>
-        <td><p>Check that file exits, error if not</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_help_flags_similar.html">cmd_help_flags_similar()</a></code> </p>
-        </td>
-        <td><p>Suggest alternative name by Levenshtein edit distance</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_help_flags_suggest.html">cmd_help_flags_suggest()</a></code> </p>
-        </td>
-        <td><p>Error &amp; Suggest different flag name to user</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_help_parse_flags.html">cmd_help_parse_flags()</a></code> </p>
-        </td>
-        <td><p>Parses commandline help options to return vector of valid flag names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_install_check.html">cmd_install_check()</a></code> </p>
-        </td>
-        <td><p>Wrapper function for checking an install</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_install_is_valid.html">cmd_install_is_valid()</a></code> </p>
-        </td>
-        <td><p>Macro for constructing boolean check for valid path</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_list_crystallize.html">cmd_list_crystallize()</a></code> </p>
-        </td>
-        <td><p>Convert flag list to vector of command flags</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-manipulating-argument-lists" class="hasAnchor"><a href="#section-manipulating-argument-lists" class="anchor"></a>Manipulating Argument Lists</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="cmd_list_drop.html">cmd_list_drop()</a></code> </p>
         </td>
         <td><p>Drop entries from list of flags by name or name/value pair.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmd_list_drop_named.html">cmd_list_drop_named()</a></code> </p>
-        </td>
-        <td><p>Drop items by name from list</p></td>
       </tr><tr>
         
         <td>
@@ -224,10 +188,79 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="cmd_list_drop_named.html">cmd_list_drop_named()</a></code> </p>
+        </td>
+        <td><p>Drop items by name from list</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="cmd_list_keep_named.html">cmd_list_keep_named()</a></code> </p>
         </td>
         <td><p>Keep items by name from list</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-coercing-arguments-to-commandline-flags" class="hasAnchor"><a href="#section-coercing-arguments-to-commandline-flags" class="anchor"></a>Coercing Arguments to Commandline Flags</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="cmd_args_to_flags.html">cmd_args_to_flags()</a></code> </p>
+        </td>
+        <td><p>Convert list of function arguments to list of command flags</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="cmd_list_crystallize.html">cmd_list_crystallize()</a></code> </p>
+        </td>
+        <td><p>Convert flag list to vector of command flags</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-macros" class="hasAnchor"><a href="#section-macros" class="anchor"></a>Macros</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="cmd_path_handle.html">cmd_path_handle()</a></code> </p>
+        </td>
+        <td><p>Macro for constructing target path validators</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cmd_install_is_valid.html">cmd_install_is_valid()</a></code> </p>
+        </td>
+        <td><p>Macro for constructing boolean check for valid path</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-command-output-helpers" class="hasAnchor"><a href="#section-command-output-helpers" class="anchor"></a>Command output helpers</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="cmd_output_check.html">cmd_output_check()</a></code> </p>
@@ -242,16 +275,79 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="cmd_path_handle.html">cmd_path_handle()</a></code> </p>
+          <p><code><a href="cmd_files_exist.html">cmd_files_exist()</a></code> </p>
         </td>
-        <td><p>Macro for constructing target path validators</p></td>
+        <td><p>Check that file exits, error if not</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-commandline-help-parsing" class="hasAnchor"><a href="#section-commandline-help-parsing" class="anchor"></a>Commandline Help Parsing</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="cmd_help_parse_flags.html">cmd_help_parse_flags()</a></code> </p>
+        </td>
+        <td><p>Parses commandline help options to return vector of valid flag names</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cmd_help_flags_similar.html">cmd_help_flags_similar()</a></code> </p>
+        </td>
+        <td><p>Suggest alternative name by Levenshtein edit distance</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cmd_help_flags_suggest.html">cmd_help_flags_suggest()</a></code> </p>
+        </td>
+        <td><p>Error &amp; Suggest different flag name to user</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-user-facing-helpers" class="hasAnchor"><a href="#section-user-facing-helpers" class="anchor"></a>User-Facing Helpers</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="cmd_install_check.html">cmd_install_check()</a></code> </p>
+        </td>
+        <td><p>Wrapper function for checking an install</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="cmd_ui_file_exists.html">cmd_ui_file_exists()</a></code> </p>
         </td>
         <td><p>Checks if file exists, returns pretty status message</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-macro-utilities" class="hasAnchor"><a href="#section-macro-utilities" class="anchor"></a>Macro utilities</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="dot-check_valid_command_path.html">.check_valid_command_path()</a></code> </p>

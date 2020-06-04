@@ -6,8 +6,12 @@ Authors@R: person("Spencer", "Nystrom",
     email = "snystrom@email.unc.edu", 
     role = c("aut", "cre", "cph"),
     comment = c(ORCID = "0000-0003-1000-1579"))
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Writing interfaces to commandline software in R is cumbersome. 
+    'cmdr' provides a framework for building function calls to seemlessly 
+    interface with shell commands by allowing lazy evaluation of commandline arguments. 
+    'cmdr' also provides methods for handling user-specific paths to tool installs or secrets like API keys. 
+    Its focus is to equally serve package builders who wish to wrap commandline software, and to help analysts stay inside 
+    R when they might usually leave to execute non-R software.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -24,3 +28,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Url: https://snystrom.github.io/cmdr/, https://github.com/snystrom/cmdr
+BugReports: https://github.com/snystrom/cmdr
