@@ -1,4 +1,4 @@
-#library(cmdr)
+#library(cmdfun)
 ## TODO: format tests inside test_that()
 
 

@@ -1,4 +1,4 @@
-Package: cmdr
+Package: cmdfun
 Type: Package
 Title: Framework for Building R Interfaces to Shell Commands
 Version: 0.0.9001
@@ -7,9 +7,9 @@ Authors@R: person("Spencer", "Nystrom",
     role = c("aut", "cre", "cph"),
     comment = c(ORCID = "0000-0003-1000-1579"))
 Description: Writing interfaces to commandline software in R is cumbersome. 
-    'cmdr' provides a framework for building function calls to seemlessly 
+    'cmdfun' provides a framework for building function calls to seemlessly 
     interface with shell commands by allowing lazy evaluation of commandline arguments. 
-    'cmdr' also provides methods for handling user-specific paths to tool installs or secrets like API keys. 
+    'cmdfun' also provides methods for handling user-specific paths to tool installs or secrets like API keys. 
     Its focus is to equally serve package builders who wish to wrap commandline software, and to help analysts stay inside 
     R when they might usually leave to execute non-R software.
 License: MIT + file LICENSE
@@ -28,5 +28,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Url: https://snystrom.github.io/cmdr/, https://github.com/snystrom/cmdr
-BugReports: https://github.com/snystrom/cmdr
+Url: https://snystrom.github.io/cmdfun/, https://github.com/snystrom/cmdfun
+BugReports: https://github.com/snystrom/cmdfun

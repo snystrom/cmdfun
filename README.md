@@ -1,4 +1,4 @@
-cmdr
+cmdfun
 ================
 
 <!-- badges: start -->
@@ -12,7 +12,7 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 ## A simple framework for building shell interfaces
 
-The purpose of `cmdr` is to significantly reduce the overhead involved
+The purpose of `cmdfun` is to significantly reduce the overhead involved
 in wrapping shell programs in R. The tools are intended to be intuitive
 and lightweight enough to use for data scientists trying to get things
 done quickly, but robust and full-fledged enough for developers to
@@ -20,10 +20,10 @@ extend them to more advanced use cases.
 
 ## Vocabulary to describe operations
 
-Briefly, `cmdr` captures R function arguments (**args**) and converts
+Briefly, `cmdfun` captures R function arguments (**args**) and converts
 them to a vector of commandline **flags**.
 
-The `cmdr` framework provides three mechanisms for capturing function
+The `cmdfun` framework provides three mechanisms for capturing function
 arguments:
 
   - `cmd_args_dots()` captures all arguments passed to `...`
@@ -46,14 +46,14 @@ functions.
 ## Install
 
 ``` r
-remotes::install_github("snystrom/cmdr")
+remotes::install_github("snystrom/cmdfun")
 ```
 
 ## Examples
 
 ``` r
 library(magrittr)
-library(cmdr)
+library(cmdfun)
 ```
 
 variables defined in `...` are converted to character vector of flags
@@ -139,11 +139,11 @@ shell_ls("R", l = T)
 ```
 
     ## [1] "total 48"                                                                  
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Jun  3 16:03 cmd_args.R"      
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10309 Jun  3 15:35 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5821 Jun  3 16:00 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9521 Jun  3 15:35 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7435 Jun  3 15:35 utils_internal.R"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Jul 30 22:16 cmd_args.R"      
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10309 Jul 30 22:16 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5822 Jul 30 22:16 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9521 Jul 30 22:16 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7435 Jul 30 22:16 utils_internal.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -165,11 +165,11 @@ shell_ls_alias("R", long = T)
 ```
 
     ## [1] "total 48"                                                                  
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Jun  3 16:03 cmd_args.R"      
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10309 Jun  3 15:35 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5821 Jun  3 16:00 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9521 Jun  3 15:35 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7435 Jun  3 15:35 utils_internal.R"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Jul 30 22:16 cmd_args.R"      
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10309 Jul 30 22:16 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  5822 Jul 30 22:16 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9521 Jul 30 22:16 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7435 Jul 30 22:16 utils_internal.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -304,7 +304,7 @@ handle_meme_path(util = TRUE)
     ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
     ## [2] "/nas/longleaf/home/snystrom/meme/bin/ame"
 
-`cmdr` provides a preexisting utility for this, however. The
+`cmdfun` provides a preexisting utility for this, however. The
 `cmd_install_check` function can be lightly wrapped by package builders
 to verify and print a user-friendly series of checks for a valid tool
 install. it takes as input the output of `build_package_handler` and an
@@ -342,7 +342,7 @@ check_meme_install('bad/path')
     ## ✖ bad/path
 
 If you want to write your own install checker instead of using the
-`cmd_install_check` function, `cmdr` also provides the
+`cmd_install_check` function, `cmdfun` also provides the
 `cmd_ui_file_exists` function for printing pretty status messages.
 
 ``` r
@@ -359,7 +359,7 @@ cmd_ui_file_exists("~/meme/bin")
 
 ### Internal install validators
 
-`cmdr` also provides a macro `cmd_install_is_valid()` to construct
+`cmdfun` also provides a macro `cmd_install_is_valid()` to construct
 functions returning boolean values testing for an install path. These
 are useful in function logic, or package development for setting
 conditional examples or function hooks that depend on a command install.
@@ -466,7 +466,7 @@ myFunction(arg1 = "blah", arg2 = "blah", F)
 For the most part, the [purrr](https://purrr.tidyverse.org/) library is
 the most useful toolkit for operations on list objects.
 
-`cmdr` provides additional helper functions to handle common
+`cmdfun` provides additional helper functions to handle common
 manipulations.
 
 `cmd_list_drop` operates on flag lists to drop all entries corresponding
@@ -504,9 +504,9 @@ to check for after the run.
 `cmd_files_exist` accepts a vector or list of files & checks that they
 exist.
 
-`cmdr` additionally provides a few convenience functions for generating
-lists of expected files. `cmd_output_expect` generates combinations of
-extension/prefix file names. The output can be passed to
+`cmdfun` additionally provides a few convenience functions for
+generating lists of expected files. `cmd_output_expect` generates
+combinations of extension/prefix file names. The output can be passed to
 `cmd_files_exist` which will error if a file isn’t found on the
 filesystem.
 
@@ -535,10 +535,10 @@ cmd_output_expect(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 
 ## Error checking user input
 
-When using `cmdr` to write lazy shell wrappers, the user can easily
+When using `cmdfun` to write lazy shell wrappers, the user can easily
 mistype a commandline flag since there is not text completion. Some
 programs behave unexpectedly when flags are typed incorrectly, and for
-this reason return uninformative error messages. `cmdr` has built-in
+this reason return uninformative error messages. `cmdfun` has built-in
 methods to automatically populate a list of valid flags from a command’s
 help-text.
 
@@ -552,7 +552,7 @@ the user-input flags (`user_input_flags` below), and tries to identify
 misspelled function arguments.
 
 Here, the user has accidentally used the argument `delte` instead of
-`delete`. `cmdr` tries to be helpful and identify the misspelling for
+`delete`. `cmdfun` tries to be helpful and identify the misspelling for
 the user.
 
 ``` r

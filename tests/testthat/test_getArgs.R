@@ -1,4 +1,4 @@
-#library(cmdr)
+#library(cmdfun)
 
 named_test <- function(arg1, ...){
   cmd_args_named()
