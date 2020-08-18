@@ -42,7 +42,7 @@ cmd_help_parse_flags <- function(help_lines, processx = FALSE){
   # drop leading whitespace
   flag_lines <- gsub("^ +", "", help_lines) 
   # grab lines beginning with flag prefix
-  flag_lines <- grep("^-{1,2}[^-]", flag_lines, value = T)
+  flag_lines <- grep("^-{1,2}[^-]", flag_lines, value = TRUE)
   # remove flag prefix
   flag_lines <- gsub("^-+", "", flag_lines)
   # remove leading whitespace

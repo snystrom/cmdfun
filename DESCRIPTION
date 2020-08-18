@@ -1,7 +1,7 @@
 Package: cmdfun
 Type: Package
 Title: Framework for Building R Interfaces to Shell Commands
-Version: 0.0.9001
+Version: 0.1.9000
 Authors@R: person("Spencer", "Nystrom", 
     email = "snystrom@email.unc.edu", 
     role = c("aut", "cre", "cph"),
@@ -26,7 +26,8 @@ RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr
-Url: https://snystrom.github.io/cmdfun/, https://github.com/snystrom/cmdfun
+URL: https://snystrom.github.io/cmdfun/, https://github.com/snystrom/cmdfun
 BugReports: https://github.com/snystrom/cmdfun

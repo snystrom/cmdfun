@@ -224,7 +224,7 @@ cmd_install_is_valid <- function(path_handler, util = NULL){
 .check_valid_util <- function(util, utils = NULL, path = NULL){
   testthat::expect_length(util, 1)
   # check util is valid
-  needs_util_warning = !util %in% utils
+  needs_util_warning <- !util %in% utils
   
   # check util exists
   util_path <- file.path(sanitize_path(path), util)
