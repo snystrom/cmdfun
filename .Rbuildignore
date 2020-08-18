@@ -12,3 +12,5 @@ vignettes/
 ^docs$
 ^pkgdown$
 function_renames.txt
+^\.github$
+^codecov\.yml$
