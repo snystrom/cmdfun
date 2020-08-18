@@ -5,7 +5,7 @@
 #'
 #' @return list keeping only items defined by names
 #' 
-#' @export
+#' @noRd
 #'
 #' @examples
 #' cmd_list_keep_named(list("a" = 1, "b" = 2), "a")
@@ -20,7 +20,7 @@ cmd_list_keep_named <- function(list, names){
 #'
 #' @return list removing items defined by names
 #'
-#' @export
+#' @noRd
 #' 
 #' @examples
 #' cmd_list_drop_named(list("a" = 1, "b" = 2), "a")

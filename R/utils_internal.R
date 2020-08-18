@@ -55,7 +55,7 @@ drop_list_NULL <- function(list){
 #' Replaces list entries of bool of specified value with empty strings
 #'
 #' @param list a list
-#' @param bool whether to convert T or F to empty string (default T)
+#' @param bool whether to convert TRUE or FALSE to empty string (default TRUE)
 #'
 #' @return same list with entries replaced 
 #' 
@@ -309,12 +309,12 @@ list_keep_or_drop <- function(list, keep = NULL, drop = NULL){
   
   if (!is.null(keep)){
     testthat::expect_type(keep, "character")
-    filteredList <- cmd_list_keep_named(list, keep)
+    filteredList <- cmd_list_keep(list, keep)
   }
   
   if (!is.null(drop)){
     testthat::expect_type(drop, "character")
-    filteredList <- cmd_list_drop_named(list, drop)
+    filteredList <- cmd_list_drop(list, drop)
   }
   
   return(filteredList)

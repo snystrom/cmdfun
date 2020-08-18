@@ -17,8 +17,6 @@ reference:
   contents:
   - cmd_list_drop
   - cmd_list_keep
-  - cmd_list_drop_named
-  - cmd_list_keep_named
 
 - title: Coercing Arguments to Commandline Flags
   contents:
