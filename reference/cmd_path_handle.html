@@ -193,14 +193,13 @@ package.</p>
 <p>The heirarchy of path usage is: user-defined &gt; option_name &gt; environment_var &gt; default_path</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>cool_checker</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_path_handle</span>(<span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"~/coolpackage"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"tool1"</span>, <span class='st'>"tool2"</span>))
-<span class='co'># returns path to coolpackage</span>
-<span class='fu'>cool_checker</span>()
-<span class='co'># returns path to coolpackage/tool1</span>
-<span class='fu'>cool_checker</span>(<span class='kw'>util</span> <span class='kw'>=</span> <span class='st'>"tool1"</span>)
-
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='no'>.Platform</span>$<span class='no'>OS.type</span> <span class='kw'>==</span> <span class='st'>"unix"</span>) {
+<span class='no'>bin_checker</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_path_handle</span>(<span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ls"</span>, <span class='st'>"pwd"</span>))
+<span class='co'># returns path to bin</span>
+<span class='fu'>bin_checker</span>()
+<span class='co'># returns path to bin/ls</span>
+<span class='fu'>bin_checker</span>(<span class='kw'>util</span> <span class='kw'>=</span> <span class='st'>"ls"</span>)
+}</div><div class='output co'>#&gt; [1] "//bin/ls"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -156,20 +156,25 @@ process, so ensure correct spelling, etc. to avoid cryptic failures.</p></td>
 With arguments: <code>path</code> (a path to install location), <code>util</code> an optional <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> to</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>handle</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>option_name</span> <span class='kw'>=</span> <span class='st'>"meme_bin"</span>, <span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"~/meme/bin"</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='no'>.Platform</span>$<span class='no'>OS.type</span> <span class='kw'>==</span> <span class='st'>"unix"</span>) {
+<span class='no'>handle</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>option_name</span> <span class='kw'>=</span> <span class='st'>"bin_path"</span>, <span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"/bin/"</span>)
 <span class='no'>valid_install</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_install_is_valid</span>(<span class='no'>handle</span>)
-<span class='co'># Returns TRUE is "~/meme/bin/" exists</span>
-<span class='fu'>valid_install</span>()</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='co'># Returns FALSE if "bad/path/" doesn't exist</span>
-<span class='fu'>valid_install</span>(<span class='st'>"bad/path/"</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='co'># Returns TRUE if "/bin/" exists</span>
+<span class='fu'>valid_install</span>()
+<span class='co'># Returns FALSE if "bad/path/" doesn't exist</span>
+<span class='fu'>valid_install</span>(<span class='st'>"bad/path/"</span>)
+
 <span class='co'># Also works with options</span>
-<span class='no'>handle_option_only</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>option_name</span> <span class='kw'>=</span> <span class='st'>"meme_bin"</span>)
+<span class='no'>handle_option_only</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>option_name</span> <span class='kw'>=</span> <span class='st'>"bin_path"</span>)
 <span class='no'>valid_install2</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_install_is_valid</span>(<span class='no'>handle_option_only</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='kw'>meme_bin</span> <span class='kw'>=</span> <span class='st'>"~/meme/bin/"</span>)
-<span class='fu'>valid_install2</span>()</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='kw'>bin_path</span> <span class='kw'>=</span> <span class='st'>"/bin/"</span>)
+<span class='fu'>valid_install2</span>()
+
 <span class='co'># Setting util = TRUE will check that all utils are also installed</span>
-<span class='no'>handle_with_utils</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"~/meme/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ame"</span>, <span class='st'>"fimo"</span>))
+<span class='no'>handle_with_utils</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ls"</span>, <span class='st'>"pwd"</span>))
 <span class='no'>valid_install_all</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_install_is_valid</span>(<span class='no'>handle_with_utils</span>, <span class='kw'>util</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='fu'>valid_install_all</span>()</div><div class='output co'>#&gt; <span class='error'>Error in file.exists(x): invalid 'file' argument</span></div></pre>
+<span class='fu'>valid_install_all</span>()
+}</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

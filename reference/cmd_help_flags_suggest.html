@@ -146,10 +146,12 @@ value, values correspond to suggested replacement.</p></td>
     <p>error message suggesting alternatives to user</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"output"</span> <span class='kw'>=</span> <span class='st'>"somevalue"</span>, <span class='st'>"missplld"</span> <span class='kw'>=</span> <span class='st'>"anotherValue"</span>)
-<span class='no'>suggestions</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_help_flags_similar.html'>cmd_help_flags_similar</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"output"</span>, <span class='st'>"misspelled"</span>), <span class='no'>flags</span>)
+    <pre class="examples"><div class='input'><span class='no'>user_flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"output"</span>, <span class='st'>"inpt"</span>)
+<span class='no'>valid_flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"output"</span>, <span class='st'>"input"</span>)
+<span class='no'>suggestions</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_help_flags_similar.html'>cmd_help_flags_similar</a></span>(<span class='no'>valid_flags</span>, <span class='no'>user_flags</span>)
 <span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>cmd_error_cmd_help_flags_similar</span>(<span class='no'>suggestions</span>)
+<span class='co'># Throws error</span>
+<span class='fu'>cmd_help_flags_suggest</span>(<span class='no'>suggestions</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

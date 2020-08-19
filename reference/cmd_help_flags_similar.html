@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Suggest alternative name by Levenshtein edit distance — cmd_help_flags_similar • cmdfun</title>
+<title>Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments — cmd_help_flags_similar • cmdfun</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Suggest alternative name by Levenshtein edit distance — cmd_help_flags_similar" />
-<meta property="og:description" content="Suggest alternative name by Levenshtein edit distance" />
+<meta property="og:title" content="Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments — cmd_help_flags_similar" />
+<meta property="og:description" content="Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments" />
 
 
 
@@ -120,16 +120,21 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Suggest alternative name by Levenshtein edit distance</h1>
+    <h1>Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments</h1>
     <small class="dont-index">Source: <a href='https://github.com/snystrom/cmdfun/blob/master/R/parse_help.R'><code>R/parse_help.R</code></a></small>
     <div class="hidden name"><code>cmd_help_flags_similar.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Suggest alternative name by Levenshtein edit distance</p>
+    <p>Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_help_flags_similar</span>(<span class='no'>command_flag_names</span>, <span class='no'>flags</span>, <span class='kw'>.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_help_flags_similar</span>(
+  <span class='no'>command_flag_names</span>,
+  <span class='no'>flags</span>,
+  <span class='kw'>.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>distance_cutoff</span> <span class='kw'>=</span> <span class='fl'>3L</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,6 +157,12 @@ or <code>rlang</code>-style formula defintion (ie <code>.fun = ~{foo(.x)}</code>
 <code>.fun = function(x){foo(x)}</code>). Note: if command_flag_names need additional
 parsing after <code><a href='cmd_help_parse_flags.html'>cmd_help_parse_flags</a></code>, it is best to do that
 preprocessing before passing them to this function.</p></td>
+    </tr>
+    <tr>
+      <th>distance_cutoff</th>
+      <td><p>Levenstein edit distance beyond which to suggest
+??? instead of most similar argument (default = 3). Setting this too
+liberally will result in nonsensical suggestions.</p></td>
     </tr>
     </table>
 
