@@ -1,6 +1,6 @@
 
 build_valid_path <- function(path = NULL, utils = NULL){
-  basePath <- file.path(tempdir(), path)
+  basePath <- sanitize_path(file.path(tempdir(), path))
   dir.create(basePath, showWarnings = F)
   
   utilPaths <- utils
