@@ -45,13 +45,12 @@
 #' @export
 #' 
 #' @examples
-#' \dontrun{
-#' cool_checker <- cmd_path_handle(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
-#' # returns path to coolpackage
-#' cool_checker()
-#' # returns path to coolpackage/tool1
-#' cool_checker(util = "tool1")
-#' 
+#' if (.Platform$OS.type == "unix") {
+#' bin_checker <- cmd_path_handle(default_path = "/bin", utils = c("ls", "pwd"))
+#' # returns path to bin
+#' bin_checker()
+#' # returns path to bin/ls
+#' bin_checker(util = "ls")
 #' }
 cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
   
@@ -148,23 +147,25 @@ cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_
 #' @export
 #'
 #' @examples
-#' handle <- cmd_path_handle(option_name = "meme_bin", default_path = "~/meme/bin")
+#' if (.Platform$OS.type == "unix") {
+#' handle <- cmd_path_handle(option_name = "bin_path", default_path = "/bin/")
 #' valid_install <- cmd_install_is_valid(handle)
-#' # Returns TRUE is "~/meme/bin/" exists
+#' # Returns TRUE if "/bin/" exists
 #' valid_install()
 #' # Returns FALSE if "bad/path/" doesn't exist
 #' valid_install("bad/path/")
 #' 
 #' # Also works with options
-#' handle_option_only <- cmd_path_handle(option_name = "meme_bin")
+#' handle_option_only <- cmd_path_handle(option_name = "bin_path")
 #' valid_install2 <- cmd_install_is_valid(handle_option_only)
-#' options(meme_bin = "~/meme/bin/")
+#' options(bin_path = "/bin/")
 #' valid_install2()
 #'
 #' # Setting util = TRUE will check that all utils are also installed
-#' handle_with_utils <- cmd_path_handle(default_path = "~/meme/bin", utils = c("ame", "fimo"))
+#' handle_with_utils <- cmd_path_handle(default_path = "/bin", utils = c("ls", "pwd"))
 #' valid_install_all <- cmd_install_is_valid(handle_with_utils, util = TRUE)
 #' valid_install_all()
+#' }
 cmd_install_is_valid <- function(path_handler, util = NULL){
   
   util_check <- !is.null(util)
@@ -212,14 +213,14 @@ cmd_install_is_valid <- function(path_handler, util = NULL){
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # this will return /full/path/to/meme/bin/dreme
-#' # or return an error for all values of util that are not "dreme" and "ame"
-#' # or error if "dreme" does not exist in "~/meme/bin/"
-#' .check_valid_util("dreme", utils = c("dreme", "ame"), "~/meme/bin")
+#' if (.Platform$OS.type == "unix") {
+#' # this will return /full/path/to/bin
+#' # or return an error for all values of util that are not "ls" and "pwd"
+#' # or error if "ls" does not exist in "/bin"
+#' .check_valid_util("ls", utils = c("ls", "pwd"), "/bin")
 #' 
 #' # This will throw error
-#' .check_valid_util("badUtil", utils = c("dreme", "ame"), "~/meme/bin")
+#' .check_valid_util("badUtil", utils = c("ls", "pwd"), "/bin")
 #' }
 .check_valid_util <- function(util, utils = NULL, path = NULL){
   testthat::expect_length(util, 1)
@@ -260,9 +261,9 @@ cmd_install_is_valid <- function(path_handler, util = NULL){
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # will return /full/path/to/meme/bin, or error if path doesn't exist
-#' .check_valid_command_path("~/meme/bin")
+#' if (.Platform$OS.type == "unix" & file.exists("~/bin")) {
+#' # will return /full/path/to/home/bin, or error if path doesn't exist
+#' .check_valid_command_path("~/bin")
 #' }
 .check_valid_command_path <- function(path){
   path <- sanitize_path(path)
