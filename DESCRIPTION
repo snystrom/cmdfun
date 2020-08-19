@@ -26,6 +26,7 @@ RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr,
+    processx,
     rmarkdown,
     covr
 VignetteBuilder: knitr
