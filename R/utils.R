@@ -28,10 +28,10 @@ cmd_list_drop_named <- function(list, names){
   list[!(names(list) %in% names)]
 }
 
-#' keep entries from list of flags by name or name/value pair.
+#' keep entries from list of flags by name, name/value pair, or index
 #'
 #' @param flags named list output of cmd_args_to_flags
-#' @param keep vector of flag entries to keep. Pass an unnamed vector
+#' @param keep vector of flag entries to keep. Pass a character vector
 #'   to keep flags by name. Pass a named vector to keep flags by name/value
 #'   pairs. Pass a numeric vector to keep by position.
 #'
@@ -73,10 +73,10 @@ cmd_list_keep <- function(flags, keep){
   
 }
 
-#' Drop entries from list of flags by name or name/value pair.
+#' Drop entries from list of flags by name, name/value pair, or index
 #'
 #' @param flags named list output of cmd_args_to_flags
-#' @param drop vector of flag entries to drop. Pass an unnamed vector
+#' @param drop vector of flag entries to drop. Pass a character vector
 #'   to drop flags by name. Pass a named vector to drop flags by name/value
 #'   pairs. Pass a numeric vector to drop by position.
 #'
@@ -89,7 +89,7 @@ cmd_list_keep <- function(flags, keep){
 #' # will drop flag2 because its name and value match 'drop' vector
 #' cmd_list_drop(exFlags, c("flag2" = "someText"))
 #' # Will drop "flag1" by position index
-#' cmd_list_keep(exFlags, 1)
+#' cmd_list_drop(exFlags, 1)
 #'
 #' # won't drop flag2 because its value isn't 'someText'
 #' exFlags2 <- list("flag1" = 2, "flag2" = "otherText")
