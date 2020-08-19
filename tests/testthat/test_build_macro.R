@@ -149,6 +149,29 @@ test_that("is_valid_install behaves correctly", {
   
 })
 
+
+test_that("cmd_install_check works", {
+  context("Check works with utils")
+  check_build <- cmd_path_handle(environment_var = NULL, 
+                                   option_name = NULL, 
+                                   default_path = base_path,
+                                   utils = myUtils)
+  
+  expect_invisible(cmd_install_check(check_build))
+  expect_message(cmd_install_check(check_build), "main install")
+  expect_message(cmd_install_check(check_build), "util install")
+  expect_error(cmd_install_check('bad value'), "must be a function")
+  
+  context("Check works without utils")
+  check_build_noutil <- cmd_path_handle(environment_var = NULL, 
+                                   option_name = NULL, 
+                                   default_path = base_path)
+  
+  expect_invisible(cmd_install_check(check_build_noutil))
+  expect_message(cmd_install_check(check_build_noutil), "main install")
+  
+})
+
 teardown({
   # Cleanup temp dir & files
   cleanup_valid_path(check_paths)

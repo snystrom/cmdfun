@@ -18,3 +18,8 @@ test_that("Test file utils work", {
   expect_error(cmd_files_exist(bad_file), "was not found")
 })
 
+test_that("UI file exists works", {
+  expect_invisible(cmd_ui_file_exists(exist_file))
+  expect_error(cmd_ui_file_exists(exist_file_vector), "length 1")
+  expect_error(cmd_ui_file_exists(exist_file_list))
+})

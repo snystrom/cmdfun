@@ -35,4 +35,3 @@ names(base_path) <- NULL
 double_assign <- c("one", "two")
 test_option <- "dotargs_test_option"
 test_env_var <- "DOTARGS_TEST"
-print('HELPER LOADED')
