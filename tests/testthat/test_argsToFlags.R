@@ -85,3 +85,8 @@ test_that("Illegal flags detected", {
   expect_error(cmd_args_to_flags(list("<(cat.)" = T)))
 })
 
+
+test_that("crystallize works", {
+  expect_null(cmd_list_crystallize(list()))
+  expect_error(cmd_list_crystallize())
+})

@@ -8,6 +8,9 @@ test_that("Suggestions work",{
   expect_error(cmd_help_flags_similar(valid_flags, names(flagList)) %>% 
                  cmd_help_flags_suggest(), "Did you mean:", class = "error")
   
+  expect_null(cmd_help_flags_similar(valid_flags, c()))
+  expect_null(cmd_help_flags_similar(valid_flags, list()))
+  
   flagList <- list("out" = 2, "threshold" = 10, "version" = "v1", "logn-name" = 2)
   expect_equal(cmd_help_flags_similar(c(valid_flags, "long-name"), names(flagList), ~{gsub("-", "_", .x)}),
                c("logn_name" = "long_name"))

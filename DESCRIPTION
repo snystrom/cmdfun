@@ -25,10 +25,11 @@ Imports:
 RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    cli,
+    covr,
     knitr,
     processx,
-    rmarkdown,
-    covr
+    rmarkdown
 VignetteBuilder: knitr
 URL: https://snystrom.github.io/cmdfun/, https://github.com/snystrom/cmdfun
 BugReports: https://github.com/snystrom/cmdfun

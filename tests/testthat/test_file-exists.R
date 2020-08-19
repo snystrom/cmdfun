@@ -20,6 +20,8 @@ test_that("Test file utils work", {
 
 test_that("UI file exists works", {
   expect_invisible(cmd_ui_file_exists(exist_file))
+  expect_message(cmd_ui_file_exists(exist_file), cli::symbol$tick)
+  expect_message(cmd_ui_file_exists(bad_file), cli::symbol$cross)
   expect_error(cmd_ui_file_exists(exist_file_vector), "length 1")
   expect_error(cmd_ui_file_exists(exist_file_list))
 })
