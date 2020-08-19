@@ -1,5 +1,3 @@
-#skip_if(T, message = "Needs to be Manually Run until I fix environment issues")
-
 test_that("warn at least 1 var not assigned", {
   expect_warning(cmd_path_handle(), "at least one")
   expect_warning(cmd_path_handle(environment_var = NULL), "at least one")
@@ -16,7 +14,7 @@ test_that("At least 1 path is defined at calltime", {
 test_that("Catches double assignment",{
   
   expect_error(
-    cmd_path_handle(environment_var = c("one", "two")),
+    cmd_path_handle(environment_var = double_assign),
     "environment_var must contain"
   )
   
@@ -43,7 +41,7 @@ test_that("Default path only, noUtils works",{
                                      option_name = NULL, 
                                      default_path = NULL)
   )
-# TODO: will this error R CMD CHECK?
+
   expect_equal(check_build(base_path), cmdfun:::sanitize_path(base_path))
   expect_error(check_build(base_path, util = myUtils[1]), "no defined utils")
 })

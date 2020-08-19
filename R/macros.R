@@ -57,9 +57,26 @@ cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_
   if (is.null(environment_var) & is.null(option_name) & is.null(default_path)){
     warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
   }
-    
-  requiredArgs <- cmd_args_all() %>% 
-    cmd_list_drop_named("utils")
+  
+  # The following strategy fails because of lazy evalutation of function args
+  # everything will eval to length 1 even if length > 1 because they are assigned to:
+  #
+  # function (x, value, pos = -1, envir = as.environment(pos), inherits = FALSE,  immediate = TRUE) 
+  # .Internal(assign(x, value, envir, inherits))
+  # 
+  # Instead of being directly evaluated when building the macro,
+  # this results (for a reason I haven't figured out yet) in only returning the
+  # **first** object if something is given multiple assignment (ie a vector of
+  # length > 1)
+  # This is why the check "succeeds" in certain situations, because it silently avoids the length check
+  # SO DON'T USE cmd_args_* WHEN BUILDING CHECKS (OR MACROS??)
+  
+  #requiredArgs <- cmd_args_all() %>% 
+  #  cmd_list_drop_named("utils")
+  
+  requiredArgs <- list("environment_var" = environment_var,
+                       "option_name" = option_name,
+                       "default_path" = default_path)
   
   purrr::map(requiredArgs, length) %>% 
     drop_list_fun(fun = function(x) x <= 1) %>% 
