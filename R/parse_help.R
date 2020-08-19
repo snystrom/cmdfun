@@ -20,7 +20,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' if (.Platform$OS.type == "unix" & file.exists("/bin/tar")) {
+#' # below are two examples parsing the --help method of GNU tar 
+#' 
 #' # with processx
 #' out <- processx::run("tar", "--help", error_on_status = F)
 #' lines <- strsplit(out$stderr, "\n")[[1]]
@@ -59,7 +61,7 @@ cmd_help_parse_flags <- function(help_lines, processx = FALSE){
   return(flag_names)
 }
 
-#' Suggest alternative name by Levenshtein edit distance
+#' Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments
 #'
 #' @param command_flag_names character vector of valid names (can be output of \code{\link{cmd_help_parse_flags}})
 #' @param flags a vector names correspond to values to be checked against `command_flag_names`
@@ -71,6 +73,9 @@ cmd_help_parse_flags <- function(help_lines, processx = FALSE){
 #'   `.fun = function(x){foo(x)}`). Note: if command_flag_names need additional
 #'   parsing after \code{\link{cmd_help_parse_flags}}, it is best to do that
 #'   preprocessing before passing them to this function.
+#' @param distance_cutoff Levenstein edit distance beyond which to suggest
+#'   ??? instead of most similar argument (default = 3). Setting this too
+#'   liberally will result in nonsensical suggestions.
 #'
 #' @return named vector where names are names from `flags` and their values are the suggested best match from `command_flag_names`
 #' @export
@@ -88,7 +93,7 @@ cmd_help_parse_flags <- function(help_lines, processx = FALSE){
 #' 
 #' # returns NULL if no errors
 #' cmd_help_flags_similar(c("test"), "test")
-cmd_help_flags_similar <- function(command_flag_names, flags, .fun = NULL){
+cmd_help_flags_similar <- function(command_flag_names, flags, .fun = NULL, distance_cutoff = 3L){
 
   if (!is.null(.fun)){
     if (class(.fun) == "formula"){.fun <- rlang::as_function(.fun)}
@@ -109,10 +114,8 @@ cmd_help_flags_similar <- function(command_flag_names, flags, .fun = NULL){
   # otherwise return ??? for match.
   # distance_cutoff is the levenshtein edit distance threshold
   # drop_distance is a special value for things to be dropped. Because I minimize edit distance,
-  # drop_distance needs to be a large value (could theoretically be as low as distance_cutoff + 1),
-  # but setting it to 99L for now.
-  drop_distance <- 99L
-  distance_cutoff <- 3
+  # drop_distance needs to be a value larger than the cutoff (as low as distance_cutoff + 1)
+  drop_distance <- distance_cutoff + 1L
   
   flag_dist[flag_dist > distance_cutoff] <- drop_distance
   i <- apply(flag_dist, 1, function(x) {which(x == min(x))[1]})
@@ -132,10 +135,12 @@ cmd_help_flags_similar <- function(command_flag_names, flags, .fun = NULL){
 #' @export
 #'
 #' @examples
-#' flags <- list("output" = "somevalue", "missplld" = "anotherValue")
-#' suggestions <- cmd_help_flags_similar(c("output", "misspelled"), flags)
+#' user_flags <- list("output", "inpt")
+#' valid_flags <- c("output", "input")
+#' suggestions <- cmd_help_flags_similar(valid_flags, user_flags)
 #' \dontrun{
-#' cmd_error_cmd_help_flags_similar(suggestions)
+#' # Throws error
+#' cmd_help_flags_suggest(suggestions)
 #' }
 cmd_help_flags_suggest <- function(suggest_names){
   if (is.null(suggest_names)){return(NULL)}
