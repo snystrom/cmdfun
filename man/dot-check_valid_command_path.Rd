@@ -16,8 +16,8 @@ expanded system path
 Not meant to be called directly
 }
 \examples{
-\dontrun{
-# will return /full/path/to/meme/bin, or error if path doesn't exist
-.check_valid_command_path("~/meme/bin")
+if (.Platform$OS.type == "unix" & file.exists("~/bin")) {
+# will return /full/path/to/home/bin, or error if path doesn't exist
+.check_valid_command_path("~/bin")
 }
 }

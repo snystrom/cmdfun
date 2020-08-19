@@ -25,21 +25,23 @@ With arguments: \code{path} (a path to install location), \code{util} an optiona
 Macro for constructing boolean check for valid path
 }
 \examples{
-handle <- cmd_path_handle(option_name = "meme_bin", default_path = "~/meme/bin")
+if (.Platform$OS.type == "unix") {
+handle <- cmd_path_handle(option_name = "bin_path", default_path = "/bin/")
 valid_install <- cmd_install_is_valid(handle)
-# Returns TRUE is "~/meme/bin/" exists
+# Returns TRUE if "/bin/" exists
 valid_install()
 # Returns FALSE if "bad/path/" doesn't exist
 valid_install("bad/path/")
 
 # Also works with options
-handle_option_only <- cmd_path_handle(option_name = "meme_bin")
+handle_option_only <- cmd_path_handle(option_name = "bin_path")
 valid_install2 <- cmd_install_is_valid(handle_option_only)
-options(meme_bin = "~/meme/bin/")
+options(bin_path = "/bin/")
 valid_install2()
 
 # Setting util = TRUE will check that all utils are also installed
-handle_with_utils <- cmd_path_handle(default_path = "~/meme/bin", utils = c("ame", "fimo"))
+handle_with_utils <- cmd_path_handle(default_path = "/bin", utils = c("ls", "pwd"))
 valid_install_all <- cmd_install_is_valid(handle_with_utils, util = TRUE)
 valid_install_all()
+}
 }

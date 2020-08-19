@@ -26,8 +26,7 @@
 #' # with processx
 #' if (require(processx)) {
 #' out <- processx::run("tar", "--help", error_on_status = FALSE)
-#' lines <- strsplit(out$stderr, "\n")[[1]]
-#' fn_flags <- cmd_help_parse_flags(lines, proccessx = TRUE)
+#' fn_flags <- cmd_help_parse_flags(out$stdout, processx = TRUE)
 #' }
 #'
 #' # with system2

@@ -219,8 +219,10 @@ cmd_install_is_valid <- function(path_handler, util = NULL){
 #' # or error if "ls" does not exist in "/bin"
 #' .check_valid_util("ls", utils = c("ls", "pwd"), "/bin")
 #' 
+#' \dontrun{
 #' # This will throw error
 #' .check_valid_util("badUtil", utils = c("ls", "pwd"), "/bin")
+#' }
 #' }
 .check_valid_util <- function(util, utils = NULL, path = NULL){
   testthat::expect_length(util, 1)

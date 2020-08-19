@@ -28,14 +28,17 @@ unexpectedly when flags are typed incorrectly, and for this reason return uninfo
 \code{cmd_help_parse_flags} tries to grab flags from --help documentation which can be used for error checking.
 }
 \examples{
-\dontrun{
+if (.Platform$OS.type == "unix" & file.exists("/bin/tar")) {
+# below are two examples parsing the --help method of GNU tar 
+
 # with processx
-out <- processx::run("tar", "--help", error_on_status = F)
-lines <- strsplit(out$stderr, "\n")[[1]]
-fn_flags <- cmd_help_parse_flags(lines)
+if (require(processx)) {
+out <- processx::run("tar", "--help", error_on_status = FALSE)
+fn_flags <- cmd_help_parse_flags(out$stdout, processx = TRUE)
+}
 
 # with system2
-lines <- system2("tar", "--help", stderr = T)
+lines <- system2("tar", "--help", stderr = TRUE)
 fn_flags <- cmd_help_parse_flags(lines)
 }
 

@@ -19,7 +19,7 @@ This function can be lightly wrapped by package builders to build a user-friendl
 }
 \examples{
 \dontrun{
-
-cmd_install_check()
+path_handler <- cmd_path_handle(default = "/bin", utils = "ls")
+cmd_install_check(path_handler)
 }
 }

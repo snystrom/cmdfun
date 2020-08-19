@@ -2,9 +2,14 @@
 % Please edit documentation in R/parse_help.R
 \name{cmd_help_flags_similar}
 \alias{cmd_help_flags_similar}
-\title{Suggest alternative name by Levenshtein edit distance}
+\title{Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments}
 \usage{
-cmd_help_flags_similar(command_flag_names, flags, .fun = NULL)
+cmd_help_flags_similar(
+  command_flag_names,
+  flags,
+  .fun = NULL,
+  distance_cutoff = 3L
+)
 }
 \arguments{
 \item{command_flag_names}{character vector of valid names (can be output of \code{\link{cmd_help_parse_flags}})}
@@ -19,12 +24,16 @@ or \code{rlang}-style formula defintion (ie \code{.fun = ~{foo(.x)}} is the same
 \code{.fun = function(x){foo(x)}}). Note: if command_flag_names need additional
 parsing after \code{\link{cmd_help_parse_flags}}, it is best to do that
 preprocessing before passing them to this function.}
+
+\item{distance_cutoff}{Levenstein edit distance beyond which to suggest
+??? instead of most similar argument (default = 3). Setting this too
+liberally will result in nonsensical suggestions.}
 }
 \value{
 named vector where names are names from \code{flags} and their values are the suggested best match from \code{command_flag_names}
 }
 \description{
-Suggest alternative name by Levenshtein edit distance
+Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments
 }
 \examples{
 # with a flagsList, need to pass names()

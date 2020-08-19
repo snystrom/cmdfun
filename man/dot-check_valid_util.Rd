@@ -20,13 +20,15 @@ safe path to util, or error if util does not exist
 Not meant to be called directly
 }
 \examples{
-\dontrun{
-# this will return /full/path/to/meme/bin/dreme
-# or return an error for all values of util that are not "dreme" and "ame"
-# or error if "dreme" does not exist in "~/meme/bin/"
-.check_valid_util("dreme", utils = c("dreme", "ame"), "~/meme/bin")
+if (.Platform$OS.type == "unix") {
+# this will return /full/path/to/bin
+# or return an error for all values of util that are not "ls" and "pwd"
+# or error if "ls" does not exist in "/bin"
+.check_valid_util("ls", utils = c("ls", "pwd"), "/bin")
 
+\dontrun{
 # This will throw error
-.check_valid_util("badUtil", utils = c("dreme", "ame"), "~/meme/bin")
+.check_valid_util("badUtil", utils = c("ls", "pwd"), "/bin")
+}
 }
 }

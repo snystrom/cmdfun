@@ -58,12 +58,11 @@ package.
 The heirarchy of path usage is: user-defined > option_name > environment_var > default_path
 }
 \examples{
-\dontrun{
-cool_checker <- cmd_path_handle(default_path = "~/coolpackage", utils = c("tool1", "tool2"))
-# returns path to coolpackage
-cool_checker()
-# returns path to coolpackage/tool1
-cool_checker(util = "tool1")
-
+if (.Platform$OS.type == "unix") {
+bin_checker <- cmd_path_handle(default_path = "/bin", utils = c("ls", "pwd"))
+# returns path to bin
+bin_checker()
+# returns path to bin/ls
+bin_checker(util = "ls")
 }
 }

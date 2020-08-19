@@ -18,6 +18,7 @@ Check that file exits, error if not
 \examples{
 cmd_files_exist(tempdir())
 \dontrun{
+# Throws error if file doesn't exist
 cmd_files_exist(file.path(tempdir(), "notreal"))
 }
 }

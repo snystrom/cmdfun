@@ -17,9 +17,11 @@ error message suggesting alternatives to user
 Error & Suggest different flag name to user
 }
 \examples{
-flags <- list("output" = "somevalue", "missplld" = "anotherValue")
-suggestions <- cmd_help_flags_similar(c("output", "misspelled"), flags)
+user_flags <- list("output", "inpt")
+valid_flags <- c("output", "input")
+suggestions <- cmd_help_flags_similar(valid_flags, user_flags)
 \dontrun{
-cmd_error_cmd_help_flags_similar(suggestions)
+# Throws error
+cmd_help_flags_suggest(suggestions)
 }
 }
