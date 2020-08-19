@@ -8,10 +8,8 @@
 #' 
 #' @examples
 #' myList <- list(a = 1, b = TRUE, c = FALSE)
-#' \dontrun{
 #' # This will drop logicals from list
 #' drop_list_fun(myList, fun = is.logical)
-#' }
 #' 
 #' @noRd
 drop_list_fun <- function(list, fun){
@@ -27,9 +25,7 @@ drop_list_fun <- function(list, fun){
 #'
 #' @examples
 #' myList <- list(a = 1, b = TRUE, c = FALSE)
-#' \dontrun{
 #' drop_list_logicals(myList)
-#' }
 #' @noRd
 drop_list_logicals <- function(list){
   drop_list_fun(list, is.logical)
@@ -43,9 +39,7 @@ drop_list_logicals <- function(list){
 #'
 #' @examples
 #' myList <- list(a = 1, b = TRUE, c = FALSE, d = NULL)
-#' \dontrun{
 #' drop_list_NULL(myList)
-#' }
 #' @noRd
 drop_list_NULL <- function(list){
   drop_list_fun(list, is.null)
@@ -62,9 +56,7 @@ drop_list_NULL <- function(list){
 #'
 #' @examples
 #' myList <- list(a = TRUE, b = FALSE)
-#' \dontrun{
 #' convert_logical_to_empty(myList)
-#' }
 #' @noRd
 convert_logical_to_empty <- function(list, bool = TRUE){
   list <- purrr::map(list, ~{

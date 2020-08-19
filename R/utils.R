@@ -227,6 +227,7 @@ list_index_named_values <- function(list, named_values){
 #' @examples
 #' cmd_files_exist(tempdir())
 #' \dontrun{
+#' # Throws error if file doesn't exist
 #' cmd_files_exist(file.path(tempdir(), "notreal"))
 #' }
 cmd_files_exist <- function(files){
@@ -349,8 +350,8 @@ cmd_ui_file_exists <- function(file){
 #'
 #' @examples
 #' \dontrun{
-#' 
-#' cmd_install_check()
+#' path_handler <- cmd_path_handle(default = "/bin", utils = "ls")
+#' cmd_install_check(path_handler)
 #' }
 cmd_install_check <- function(path_handler, path = NULL){
   if (!is.function(path_handler)) {
