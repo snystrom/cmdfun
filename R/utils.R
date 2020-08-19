@@ -199,6 +199,12 @@ list_index_named_values <- function(list, named_values){
     warning(paste0("The following values have no names associated with them and will be ignored: ", warnVals))
   }
   
+  if (any(is.na(named_values))){
+    warnVals <- named_values[is.na(named_values)]
+    warnNames <- names(warnVals)
+    warning(paste0("The following names in named_values have NA values and will be ignored: ", warnNames))
+  }
+  
   indices <- purrr::imap_int(named_values, ~{
     i <- which(names(list) == .y & list == .x)
     names(i) <- NULL
@@ -211,7 +217,7 @@ list_index_named_values <- function(list, named_values){
     return(i)
   }) %>% 
     purrr::set_names(NULL)
-  return(indices)
+  return(indices[!is.na(indices)])
 }
 
 
@@ -329,6 +335,15 @@ cmd_output_check <- function(ext, prefix, outdir = "."){
 #' @examples
 #' cmd_ui_file_exists("/path/to/file.txt")
 cmd_ui_file_exists <- function(file){
+ 
+  if (!class(file) == "character") {
+    stop("file must be a character")
+  } 
+  
+  if (length(file) > 1) {
+    stop("file must be length 1")
+  }
+  
   if (file.exists(file)) {
     usethis::ui_done(file)
   } else {
@@ -361,16 +376,19 @@ cmd_install_check <- function(path_handler, path = NULL){
   
   x <- try(path_handler(path = path) %>% cmd_ui_file_exists(), silent = TRUE)
   
-  
   if (class(x) == "try-error") {
     cmd_ui_file_exists(path)
     return(invisible(NULL))
     }
   
+  util_catch <- try(path_handler(path = path, util = TRUE), silent = TRUE) 
+  has_utils <- class(util_catch) != "try-error"
   
-  message("checking util installs")
-  path_handler(path = path, util = TRUE) %>% 
-    purrr::walk(cmd_ui_file_exists)
-  
-  return(invisible(NULL))
+  if (has_utils){
+    message("checking util installs")
+    path_handler(path = path, util = TRUE) %>% 
+      purrr::walk(cmd_ui_file_exists)
+    
+    return(invisible(NULL))
+  }
 }
