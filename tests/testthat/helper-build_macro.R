@@ -1,8 +1,9 @@
 
-
 build_valid_path <- function(path = NULL, utils = NULL){
-  basePath <- file.path("/tmp", path)
+  basePath <- file.path(tempdir(), path)
   dir.create(basePath, showWarnings = F)
+  
+  utilPaths <- utils
   
   if (!is.null(utils)){
     utilPaths <- file.path(basePath, utils)
