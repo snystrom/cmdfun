@@ -1,4 +1,4 @@
-skip_if(T, message = "Needs to be Manually Run until I fix environment issues")
+#skip_if(T, message = "Needs to be Manually Run until I fix environment issues")
 
 test_that("warn at least 1 var not assigned", {
   expect_warning(cmd_path_handle(), "at least one")
@@ -68,7 +68,7 @@ test_that("Defining & checking utils works", {
   expect_equal(check_build(), cmdfun:::sanitize_path(base_path))
   expect_equal(check_build(base_path, util = myUtils[1]), cmdfun:::sanitize_path(file.path(base_path, myUtils[1])))
   # Expect errror with many utils
-  expect_error(check_build(base_path, util = myUtils), class = "expectation_failure")
+  expect_error(check_build(base_path, util = myUtils), "util must be NULL or length 1")
 })
 
 test_that("Options definition works",{
@@ -147,7 +147,7 @@ test_that("is_valid_install behaves correctly", {
   
   expect_false(is_valid('bad/path'))
   expect_false(is_valid_util('bad/path'))
-  expect_false(is_valid_util_bad('bad/path'))
+  expect_false(suppressWarnings(is_valid_util_bad('bad/path')))
   
 })
 
@@ -155,3 +155,4 @@ teardown({
   # Cleanup temp dir & files
   cleanup_valid_path(check_paths)
 })
+

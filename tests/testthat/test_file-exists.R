@@ -1,17 +1,3 @@
-skip_if(T, "test fails because tempfiles aren't working as expected. Works locally on non R CMD CHECK.")
-
-setup({
-  exist_file <- tempfile()
-  file.create(exist_file)
-  
-  bad_file <- tempfile()
-  
-  exist_file_list <- purrr::map(1:3, ~{tempfile()}) %T>%
-    purrr::map(file.create)
-  
-  exist_file_vector <- unlist(exist_file_list)
-})
-
 teardown({
   file.remove(exist_file)
   

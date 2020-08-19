@@ -113,6 +113,11 @@ cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_
     fullPath <- .check_valid_command_path(validPathHeirarchy[[1]])
     
     if (!is.null(util)) {
+      
+      if (length(util) > 1){
+        stop("util must be NULL or length 1")
+      }
+      
       if (is.null(utils)){
         stop("this function has no defined utils")
       }
