@@ -1,6 +1,6 @@
 dir <- tempdir()
 
-exist_file_list <- cmd_output_expect("txt", c("a", "b", "c"), dir) %T>%
+exist_file_list <- cmd_file_cmbn("txt", c("a", "b", "c"), dir) %T>%
   purrr::walk(file.create)
 
 bad_file <- tempfile()
