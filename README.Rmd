@@ -380,15 +380,15 @@ Sometimes a commandline function returns multiple output files you want to check
 `cmd_files_exist` accepts a vector or list of files & checks that they exist.
 
 `cmdfun` additionally provides a few convenience functions for generating lists
-of expected files. `cmd_output_expect` generates combinations of extension/prefix
+of expected files. `cmd_file_cmbn` generates combinations of extension/prefix
 file names. The output can be passed to `cmd_files_exist` which will error if
 a file isn't found on the filesystem.
 ```{r}
-cmd_output_expect(ext = c("txt", "xml"), prefix = "outFile")
+cmd_file_cmbn(ext = c("txt", "xml"), prefix = "outFile")
 ```
 
 ```{r}
-cmd_output_expect(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
+cmd_file_cmbn(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 ```
 
 ## Error checking user input

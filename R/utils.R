@@ -258,7 +258,7 @@ error_file_not_exist <- function(file){
 
 #' Generates list of expected output files
 #'
-#' See documentation of cmd_output_check() for more details about how this works
+#' See documentation of cmd_file_expect() for more details about how this works
 #'
 #' @param ext file extension (no ".", ie "txt", "html")
 #' @param prefix file name to be given each ext. If a character vector, must be equal length of ext or shorter
@@ -312,14 +312,14 @@ cmd_file_cmbn <- function(ext, prefix, outdir = "."){
 #' \dontrun{
 #' # Checks many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' cmd_output_check(c("txt", "html", "xml"), "myFile")
+#' cmd_file_expect(c("txt", "html", "xml"), "myFile")
 #' # Checks many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' cmd_output_check("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_file_expect("txt", c("myFile1", "myFile2", "myFile3"))
 #' }
 #'
 #' 
-cmd_output_check <- function(ext, prefix, outdir = "."){
+cmd_file_expect <- function(ext, prefix, outdir = "."){
   cmd_file_cmbn(ext, prefix, outdir) %T>%
     cmd_files_exist()
 }
