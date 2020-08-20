@@ -1,3 +1,5 @@
+utils::globalVariables(".")
+
 #' Drops list members by function
 #'
 #' @param list any list object
