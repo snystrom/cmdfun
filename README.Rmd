@@ -377,11 +377,11 @@ myFunction(arg1 = "foo", arg2 = "baz")
 ## Expecting output files
 Sometimes a commandline function returns multiple output files you want to check for after the run.
 
-`cmd_files_exist` accepts a vector or list of files & checks that they exist.
+`cmd_error_if_missing` accepts a vector or list of files & checks that they exist.
 
 `cmdfun` additionally provides a few convenience functions for generating lists
 of expected files. `cmd_file_combn` generates combinations of extension/prefix
-file names. The output can be passed to `cmd_files_exist` which will error if
+file names. The output can be passed to `cmd_error_if_missing` which will error if
 a file isn't found on the filesystem.
 ```{r}
 cmd_file_combn(ext = c("txt", "xml"), prefix = "outFile")

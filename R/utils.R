@@ -231,12 +231,12 @@ list_index_named_values <- function(list, named_values){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' cmd_files_exist(tempdir())
+#' cmd_error_if_missing(tempdir())
 #' \dontrun{
 #' # Throws error if file doesn't exist
-#' cmd_files_exist(file.path(tempdir(), "notreal"))
+#' cmd_error_if_missing(file.path(tempdir(), "notreal"))
 #' }
-cmd_files_exist <- function(files){
+cmd_error_if_missing <- function(files){
   
   if (length(files) > 1) {
     files %>%
@@ -452,7 +452,7 @@ combine_and_merge <- function(vector, sep = "."){
 #' 
 cmd_file_expect <- function(prefix, ext, outdir = "."){
   cmd_file_combn(prefix, ext, outdir) %T>%
-    cmd_files_exist()
+    cmd_error_if_missing()
 }
 
 

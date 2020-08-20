@@ -1,7 +1,7 @@
 Package: cmdfun
 Type: Package
 Title: Framework for Building Interfaces to Shell Commands
-Version: 0.1.9002
+Version: 0.1.9003
 Authors@R: person("Spencer", "Nystrom", 
     email = "snystrom@email.unc.edu", 
     role = c("aut", "cre", "cph"),
@@ -21,7 +21,8 @@ Imports:
   R.utils,
   rlang,
   testthat,
-  usethis
+  usethis,
+  utils
 RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests: 

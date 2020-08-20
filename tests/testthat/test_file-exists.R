@@ -12,10 +12,10 @@ test_that("Test files as expected", {
 })
 
 test_that("Test file utils work", {
-  expect_invisible(cmd_files_exist(exist_file_list))
-  expect_invisible(cmd_files_exist(exist_file_vector))
-  expect_invisible(cmd_files_exist(exist_file))
-  expect_error(cmd_files_exist(bad_file), "was not found")
+  expect_invisible(cmd_error_if_missing(exist_file_list))
+  expect_invisible(cmd_error_if_missing(exist_file_vector))
+  expect_invisible(cmd_error_if_missing(exist_file))
+  expect_error(cmd_error_if_missing(bad_file), "was not found")
 })
 
 test_that("UI file exists works", {
