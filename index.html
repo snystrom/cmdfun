@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">cmdfun</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9003</span>
       </span>
     </div>
 
@@ -366,13 +366,13 @@
 <p>Sometimes a commandline function returns multiple output files you want to check for after the run.</p>
 <p><code>cmd_files_exist</code> accepts a vector or list of files &amp; checks that they exist.</p>
 <p><code>cmdfun</code> additionally provides a few convenience functions for generating lists of expected files. <code>cmd_output_expect</code> generates combinations of extension/prefix file names. The output can be passed to <code>cmd_files_exist</code> which will error if a file isn’t found on the filesystem.</p>
-<div class="sourceCode" id="cb64"><pre class="r"><span class="fu"><a href="reference/cmd_output_expect.html">cmd_output_expect</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)</pre></div>
+<div class="sourceCode" id="cb64"><pre class="r"><span class="fu">cmd_output_expect</span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)</pre></div>
 <div class="sourceCode" id="cb65"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a><span class="co">## $txt</span></span>
 <span id="cb65-2"><a href="#cb65-2"></a><span class="co">## [1] "./outFile.txt"</span></span>
 <span id="cb65-3"><a href="#cb65-3"></a><span class="co">## </span></span>
 <span id="cb65-4"><a href="#cb65-4"></a><span class="co">## $xml</span></span>
 <span id="cb65-5"><a href="#cb65-5"></a><span class="co">## [1] "./outFile.xml"</span></span></code></pre></div>
-<div class="sourceCode" id="cb66"><pre class="r"><span class="fu"><a href="reference/cmd_output_expect.html">cmd_output_expect</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="st">"txt"</span>, <span class="kw">prefix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"outFile"</span>, <span class="st">"outFile2"</span>, <span class="st">"outFile3"</span>))</pre></div>
+<div class="sourceCode" id="cb66"><pre class="r"><span class="fu">cmd_output_expect</span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="st">"txt"</span>, <span class="kw">prefix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"outFile"</span>, <span class="st">"outFile2"</span>, <span class="st">"outFile3"</span>))</pre></div>
 <div class="sourceCode" id="cb67"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a><span class="co">## $outFile</span></span>
 <span id="cb67-2"><a href="#cb67-2"></a><span class="co">## [1] "./outFile.txt"</span></span>
 <span id="cb67-3"><a href="#cb67-3"></a><span class="co">## </span></span>

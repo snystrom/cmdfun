@@ -16,7 +16,13 @@
     <loc>https://snystrom.github.io/cmdr//reference/cmd_args_to_flags.html</loc>
   </url>
   <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_files_exist.html</loc>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_error_if_missing.html</loc>
+  </url>
+  <url>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_file_combn.html</loc>
+  </url>
+  <url>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_file_expect.html</loc>
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdr//reference/cmd_help_flags_similar.html</loc>
@@ -41,12 +47,6 @@
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdr//reference/cmd_list_keep.html</loc>
-  </url>
-  <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_output_check.html</loc>
-  </url>
-  <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_output_expect.html</loc>
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdr//reference/cmd_path_handle.html</loc>
