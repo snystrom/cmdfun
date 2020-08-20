@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{cmd_list_drop}
 \alias{cmd_list_drop}
-\title{Drop entries from list of flags by name or name/value pair.}
+\title{Drop entries from list of flags by name, name/value pair, or index}
 \usage{
 cmd_list_drop(flags, drop)
 }
 \arguments{
 \item{flags}{named list output of cmd_args_to_flags}
 
-\item{drop}{vector of flag entries to drop. Pass an unnamed vector
+\item{drop}{vector of flag entries to drop. Pass a character vector
 to drop flags by name. Pass a named vector to drop flags by name/value
 pairs. Pass a numeric vector to drop by position.}
 }
@@ -17,7 +17,7 @@ pairs. Pass a numeric vector to drop by position.}
 flags list with values in drop removed
 }
 \description{
-Drop entries from list of flags by name or name/value pair.
+Drop entries from list of flags by name, name/value pair, or index
 }
 \examples{
 exFlags <- list("flag1" = 2, "flag2" = "someText")
@@ -25,7 +25,7 @@ cmd_list_drop(exFlags, "flag1")
 # will drop flag2 because its name and value match 'drop' vector
 cmd_list_drop(exFlags, c("flag2" = "someText"))
 # Will drop "flag1" by position index
-cmd_list_keep(exFlags, 1)
+cmd_list_drop(exFlags, 1)
 
 # won't drop flag2 because its value isn't 'someText'
 exFlags2 <- list("flag1" = 2, "flag2" = "otherText")

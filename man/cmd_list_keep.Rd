@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{cmd_list_keep}
 \alias{cmd_list_keep}
-\title{keep entries from list of flags by name or name/value pair.}
+\title{keep entries from list of flags by name, name/value pair, or index}
 \usage{
 cmd_list_keep(flags, keep)
 }
 \arguments{
 \item{flags}{named list output of cmd_args_to_flags}
 
-\item{keep}{vector of flag entries to keep. Pass an unnamed vector
+\item{keep}{vector of flag entries to keep. Pass a character vector
 to keep flags by name. Pass a named vector to keep flags by name/value
 pairs. Pass a numeric vector to keep by position.}
 }
@@ -17,7 +17,7 @@ pairs. Pass a numeric vector to keep by position.}
 flags list with values not in keep removed
 }
 \description{
-keep entries from list of flags by name or name/value pair.
+keep entries from list of flags by name, name/value pair, or index
 }
 \examples{
 exFlags <- list("flag1" = 2, "flag2" = "someText")
