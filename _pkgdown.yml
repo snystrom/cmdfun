@@ -30,9 +30,9 @@ reference:
 
 - title: Command output helpers
   contents:
-  - cmd_output_check
-  - cmd_output_expect
-  - cmd_files_exist
+  - cmd_file_expect
+  - cmd_file_combn
+  - cmd_error_if_missing
 
 - title: Commandline Help Parsing
   contents:
