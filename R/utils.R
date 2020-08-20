@@ -221,11 +221,11 @@ list_index_named_values <- function(list, named_values){
 }
 
 
-#' Check that file exits, error if not
+#' Check that file(s) exist, error if not
 #'
 #' @param files list or vector of paths to check
 #'
-#' @return nothing or error message
+#' @return nothing or error message for each missing file
 #' @export
 #'
 #' @importFrom magrittr %>%
@@ -237,10 +237,21 @@ list_index_named_values <- function(list, named_values){
 #' cmd_files_exist(file.path(tempdir(), "notreal"))
 #' }
 cmd_files_exist <- function(files){
-  files %>%
-    purrr::map(purrr::discard, file.exists) %>%
-    purrr::compact() %>%
-    purrr::walk(error_file_not_exist)
+  
+  if (length(files > 1)) {
+    files %>%
+      purrr::map(purrr::discard, file.exists) %>%
+      purrr::compact() %>%
+      unlist() %>% 
+      error_file_not_exist()
+  }
+  
+  if (length(files) == 1 & !file.exists(files)){
+    error_file_not_exist(files)
+  } else if (file.exists(files)) {
+    return(invisible())
+  }
+  
 }
 
 #' Throw error that file doesn't exist
@@ -253,7 +264,7 @@ cmd_files_exist <- function(files){
 #' 
 #' @noRd
 error_file_not_exist <- function(file){
-  stop(paste0(file, " was not found."))
+  stop(paste0(file, " was not found.\n"))
 }
 
 #' Generates list of expected output files
@@ -270,13 +281,28 @@ error_file_not_exist <- function(file){
 #' @examples
 #' # Makes list for many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' cmd_file_cmbn(c("txt", "html", "xml"), "myFile")
+#' cmd_file_combn("myFile", c("txt", "html", "xml"))
 #' 
 #' # Makes list for many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' cmd_file_cmbn("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_file_combn(c("myFile1", "myFile2", "myFile3"), "txt")
 #'
-cmd_file_cmbn <- function(ext, prefix, outdir = "."){
+cmd_file_combn <- function(prefix, ext, outdir = "."){
+  # strip leading . from ext (ie allow .txt.gz or txt.gz)
+  ext %<>% gsub("^\\.", "", .)
+  
+  if (length(prefix) > 1 & length(ext) > 1){
+    
+    file_combn <- combn_prefix_suffix(prefix, ext) 
+    file_list <- file_combn %>% 
+      paste(outdir, ., sep = "/") %>% 
+      sanitize_path() %>% 
+      purrr::set_names(file_combn) %>% 
+      as.list()
+    
+    return(file_list)
+  }
+  
   files <- purrr::map2(ext, prefix, ~{
     file.path(outdir, paste0(.y, ".", .x)) %>% 
       sanitize_path()
@@ -294,13 +320,78 @@ cmd_file_cmbn <- function(ext, prefix, outdir = "."){
 
 }
 
+#' Create all pairwise combinations of two vectors, excluding self-pairs
+#'
+#' @param prefix 
+#' @param suffix 
+#'
+#' @return vector of all combinations of prefix + suffix
+#' @noRd
+#'
+#' @examples
+#' combn_prefix_suffix(c("one", "two", "three"), c(1,2))
+#' # Compare vs output of:
+#' combine_and_merge(c(c("one", "two"), c(1,2))
+combn_prefix_suffix <- function(prefix, suffix){
+  
+  prefix %<>% as.character
+  suffix %<>% as.character
+  
+  # taking combn of c(prefix, suffix) will result in prefix+prefix and suffix+suffix
+  # entries (ie self-combinations), so these need to be subtracted out to
+  # produce the final set of prefix+suffix entries
+  
+  self_combn <- list(prefix, suffix) %>% 
+    purrr::map(combine_and_merge) %>% 
+    unlist()
+  
+  prefix_suffix_combn <- c(prefix, suffix) %>% 
+    combine_and_merge()
+  
+  prefix_suffix_combn[!(prefix_suffix_combn %in% self_combn)]
+}
+
+#' Merge vector
+#'
+#' @param v vector of length 2
+#' @param sep separator to join v[1] and v[2]
+#'
+#' @return 
+#' @noRd
+#'
+#' @examples
+#' merge_combn_vector(c("one", "two"))
+merge_combn_vector <- function(v, sep = "."){
+  stopifnot(length(v) == 2)
+  paste(v[1], v[2], sep = sep)
+}
+
+#' Create all pairwise combinations of vector entries & join on separator
+#'
+#' @param vector a vector to create all pairwise combinations of. Pass vector of
+#'   vectors for matrix-wise operation.
+#' @param sep separator
+#'
+#' @return
+#' @noRd
+#'
+#' @examples
+#' combine_and_merge(1:3)
+#' combine_and_merge(c(c("one", "two"), c(1,2))
+combine_and_merge <- function(vector, sep = "."){
+  combn(vector, m = 2, simplify = FALSE) %>% 
+    purrr::map_chr(merge_combn_vector, sep = sep)
+}
+
 #' Creates list of paths by file extension & checks they exist
 #'
 #' Ext or prefix can be a vector or single character. The shorter value will be
 #' propagated across all values of the other. See Examples for details.
+#' 
+#' If files are not found, throws an error
 #'
-#' @param ext vector of file extensions
 #' @param prefix name of file prefix for each extension.
+#' @param ext vector of file extensions
 #' @param outdir directory the files will be inside
 #'
 #' @return vector of valid file paths
@@ -310,17 +401,23 @@ cmd_file_cmbn <- function(ext, prefix, outdir = "."){
 #'
 #' @examples
 #' \dontrun{
-#' # Checks many file types of same prefix
+#' # Expects many file types of same prefix
 #' # ie myFile.txt, myFile.html, myFile.xml
-#' cmd_file_expect(c("txt", "html", "xml"), "myFile")
-#' # Checks many files of same type
+#' cmd_file_expect("myFile", c("txt", "html", "xml"))
+#' 
+#' # Expects many files of same type
 #' # ie myFile1.txt, myFile2.txt, myFile3.txt
-#' cmd_file_expect("txt", c("myFile1", "myFile2", "myFile3"))
+#' cmd_file_expect(c("myFile1", "myFile2", "myFile3"), "txt")
+#' 
+#' # Expects many files with each prefix and each extension
+#' # ie myFile1.txt, myFile1.html, myFile2.txt, myFile2.html
+#' cmd_file_expect(c("myFile1", "myFile2"), c("txt", "html))
+#' 
 #' }
 #'
 #' 
-cmd_file_expect <- function(ext, prefix, outdir = "."){
-  cmd_file_cmbn(ext, prefix, outdir) %T>%
+cmd_file_expect <- function(prefix, ext, outdir = "."){
+  cmd_file_combn(prefix, ext, outdir) %T>%
     cmd_files_exist()
 }
 
