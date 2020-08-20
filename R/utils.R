@@ -238,33 +238,67 @@ list_index_named_values <- function(list, named_values){
 #' }
 cmd_files_exist <- function(files){
   
-  if (length(files > 1)) {
+  if (length(files) > 1) {
     files %>%
       purrr::map(purrr::discard, file.exists) %>%
-      purrr::compact() %>%
-      unlist() %>% 
+      purrr::compact() %>% 
+      error_text_file_not_exist %>% 
       error_file_not_exist()
   }
   
-  if (length(files) == 1 & !file.exists(files)){
-    error_file_not_exist(files)
-  } else if (file.exists(files)) {
-    return(invisible())
-  }
+  if (length(files) == 1) {
+    if (!file.exists(files)) {
+      files %>% 
+        error_text_file_not_exist() %>% 
+        error_file_not_exist()
+      } 
+    else {return(invisible())}
+  } 
   
 }
 
-#' Throw error that file doesn't exist
+#' Generate error text that file doesn't exist
+#' 
+#' This is such a stupid way to do things.
 #'
-#' @param file path to file
+#' @param file path to file or files (as vector)
 #'
-#' @return file doesn't exist error
+#' @return file doesn't exist error text
 #'
 #' @examples
 #' 
 #' @noRd
-error_file_not_exist <- function(file){
-  stop(paste0(file, " was not found.\n"))
+error_text_file_not_exist <- function(file){
+  # Ugh. I hate this. This whole error checking/validation system needs yet
+  # another overhaul.
+  if (is.null(file)){
+    return(invisible())
+  }
+  if (length(file) == 0){
+    return(invisible())
+  }
+  paste0(file, " was not found.", collapse = "\n")
+}
+
+#' Throw error that file doesn't exist
+#' 
+#' This system needs fixing.
+#'
+#' @param file path to file
+#'
+#' @return file doesn't exist error
+#' @noRd
+#'
+#' @examples
+#' file %>%
+#'  error_text_file_not_exist() %>%
+#'  error_file_not_exist() 
+error_file_not_exist <- function(text){
+  # No real error checking.
+  if (is.null(text)){
+    return(invisible())
+  }
+  stop(text)
 }
 
 #' Generates list of expected output files
@@ -379,7 +413,7 @@ merge_combn_vector <- function(v, sep = "."){
 #' combine_and_merge(1:3)
 #' combine_and_merge(c(c("one", "two"), c(1,2))
 combine_and_merge <- function(vector, sep = "."){
-  combn(vector, m = 2, simplify = FALSE) %>% 
+  utils::combn(vector, m = 2, simplify = FALSE) %>% 
     purrr::map_chr(merge_combn_vector, sep = sep)
 }
 
@@ -411,7 +445,7 @@ combine_and_merge <- function(vector, sep = "."){
 #' 
 #' # Expects many files with each prefix and each extension
 #' # ie myFile1.txt, myFile1.html, myFile2.txt, myFile2.html
-#' cmd_file_expect(c("myFile1", "myFile2"), c("txt", "html))
+#' cmd_file_expect(c("myFile1", "myFile2"), c("txt", "html"))
 #' 
 #' }
 #'
