@@ -7,7 +7,7 @@
 cmd_list_drop(flags, drop)
 }
 \arguments{
-\item{flags}{named list output of cmd_args_to_flags}
+\item{flags}{named list output of cmd_list_interp}
 
 \item{drop}{vector of flag entries to drop. Pass a character vector
 to drop flags by name. Pass a named vector to drop flags by name/value

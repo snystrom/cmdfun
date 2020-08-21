@@ -18,7 +18,7 @@ cmd_help_flags_similar(
 
 \item{.fun}{optional function to apply to \code{command_flag_names} and \code{flags}
 before checking their values. If using a function to rename flags after
-\code{cmd_args_to_flags}, use that same function here. Can be useful for parsing help
+\code{cmd_list_interp}, use that same function here. Can be useful for parsing help
 lines into R-friendly variable names for user-convenience. Can be function
 or \code{rlang}-style formula defintion (ie \code{.fun = ~{foo(.x)}} is the same as
 \code{.fun = function(x){foo(x)}}). Note: if command_flag_names need additional

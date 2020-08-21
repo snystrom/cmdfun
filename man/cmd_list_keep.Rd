@@ -7,7 +7,7 @@
 cmd_list_keep(flags, keep)
 }
 \arguments{
-\item{flags}{named list output of cmd_args_to_flags}
+\item{flags}{named list output of cmd_list_interp}
 
 \item{keep}{vector of flag entries to keep. Pass a character vector
 to keep flags by name. Pass a named vector to keep flags by name/value

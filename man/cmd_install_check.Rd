@@ -4,12 +4,12 @@
 \alias{cmd_install_check}
 \title{Wrapper function for checking an install}
 \usage{
-cmd_install_check(path_handler, path = NULL)
+cmd_install_check(path_search, path = NULL)
 }
 \arguments{
-\item{path_handler}{\code{function} output of \code{cmd_path_handle()}}
+\item{path_search}{\code{function} output of \code{cmd_path_search()}}
 
-\item{path}{user-override path to check (identical to \code{path} argument of \code{cmd_path_handle()} output)}
+\item{path}{user-override path to check (identical to \code{path} argument of \code{cmd_path_search()} output)}
 }
 \value{
 pretty printed message indicating whether files exits or not. Green check = Yes, red X = No.
@@ -19,7 +19,7 @@ This function can be lightly wrapped by package builders to build a user-friendl
 }
 \examples{
 \dontrun{
-path_handler <- cmd_path_handle(default = "/bin", utils = "ls")
-cmd_install_check(path_handler)
+path_search <- cmd_path_search(default = "/bin", utils = "ls")
+cmd_install_check(path_search)
 }
 }
