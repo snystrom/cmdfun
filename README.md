@@ -35,11 +35,11 @@ arguments:
     user
   - `cmd_args_all()` captures both named + dot arguments
 
-`cmd_args_to_flags` converts the captured arguments to a parsed list of
+`cmd_list_interp` converts the captured arguments to a parsed list of
 flag/value pairs. This output can be useful for additonal handling of
 special flag assignments from within R.
 
-`cmd_list_crystallize` converts the output of `cmd_args_to_flags` to a
+`cmd_list_to_flags` converts the output of `cmd_list_interp` to a
 vector of commandline-style flags. This output can be directly fed to
 `system2` or `processx`.
 
@@ -67,7 +67,7 @@ appropriate for shell commands.
 myFunction <- function(...){
 
   flags <- cmd_args_dots() %>%
-    cmd_args_to_flags()
+    cmd_list_interp()
   
   return(flags)
 }
@@ -83,12 +83,12 @@ myFunction <- function(...){
     ## $bool_flag
     ## [1] ""
 
-This list can be passed to `cmd_list_crystallize` to generate a vector
+This list can be passed to `cmd_list_to_flags` to generate a vector
 suitable for `system2` to build shell commands.
 
 ``` r
 flagsList %>% 
-  cmd_list_crystallize()
+  cmd_list_to_flags()
 ```
 
     ## [1] "-flag"      "var"        "-bool_flag"
@@ -97,8 +97,8 @@ flagsList %>%
 shellCut <- function(text, ...){
 
   flags <- cmd_args_dots() %>%
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
 
     system2("cut", flags, stdout = T, input = text)
 
@@ -124,8 +124,8 @@ shellCut("hello_world_hello", f = c(1,3), d = "_")
 ``` r
 shell_ls <- function(dir = ".", ...){
   flags <- cmd_args_dots() %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -157,8 +157,8 @@ shell_ls_alias <- function(dir = ".", ...){
   argsDict <- c("long" = "l")
   
   flags <- cmd_args_dots() %>% 
-    cmd_args_to_flags(argsDict) %>% 
-    cmd_list_crystallize()
+    cmd_list_interp(argsDict) %>% 
+    cmd_list_to_flags()
   
   system2("ls", c(dir, flags), stdout = T)
 }
@@ -182,8 +182,8 @@ shellCut_alias <- function(text, ...){
                 "fields" = "f")
     
     flags <- cmd_args_dots() %>%
-        cmd_args_to_flags(argsDict) %>% 
-      cmd_list_crystallize()
+        cmd_list_interp(argsDict) %>% 
+      cmd_list_to_flags()
 
     system2("cut", flags, stdout = T, input = text)
 }
@@ -204,7 +204,7 @@ variables defined in `.Renviron`, using options (set with `option()`,
 and got with `getOption()`), having the user explicitly pass the path in
 the function call, or failing this, using a default install path.
 
-`cmd_path_handle()` is a macro which returns a function that returns a
+`cmd_path_search()` is a macro which returns a function that returns a
 valid path to the target by heirarchically searching a series of
 possible locations.
 
@@ -212,7 +212,7 @@ For example, to build an interface to the “MEME” suite, which is by
 default installed to `~/meme/bin`, one could build the following:
 
 ``` r
-handle_meme_path <- cmd_path_handle(default_path = "~/meme/bin")
+handle_meme_path <- cmd_path_search(default_path = "~/meme/bin")
 
 handle_meme_path()
 ```
@@ -222,7 +222,7 @@ handle_meme_path()
 To only search the R environment variable “MEME\_PATH”, one could build:
 
 ``` r
-handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH")
+handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH")
 ```
 
 ``` r
@@ -244,11 +244,11 @@ Multiple arguments can be used, and they will be searched from
 most-specific, to most-general.
 
 ``` r
-handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH",
+handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin")
 ```
 
-For example, if “MEME\_PATH” is invalid on my machine, the handler will
+For example, if “MEME\_PATH” is invalid on my machine, the search_function will
 return the default path as long as the default is also valid on my
 machine.
 
@@ -270,13 +270,13 @@ Here, I will include two tools from the MEME suite, AME, and DREME
 (distributed as binaries named “ame”, and “dreme”).
 
 ``` r
-handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH",
+handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin",
                                        utils = c("dreme", "ame"))
 ```
 
-handler functions have two optional arguments: `path` and `util`. `path`
-acts as an override to the defaults provided when building the handler.
+search_function functions have two optional arguments: `path` and `util`. `path`
+acts as an override to the defaults provided when building the search_function.
 User-provided path variables will always be used instead of provided
 defaults. This is to catch problems from the user and not cause
 unexpected user-level
@@ -288,7 +288,7 @@ handle_meme_path("bad/path")
 
     ## Error in .check_valid_command_path(path): Command: bad/path, does not exist.
 
-`util` specifies which utility path to return (if any). The path handler
+`util` specifies which utility path to return (if any). The path search_function
 will throw an error if the utility is not found in any of the specified
 locations.
 
@@ -311,7 +311,7 @@ handle_meme_path(util = TRUE)
 `cmdfun` provides a preexisting utility for this, however. The
 `cmd_install_check` function can be lightly wrapped by package builders
 to verify and print a user-friendly series of checks for a valid tool
-install. it takes as input the output of `build_package_handler` and an
+install. it takes as input the output of `build_package_search_function` and an
 optional user-override `path`.
 
 Here I build a function for checking a users `meme` install.
@@ -368,7 +368,7 @@ cmd_ui_file_exists("~/meme/bin")
 functions returning boolean values testing for an install path. These
 are useful in function logic, or package development for setting
 conditional examples or function hooks that depend on a command install.
-`cmd_install_is_valid()` takes a path handler function as input, so any
+`cmd_install_is_valid()` takes a path search_function function as input, so any
 `options`, `.Renviron`, or default install location logic propagates to
 these funtions as well.
 
@@ -391,9 +391,9 @@ ame_installed()
 ## Bringing it all together
 
 Using a `cmd_args_` family function to get and convert function
-arguments to commandline flags. The path handler returns the correct
+arguments to commandline flags. The path search_function returns the correct
 `command` call which can be passed to `system2` or `processx` along with
-the flags generated from `cmd_args_to_flags`.
+the flags generated from `cmd_list_interp`.
 
 This makes for a robust shell wrapper without excess overhead.
 
@@ -405,14 +405,14 @@ which is: `MEME_PATH` environment variable, followed by the `~/meme/bin`
 default install.
 
 ``` r
-handle_meme_path <- cmd_path_handle(environment_var = "MEME_PATH",
+handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin",
                                        utils = c("dreme", "ame"))
 
 runDreme <- function(..., meme_path = NULL){
   flags <- cmd_args_dots() %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
   
   command <- handle_meme_path(path = meme_path, util = "dreme")
   
@@ -443,8 +443,8 @@ as flags, while others can be used for function logic.
 ``` r
 myFunction <- function(arg1, arg2, print = T){
   flags <- cmd_args_named(keep = c("arg1", "arg2")) %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
   
   ifelse(print, print("printing"), print("nothing"))
   
@@ -483,9 +483,9 @@ for keeping entries.
 ``` r
 myFunction <- function(arg1, arg2){
   flags <- cmd_args_named() %>% 
-    cmd_args_to_flags() %>% 
+    cmd_list_interp() %>% 
     cmd_list_drop(c("arg2" = "baz")) %>% 
-    cmd_list_crystallize()
+    cmd_list_to_flags()
   
   return(flags)
 }
@@ -585,8 +585,8 @@ please be careful how you build system calls.
 shellCut_unsafe <- function(text, ...){
 
   flags <- cmd_args_dots() %>%
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
 
     system2("echo", c(text , "|", "cut", flags), stdout = T)
 

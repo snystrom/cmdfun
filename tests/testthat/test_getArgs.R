@@ -12,26 +12,26 @@ dot_test <- function(arg1, ...){
 
 pipe_test <- function(arg1, ...){
   cmd_args_all() %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
 }
 
 pipe_test_named <- function(arg1, arg2, ...){
   cmd_args_named() %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
 }
 
 keep_test <- function(arg1, arg2, ...){
   cmd_args_all(keep = c("arg1", "dot_keep")) %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
 }
 
 drop_test <- function(arg1, arg2, ..){
   cmd_args_all(drop = "arg2") %>% 
-    cmd_args_to_flags() %>% 
-    cmd_list_crystallize()
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
 }
 
 test_that("Can get Named Args", {
