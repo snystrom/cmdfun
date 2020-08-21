@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parses commandline help options to return vector of valid flag names — cmd_help_parse_flags • cmdfun</title>
+<title>Macro for constructing target path validators — cmd_path_search • cmdfun</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,13 @@
 
 
 
-<meta property="og:title" content="Parses commandline help options to return vector of valid flag names — cmd_help_parse_flags" />
-<meta property="og:description" content="When using cmdfun to write lazy shell wrappers, the user can easily mistype
-a commandline flag since there is not text completion. Some programs behave
-unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages." />
+<meta property="og:title" content="Macro for constructing target path validators — cmd_path_search" />
+<meta property="og:description" content="A common pattern in designing shell interfaces is to ask the user to give an
+absolute path to the target shell utility. It is common to pass this
+information from the user to R by using either R environment variables
+defined in .Renviron, using options (set with option(), and got with
+getOption()), having the user explicitly pass the path in the function call,
+or failing this, using a default install path." />
 
 
 
@@ -122,61 +125,81 @@ unexpectedly when flags are typed incorrectly, and for this reason return uninfo
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Parses commandline help options to return vector of valid flag names</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snystrom/cmdfun/blob/master/R/parse_help.R'><code>R/parse_help.R</code></a></small>
-    <div class="hidden name"><code>cmd_help_parse_flags.Rd</code></div>
+    <h1>Macro for constructing target path validators</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snystrom/cmdfun/blob/master/R/macros.R'><code>R/macros.R</code></a></small>
+    <div class="hidden name"><code>cmd_path_search.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>When using cmdfun to write lazy shell wrappers, the user can easily mistype
-a commandline flag since there is not text completion. Some programs behave
-unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages.</p>
+    <p>A common pattern in designing shell interfaces is to ask the user to give an
+absolute path to the target shell utility. It is common to pass this
+information from the user to R by using either R environment variables
+defined in .Renviron, using options (set with option(), and got with
+getOption()), having the user explicitly pass the path in the function call,
+or failing this, using a default install path.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_help_parse_flags</span>(<span class='no'>help_lines</span>, <span class='kw'>processx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_path_search</span>(
+  <span class='kw'>environment_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>option_name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>default_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>utils</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>help_lines</th>
-      <td><p><code>character</code> vector contianing the output of "command
---help", or similar output. Optional: pass either <code>stdout</code>, or <code>stderr</code> output from
-processx::run(), must set <code>processx = TRUE</code>.</p></td>
+      <th>environment_var</th>
+      <td><p>name of R environment variable defining target path. Can be set in .Renviron.</p></td>
     </tr>
     <tr>
-      <th>processx</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> if set to TRUE will split string on "\n" before
-parsing.</p></td>
+      <th>option_name</th>
+      <td><p>name of user-configurable option (called by getOption) which will hold path to target</p></td>
+    </tr>
+    <tr>
+      <th>default_path</th>
+      <td><p>default install path of target. Can contain shell
+specials like "~" which will be expanded at runtime (as opposed to build time of the search function).</p></td>
+    </tr>
+    <tr>
+      <th>utils</th>
+      <td><p>optional character vector containing names of valid utils inside
+target path, used to populate error checking for valid install.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>first word entry of each line prefixed by "-". typically this grabs
-all flags from --help output, but often times will require extra
-postprocessing to remove commas or equal signs, for example.</p>
+    <p>function that returns a valid path to tool or optional utility.</p>
+<p>The returned path_search function takes as input a path or util. where path
+is a user override path for the supported tool. If the user-defined path is
+invalid, this will always throw an error and not search the defined defaults.</p>
+<p>util must be found within the target path, but does not have to be present in
+the original "utils" call. The user will be warned if this is the case. If
+<code>util</code> is set to <code>TRUE</code> will return all paths to utilities without checking
+the install. This can be used for writing user-facing install checkers.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>cmd_help_parse_flags</code> tries to grab flags from --help documentation which can be used for error checking.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='cmd_help_flags_similar.html'>cmd_help_flags_similar</a></code> <code><a href='cmd_help_flags_suggest.html'>cmd_help_flags_suggest</a></code></p></div>
+    <p>Another common use-case involves software packages with many tools packaged
+in a single directory, and the user may want to call one or many utilities
+within this common structure.</p>
+<p>For example, the software "coolpackage" is installed in "~/coolpackage", and
+has two programs: "tool1", and "tool2" found in "~/coolpackage/tool1" and
+~/coolpackage/tool2", respectively.</p>
+<p>To design an interface to coolpackage, this function can automate checking
+and validation for not only the package, but for each desired utility in the
+package.</p>
+<p>The heirarchy of path usage is: user-defined &gt; option_name &gt; environment_var &gt; default_path</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='no'>.Platform</span>$<span class='no'>OS.type</span> <span class='kw'>==</span> <span class='st'>"unix"</span> <span class='kw'>&amp;</span> <span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='st'>"/bin/tar"</span>)) {
-<span class='co'># below are two examples parsing the --help method of GNU tar </span>
-
-<span class='co'># with processx</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/library.html'>require</a></span>(<span class='no'>processx</span>)) {
-<span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>processx</span><span class='kw ns'>::</span><span class='fu'><a href='http://processx.r-lib.org/reference/run.html'>run</a></span>(<span class='st'>"tar"</span>, <span class='st'>"--help"</span>, <span class='kw'>error_on_status</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>fn_flags</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_help_parse_flags</span>(<span class='no'>out</span>$<span class='no'>stdout</span>, <span class='kw'>processx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-}
-
-<span class='co'># with system2</span>
-<span class='no'>lines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system2.html'>system2</a></span>(<span class='st'>"tar"</span>, <span class='st'>"--help"</span>, <span class='kw'>stderr</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>fn_flags</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_help_parse_flags</span>(<span class='no'>lines</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='no'>.Platform</span>$<span class='no'>OS.type</span> <span class='kw'>==</span> <span class='st'>"unix"</span>) {
+<span class='no'>bin_checker</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_path_search</span>(<span class='kw'>default_path</span> <span class='kw'>=</span> <span class='st'>"/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ls"</span>, <span class='st'>"pwd"</span>))
+<span class='co'># returns path to bin</span>
+<span class='fu'>bin_checker</span>()
+<span class='co'># returns path to bin/ls</span>
+<span class='fu'>bin_checker</span>(<span class='kw'>util</span> <span class='kw'>=</span> <span class='st'>"ls"</span>)
+}</div><div class='output co'>#&gt; [1] "//bin/ls"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

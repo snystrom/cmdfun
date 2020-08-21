@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cmdfun</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9004</span>
       </span>
     </div>
 
@@ -129,18 +129,18 @@
     <p>This function can be lightly wrapped by package builders to build a user-friendly install checking function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_install_check</span>(<span class='no'>path_handler</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_install_check</span>(<span class='no'>path_search</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path_handler</th>
-      <td><p><code>function</code> output of <code><a href='cmd_path_handle.html'>cmd_path_handle()</a></code></p></td>
+      <th>path_search</th>
+      <td><p><code>function</code> output of <code><a href='cmd_path_search.html'>cmd_path_search()</a></code></p></td>
     </tr>
     <tr>
       <th>path</th>
-      <td><p>user-override path to check (identical to <code>path</code> argument of <code><a href='cmd_path_handle.html'>cmd_path_handle()</a></code> output)</p></td>
+      <td><p>user-override path to check (identical to <code>path</code> argument of <code><a href='cmd_path_search.html'>cmd_path_search()</a></code> output)</p></td>
     </tr>
     </table>
 
@@ -150,8 +150,8 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>path_handler</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_handle.html'>cmd_path_handle</a></span>(<span class='kw'>default</span> <span class='kw'>=</span> <span class='st'>"/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='st'>"ls"</span>)
-<span class='fu'>cmd_install_check</span>(<span class='no'>path_handler</span>)
+<span class='no'>path_search</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_path_search.html'>cmd_path_search</a></span>(<span class='kw'>default</span> <span class='kw'>=</span> <span class='st'>"/bin"</span>, <span class='kw'>utils</span> <span class='kw'>=</span> <span class='st'>"ls"</span>)
+<span class='fu'>cmd_install_check</span>(<span class='no'>path_search</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -13,9 +13,6 @@
     <loc>https://snystrom.github.io/cmdr//reference/cmd_args_named.html</loc>
   </url>
   <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_args_to_flags.html</loc>
-  </url>
-  <url>
     <loc>https://snystrom.github.io/cmdr//reference/cmd_error_if_missing.html</loc>
   </url>
   <url>
@@ -40,16 +37,19 @@
     <loc>https://snystrom.github.io/cmdr//reference/cmd_install_is_valid.html</loc>
   </url>
   <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_list_crystallize.html</loc>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_list_drop.html</loc>
   </url>
   <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_list_drop.html</loc>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_list_interp.html</loc>
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdr//reference/cmd_list_keep.html</loc>
   </url>
   <url>
-    <loc>https://snystrom.github.io/cmdr//reference/cmd_path_handle.html</loc>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_list_to_flags.html</loc>
+  </url>
+  <url>
+    <loc>https://snystrom.github.io/cmdr//reference/cmd_path_search.html</loc>
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdr//reference/cmd_ui_file_exists.html</loc>

@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">cmdfun</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9004</span>
       </span>
     </div>
 
@@ -107,8 +107,8 @@
 <li>
 <code><a href="reference/cmd_args_all.html">cmd_args_all()</a></code> captures both named + dot arguments</li>
 </ul>
-<p><code>cmd_args_to_flags</code> converts the captured arguments to a parsed list of flag/value pairs. This output can be useful for additonal handling of special flag assignments from within R.</p>
-<p><code>cmd_list_crystallize</code> converts the output of <code>cmd_args_to_flags</code> to a vector of commandline-style flags. This output can be directly fed to <code>system2</code> or <code>processx</code>.</p>
+<p><code>cmd_list_interp</code> converts the captured arguments to a parsed list of flag/value pairs. This output can be useful for additonal handling of special flag assignments from within R.</p>
+<p><code>cmd_list_to_flags</code> converts the output of <code>cmd_list_interp</code> to a vector of commandline-style flags. This output can be directly fed to <code>system2</code> or <code>processx</code>.</p>
 <p>Together, they can be used to build user-friendly R interfaces to shell programs without having to manually implement all commandline flags in R functions.</p>
 </div>
 <div id="install" class="section level2">
@@ -125,7 +125,7 @@
 <div class="sourceCode" id="cb3"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">...</span>){
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>()
 
   <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">flags</span>)
 }</pre></div>
@@ -135,15 +135,15 @@
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co">## </span></span>
 <span id="cb5-4"><a href="#cb5-4"></a><span class="co">## $bool_flag</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co">## [1] ""</span></span></code></pre></div>
-<p>This list can be passed to <code>cmd_list_crystallize</code> to generate a vector suitable for <code>system2</code> to build shell commands.</p>
+<p>This list can be passed to <code>cmd_list_to_flags</code> to generate a vector suitable for <code>system2</code> to build shell commands.</p>
 <div class="sourceCode" id="cb6"><pre class="r"><span class="no">flagsList</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()</pre></div>
+  <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()</pre></div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">## [1] "-flag"      "var"        "-bool_flag"</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="r"><span class="no">shellCut</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
     <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"cut"</span>, <span class="no">flags</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>, <span class="kw">input</span> <span class="kw">=</span> <span class="no">text</span>)
 
@@ -158,8 +158,8 @@
 <a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h3>
 <div class="sourceCode" id="cb13"><pre class="r"><span class="no">shell_ls</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">dir</span> <span class="kw">=</span> <span class="st">"."</span>, <span class="no">...</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">dir</span>, <span class="no">flags</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
 }</pre></div>
@@ -182,8 +182,8 @@
   <span class="no">argsDict</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"long"</span> <span class="kw">=</span> <span class="st">"l"</span>)
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>(<span class="no">argsDict</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">argsDict</span>) <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">dir</span>, <span class="no">flags</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
 }</pre></div>
@@ -200,8 +200,8 @@
                 <span class="st">"fields"</span> <span class="kw">=</span> <span class="st">"f"</span>)
 
     <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-        <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>(<span class="no">argsDict</span>) <span class="kw">%&gt;%</span>
-      <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+        <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">argsDict</span>) <span class="kw">%&gt;%</span>
+      <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
     <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"cut"</span>, <span class="no">flags</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>, <span class="kw">input</span> <span class="kw">=</span> <span class="no">text</span>)
 }</pre></div>
@@ -213,14 +213,14 @@
 <h2 class="hasAnchor">
 <a href="#abstraction-of-command-path-handling" class="anchor"></a>Abstraction of command path handling</h2>
 <p>A common pattern when designing shell interfaces is to ask the user to give an absolute path to the target shell utility. It is common to pass this information from the user to R by using either R environment variables defined in <code>.Renviron</code>, using options (set with <code><a href="https://rdrr.io/r/base/options.html">option()</a></code>, and got with <code><a href="https://rdrr.io/r/base/options.html">getOption()</a></code>), having the user explicitly pass the path in the function call, or failing this, using a default install path.</p>
-<p><code><a href="reference/cmd_path_handle.html">cmd_path_handle()</a></code> is a macro which returns a function that returns a valid path to the target by heirarchically searching a series of possible locations.</p>
+<p><code><a href="reference/cmd_path_search.html">cmd_path_search()</a></code> is a macro which returns a function that returns a valid path to the target by heirarchically searching a series of possible locations.</p>
 <p>For example, to build an interface to the “MEME” suite, which is by default installed to <code>~/meme/bin</code>, one could build the following:</p>
-<div class="sourceCode" id="cb24"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_handle.html">cmd_path_handle</a></span>(<span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)
+<div class="sourceCode" id="cb24"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)
 
 <span class="fu">handle_meme_path</span>()</pre></div>
 <div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="co">## [1] "/nas/longleaf/home/snystrom/meme/bin"</span></span></code></pre></div>
 <p>To only search the R environment variable “MEME_PATH”, one could build:</p>
-<div class="sourceCode" id="cb26"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_handle.html">cmd_path_handle</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>)</pre></div>
+<div class="sourceCode" id="cb26"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>)</pre></div>
 <div class="sourceCode" id="cb27"><pre class="r"><span class="co"># Without environment variable defined</span>
 <span class="fu">handle_meme_path</span>()</pre></div>
 <div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="co">## Error in handle_meme_path(): No path defined or detected</span></span></code></pre></div>
@@ -229,9 +229,9 @@
 <span class="fu">handle_meme_path</span>()</pre></div>
 <div class="sourceCode" id="cb30"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="co">## [1] "/nas/longleaf/home/snystrom/meme/bin"</span></span></code></pre></div>
 <p>Multiple arguments can be used, and they will be searched from most-specific, to most-general.</p>
-<div class="sourceCode" id="cb31"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_handle.html">cmd_path_handle</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<div class="sourceCode" id="cb31"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)</pre></div>
-<p>For example, if “MEME_PATH” is invalid on my machine, the handler will return the default path as long as the default is also valid on my machine.</p>
+<p>For example, if “MEME_PATH” is invalid on my machine, the search_function will return the default path as long as the default is also valid on my machine.</p>
 <div class="sourceCode" id="cb32"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span>(<span class="st">"MEME_PATH"</span> <span class="kw">=</span> <span class="st">"bad/path"</span>)
 <span class="fu">handle_meme_path</span>()</pre></div>
 <div class="sourceCode" id="cb33"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="co">## [1] "/nas/longleaf/home/snystrom/meme/bin"</span></span></code></pre></div>
@@ -240,20 +240,20 @@
 <a href="#support-for-tool-utilities" class="anchor"></a>Support for tool utilities</h3>
 <p>Some software, like the MEME suite is distributed as several binaries located in a common directory. To allow interface builders to officially support specific binaries, each binary can be defined as a “utility” within the build path.</p>
 <p>Here, I will include two tools from the MEME suite, AME, and DREME (distributed as binaries named “ame”, and “dreme”).</p>
-<div class="sourceCode" id="cb34"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_handle.html">cmd_path_handle</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<div class="sourceCode" id="cb34"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>,
                                        <span class="kw">utils</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dreme"</span>, <span class="st">"ame"</span>))</pre></div>
-<p>handler functions have two optional arguments: <code>path</code> and <code>util</code>. <code>path</code> acts as an override to the defaults provided when building the handler. User-provided path variables will always be used instead of provided defaults. This is to catch problems from the user and not cause unexpected user-level behavior.</p>
+<p>search_function functions have two optional arguments: <code>path</code> and <code>util</code>. <code>path</code> acts as an override to the defaults provided when building the search_function. User-provided path variables will always be used instead of provided defaults. This is to catch problems from the user and not cause unexpected user-level behavior.</p>
 <div class="sourceCode" id="cb35"><pre class="r"><span class="fu">handle_meme_path</span>(<span class="st">"bad/path"</span>)</pre></div>
 <div class="sourceCode" id="cb36"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="co">## Error in .check_valid_command_path(path): Command: bad/path, does not exist.</span></span></code></pre></div>
-<p><code>util</code> specifies which utility path to return (if any). The path handler will throw an error if the utility is not found in any of the specified locations.</p>
+<p><code>util</code> specifies which utility path to return (if any). The path search_function will throw an error if the utility is not found in any of the specified locations.</p>
 <div class="sourceCode" id="cb37"><pre class="r"><span class="fu">handle_meme_path</span>(<span class="kw">util</span> <span class="kw">=</span> <span class="st">"dreme"</span>)</pre></div>
 <div class="sourceCode" id="cb38"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="co">## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"</span></span></code></pre></div>
 <p>List all utility paths (but don’t check if they’re valid). Useful for writing user-facing install checking functions.</p>
 <div class="sourceCode" id="cb39"><pre class="r"><span class="fu">handle_meme_path</span>(<span class="kw">util</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
 <div class="sourceCode" id="cb40"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="co">## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"</span></span>
 <span id="cb40-2"><a href="#cb40-2"></a><span class="co">## [2] "/nas/longleaf/home/snystrom/meme/bin/ame"</span></span></code></pre></div>
-<p><code>cmdfun</code> provides a preexisting utility for this, however. The <code>cmd_install_check</code> function can be lightly wrapped by package builders to verify and print a user-friendly series of checks for a valid tool install. it takes as input the output of <code>build_package_handler</code> and an optional user-override <code>path</code>.</p>
+<p><code>cmdfun</code> provides a preexisting utility for this, however. The <code>cmd_install_check</code> function can be lightly wrapped by package builders to verify and print a user-friendly series of checks for a valid tool install. it takes as input the output of <code>build_package_search_function</code> and an optional user-override <code>path</code>.</p>
 <p>Here I build a function for checking a users <code>meme</code> install.</p>
 <div class="sourceCode" id="cb41"><pre class="r"><span class="no">check_meme_install</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">path</span> <span class="kw">=</span> <span class="kw">NULL</span>){
   <span class="fu"><a href="reference/cmd_install_check.html">cmd_install_check</a></span>(<span class="no">handle_meme_path</span>, <span class="kw">path</span> <span class="kw">=</span> <span class="no">path</span>)
@@ -283,7 +283,7 @@
 <div id="internal-install-validators" class="section level3">
 <h3 class="hasAnchor">
 <a href="#internal-install-validators" class="anchor"></a>Internal install validators</h3>
-<p><code>cmdfun</code> also provides a macro <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path handler function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
+<p><code>cmdfun</code> also provides a macro <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path search_function function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
 <div class="sourceCode" id="cb50"><pre class="r"><span class="no">meme_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">handle_meme_path</span>)
 <span class="fu">meme_installed</span>()</pre></div>
 <div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="co">## [1] TRUE</span></span></code></pre></div>
@@ -296,17 +296,17 @@
 <div id="bringing-it-all-together" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bringing-it-all-together" class="anchor"></a>Bringing it all together</h2>
-<p>Using a <code>cmd_args_</code> family function to get and convert function arguments to commandline flags. The path handler returns the correct <code>command</code> call which can be passed to <code>system2</code> or <code>processx</code> along with the flags generated from <code>cmd_args_to_flags</code>.</p>
+<p>Using a <code>cmd_args_</code> family function to get and convert function arguments to commandline flags. The path search_function returns the correct <code>command</code> call which can be passed to <code>system2</code> or <code>processx</code> along with the flags generated from <code>cmd_list_interp</code>.</p>
 <p>This makes for a robust shell wrapper without excess overhead.</p>
 <p>In the <code>runDreme</code> function below, the user can pass any valid <code>dreme</code> argument using the rules for command args defined above to <code>...</code>. Allowing <code>meme_path</code> as a function argument and passing it to <code>handle_meme_path</code> allows the user to override the default search path which is: <code>MEME_PATH</code> environment variable, followed by the <code>~/meme/bin</code> default install.</p>
-<div class="sourceCode" id="cb54"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_handle.html">cmd_path_handle</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<div class="sourceCode" id="cb54"><pre class="r"><span class="no">handle_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>,
                                        <span class="kw">utils</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dreme"</span>, <span class="st">"ame"</span>))
 
 <span class="no">runDreme</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">...</span>, <span class="no">meme_path</span> <span class="kw">=</span> <span class="kw">NULL</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
   <span class="no">command</span> <span class="kw">&lt;-</span> <span class="fu">handle_meme_path</span>(<span class="kw">path</span> <span class="kw">=</span> <span class="no">meme_path</span>, <span class="kw">util</span> <span class="kw">=</span> <span class="st">"dreme"</span>)
 
@@ -323,8 +323,8 @@
 <p>This can be useful to allow only some function arguments to be captured as flags, while others can be used for function logic.</p>
 <div class="sourceCode" id="cb56"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">print</span> <span class="kw">=</span> <span class="no">T</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_named.html">cmd_args_named</a></span>(<span class="kw">keep</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"arg1"</span>, <span class="st">"arg2"</span>)) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
   <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">print</span>, <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="st">"printing"</span>), <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="st">"nothing"</span>))
 
@@ -348,9 +348,9 @@
 <p><code>cmd_list_drop</code> operates on flag lists to drop all entries corresponding to a certain name, specific name/value pairs, or by index position. Can be useful for ignoring setting certain flags if the user set them to a specific value. Conversely, <code>cmd_list_keep</code> functions identically but for keeping entries.</p>
 <div class="sourceCode" id="cb60"><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_named.html">cmd_args_named</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="reference/cmd_list_drop.html">cmd_list_drop</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"arg2"</span> <span class="kw">=</span> <span class="st">"baz"</span>)) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
   <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">flags</span>)
 }
@@ -409,8 +409,8 @@
 <div class="sourceCode" id="cb70"><pre class="r"><span class="no">shellCut_unsafe</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_args_to_flags.html">cmd_args_to_flags</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/cmd_list_crystallize.html">cmd_list_crystallize</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
     <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"echo"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">text</span> , <span class="st">"|"</span>, <span class="st">"cut"</span>, <span class="no">flags</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
 

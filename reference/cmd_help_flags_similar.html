@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cmdfun</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.9004</span>
       </span>
     </div>
 
@@ -151,7 +151,7 @@
       <th>.fun</th>
       <td><p>optional function to apply to <code>command_flag_names</code> and <code>flags</code>
 before checking their values. If using a function to rename flags after
-<code>cmd_args_to_flags</code>, use that same function here. Can be useful for parsing help
+<code>cmd_list_interp</code>, use that same function here. Can be useful for parsing help
 lines into R-friendly variable names for user-convenience. Can be function
 or <code>rlang</code>-style formula defintion (ie <code>.fun = ~{foo(.x)}</code> is the same as
 <code>.fun = function(x){foo(x)}</code>). Note: if command_flag_names need additional
