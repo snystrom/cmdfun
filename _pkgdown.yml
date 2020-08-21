@@ -20,12 +20,12 @@ reference:
 
 - title: Coercing Arguments to Commandline Flags
   contents:
-  - cmd_args_to_flags
-  - cmd_list_crystallize
+  - cmd_list_interp
+  - cmd_list_to_flags
 
 - title: Macros
   contents:
-  - cmd_path_handle
+  - cmd_path_search
   - cmd_install_is_valid
 
 - title: Command output helpers
