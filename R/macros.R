@@ -26,13 +26,13 @@
 #' @param environment_var name of R environment variable defining target path. Can be set in .Renviron.
 #' @param option_name name of user-configurable option (called by getOption) which will hold path to target
 #' @param default_path default install path of target. Can contain shell
-#'   specials like "~" which will be expanded at runtime (as opposed to build time of the handler).
+#'   specials like "~" which will be expanded at runtime (as opposed to build time of the search function).
 #' @param utils optional character vector containing names of valid utils inside
 #'   target path, used to populate error checking for valid install. 
 #' 
 #' @return function that returns a valid path to tool or optional utility.
 #' 
-#' The returned path_handler function takes as input a path or util. where path
+#' The returned path_search function takes as input a path or util. where path
 #' is a user override path for the supported tool. If the user-defined path is
 #' invalid, this will always throw an error and not search the defined defaults.
 #' 
@@ -46,13 +46,13 @@
 #' 
 #' @examples
 #' if (.Platform$OS.type == "unix") {
-#' bin_checker <- cmd_path_handle(default_path = "/bin", utils = c("ls", "pwd"))
+#' bin_checker <- cmd_path_search(default_path = "/bin", utils = c("ls", "pwd"))
 #' # returns path to bin
 #' bin_checker()
 #' # returns path to bin/ls
 #' bin_checker(util = "ls")
 #' }
-cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
+cmd_path_search <- function(environment_var = NULL, option_name = NULL, default_path = NULL, utils = NULL){
   
   if (is.null(environment_var) & is.null(option_name) & is.null(default_path)){
     warning("at least one of: environment_var, option_name, default_path is not assigned, user must manually set path")
@@ -154,9 +154,9 @@ cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_
 
 #' Macro for constructing boolean check for valid path
 #' 
-#' @param path_handler function output of `cmd_path_handle()` **NOTE:** When
+#' @param path_search function output of `cmd_path_search()` **NOTE:** When
 #'   passing the function, do not pass as: `fun()`, but `fun` to avoid evaluation.
-#' @param util value to pass to `util` argument of `path_handler`, allows
+#' @param util value to pass to `util` argument of `path_search`, allows
 #'   building individual functions for each util (if passing one of each),
 #'   or for simultaneously checking all utils if setting `util = TRUE`. Will
 #'   cause error if `util = TRUE` but no utils are defined. **NOTE:** There is
@@ -170,25 +170,25 @@ cmd_path_handle <- function(environment_var = NULL, option_name = NULL, default_
 #'
 #' @examples
 #' if (.Platform$OS.type == "unix") {
-#' handle <- cmd_path_handle(option_name = "bin_path", default_path = "/bin/")
-#' valid_install <- cmd_install_is_valid(handle)
+#' search <- cmd_path_search(option_name = "bin_path", default_path = "/bin/")
+#' valid_install <- cmd_install_is_valid(search)
 #' # Returns TRUE if "/bin/" exists
 #' valid_install()
 #' # Returns FALSE if "bad/path/" doesn't exist
 #' valid_install("bad/path/")
 #' 
 #' # Also works with options
-#' handle_option_only <- cmd_path_handle(option_name = "bin_path")
-#' valid_install2 <- cmd_install_is_valid(handle_option_only)
+#' search_option_only <- cmd_path_search(option_name = "bin_path")
+#' valid_install2 <- cmd_install_is_valid(search_option_only)
 #' options(bin_path = "/bin/")
 #' valid_install2()
 #'
 #' # Setting util = TRUE will check that all utils are also installed
-#' handle_with_utils <- cmd_path_handle(default_path = "/bin", utils = c("ls", "pwd"))
-#' valid_install_all <- cmd_install_is_valid(handle_with_utils, util = TRUE)
+#' search_with_utils <- cmd_path_search(default_path = "/bin", utils = c("ls", "pwd"))
+#' valid_install_all <- cmd_install_is_valid(search_with_utils, util = TRUE)
 #' valid_install_all()
 #' }
-cmd_install_is_valid <- function(path_handler, util = NULL){
+cmd_install_is_valid <- function(path_search, util = NULL){
   
   util_check <- !is.null(util)
   util_true <- FALSE
@@ -202,7 +202,7 @@ cmd_install_is_valid <- function(path_handler, util = NULL){
   }
   
   is_valid <- function(path = NULL){
-    x <- tryCatch(path_handler(path = path, util = util),
+    x <- tryCatch(path_search(path = path, util = util),
              error = function(e) return(FALSE))
     
     if (is.character(x) & !util_true){

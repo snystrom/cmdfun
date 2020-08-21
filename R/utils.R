@@ -30,7 +30,7 @@ cmd_list_drop_named <- function(list, names){
 
 #' keep entries from list of flags by name, name/value pair, or index
 #'
-#' @param flags named list output of cmd_args_to_flags
+#' @param flags named list output of cmd_list_interp
 #' @param keep vector of flag entries to keep. Pass a character vector
 #'   to keep flags by name. Pass a named vector to keep flags by name/value
 #'   pairs. Pass a numeric vector to keep by position.
@@ -75,7 +75,7 @@ cmd_list_keep <- function(flags, keep){
 
 #' Drop entries from list of flags by name, name/value pair, or index
 #'
-#' @param flags named list output of cmd_args_to_flags
+#' @param flags named list output of cmd_list_interp
 #' @param drop vector of flag entries to drop. Pass a character vector
 #'   to drop flags by name. Pass a named vector to drop flags by name/value
 #'   pairs. Pass a numeric vector to drop by position.
@@ -488,36 +488,36 @@ cmd_ui_file_exists <- function(file){
 #' 
 #' This function can be lightly wrapped by package builders to build a user-friendly install checking function.
 #'
-#' @param path_handler `function` output of `cmd_path_handle()`
-#' @param path user-override path to check (identical to `path` argument of `cmd_path_handle()` output)
+#' @param path_search `function` output of `cmd_path_search()`
+#' @param path user-override path to check (identical to `path` argument of `cmd_path_search()` output)
 #'
 #' @return pretty printed message indicating whether files exits or not. Green check = Yes, red X = No.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' path_handler <- cmd_path_handle(default = "/bin", utils = "ls")
-#' cmd_install_check(path_handler)
+#' path_search <- cmd_path_search(default = "/bin", utils = "ls")
+#' cmd_install_check(path_search)
 #' }
-cmd_install_check <- function(path_handler, path = NULL){
-  if (!is.function(path_handler)) {
-    stop("path_handler must be a function")
+cmd_install_check <- function(path_search, path = NULL){
+  if (!is.function(path_search)) {
+    stop("path_search must be a function")
   }
   message("checking main install")
   
-  x <- try(path_handler(path = path) %>% cmd_ui_file_exists(), silent = TRUE)
+  x <- try(path_search(path = path) %>% cmd_ui_file_exists(), silent = TRUE)
   
   if (class(x) == "try-error") {
     cmd_ui_file_exists(path)
     return(invisible(NULL))
     }
   
-  util_catch <- try(path_handler(path = path, util = TRUE), silent = TRUE) 
+  util_catch <- try(path_search(path = path, util = TRUE), silent = TRUE) 
   has_utils <- class(util_catch) != "try-error"
   
   if (has_utils){
     message("checking util installs")
-    path_handler(path = path, util = TRUE) %>% 
+    path_search(path = path, util = TRUE) %>% 
       purrr::walk(cmd_ui_file_exists)
     
     return(invisible(NULL))

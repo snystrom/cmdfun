@@ -68,7 +68,7 @@ cmd_help_parse_flags <- function(help_lines, processx = FALSE){
 #' @param flags a vector names correspond to values to be checked against `command_flag_names`
 #' @param .fun optional function to apply to `command_flag_names` and `flags`
 #'   before checking their values. If using a function to rename flags after
-#'   `cmd_args_to_flags`, use that same function here. Can be useful for parsing help
+#'   `cmd_list_interp`, use that same function here. Can be useful for parsing help
 #'   lines into R-friendly variable names for user-convenience. Can be function
 #'   or `rlang`-style formula defintion (ie `.fun = ~{foo(.x)}` is the same as
 #'   `.fun = function(x){foo(x)}`). Note: if command_flag_names need additional

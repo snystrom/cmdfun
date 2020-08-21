@@ -86,7 +86,7 @@ cmd_args_named <- function(keep = NULL, drop = NULL){
 #' 
 #' The list structure is more amenable to manipulation by package developers for
 #' advanced use before evaluating them to the command flags vector with
-#' cmd_list_crystallize().
+#' cmd_list_to_flags().
 #'
 #' @param args named list output from get*Args family of functions.
 #' @param flag_lookup optional named vector used to convert args to command flags
@@ -100,9 +100,9 @@ cmd_args_named <- function(keep = NULL, drop = NULL){
 #' @examples
 #' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
-#' flagList <- cmd_args_to_flags(theArgs)
-#' flags <- cmd_list_crystallize(flagList)
-cmd_args_to_flags <- function(args, flag_lookup = NULL){
+#' flagList <- cmd_list_interp(theArgs)
+#' flags <- cmd_list_to_flags(flagList)
+cmd_list_interp <- function(args, flag_lookup = NULL){
   
   testthat::expect_type(args, "list")
   
@@ -150,7 +150,7 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
 
 #' Convert flag list to vector of command flags
 #'
-#' @param flagList output from cmd_args_to_flags(). A named list where names
+#' @param flagList output from cmd_list_interp(). A named list where names
 #'   correspond to flags and members correspond to the value for the flag.
 #' @param prefix flag prefix, usually "-" or "--".
 #' @param sep seperator to use if flag has a vector of values (default: NULL). 
@@ -163,9 +163,9 @@ cmd_args_to_flags <- function(args, flag_lookup = NULL){
 #' @examples
 #' theFunction <- function(...){cmd_args_all()}
 #' theArgs <- theFunction(arg1 = "value", arg2 = TRUE)
-#' flagList <- cmd_args_to_flags(theArgs)
-#' flags <- cmd_list_crystallize(flagList)
-cmd_list_crystallize <- function(flagList, prefix = "-", sep = ","){
+#' flagList <- cmd_list_interp(theArgs)
+#' flags <- cmd_list_to_flags(flagList)
+cmd_list_to_flags <- function(flagList, prefix = "-", sep = ","){
   
   if (is.null(flagList)) return(NULL)
   if (length(flagList) == 0) return(NULL)
