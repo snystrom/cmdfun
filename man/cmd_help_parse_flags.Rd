@@ -4,15 +4,15 @@
 \alias{cmd_help_parse_flags}
 \title{Parses commandline help options to return vector of valid flag names}
 \usage{
-cmd_help_parse_flags(help_lines, processx = FALSE)
+cmd_help_parse_flags(help_lines, split_newline = FALSE)
 }
 \arguments{
 \item{help_lines}{\code{character} vector contianing the output of "command
 --help", or similar output. Optional: pass either \code{stdout}, or \code{stderr} output from
 processx::run(), must set \code{processx = TRUE}.}
 
-\item{processx}{\code{logical(1)} if set to TRUE will split string on "\\n" before
-parsing.}
+\item{split_newline}{\code{logical(1)} if set to TRUE will split string on "\\n" before
+parsing (useful when parsing output from \code{processx}).}
 }
 \value{
 first word entry of each line prefixed by "-". typically this grabs
@@ -34,7 +34,7 @@ if (.Platform$OS.type == "unix" & file.exists("/bin/tar")) {
 # with processx
 if (require(processx)) {
 out <- processx::run("tar", "--help", error_on_status = FALSE)
-fn_flags <- cmd_help_parse_flags(out$stdout, processx = TRUE)
+fn_flags <- cmd_help_parse_flags(out$stdout, split_newline = TRUE)
 }
 
 # with system2

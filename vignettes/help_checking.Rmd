@@ -6,8 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-```{r}
-knitr::opts_chunk$set(eval = F)
+```{r, include = FALSE}
+# This will only build on unix
+is_unix <- .Platform$OS.type == "unix"
+knitr::opts_chunk$set(eval = is_unix)
 ```
 
 ```{r, include = FALSE}
@@ -18,14 +20,14 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(dotargs)
+library(cmdfun)
 ```
 
 Methods to get help lines into R. Examples with processx and system2 (I suggest `processx` because it's handling is better, although it needs more steps)
 ```{r}
 # with processx
 o <- processx::run("tar", "--help", error_on_status = FALSE)
-fn_flags <- get_help_flag_names(o$stdout, processx = TRUE)
+fn_flags <- cmd_help_parse_flags(o$stdout, processx = TRUE)
 
 # with system2
 lines <- system2("tar", "--help", stdout = T) 

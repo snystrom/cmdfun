@@ -11,8 +11,8 @@
 #' @param help_lines `character` vector contianing the output of "command
 #'   --help", or similar output. Optional: pass either `stdout`, or `stderr` output from
 #'   processx::run(), must set `processx = TRUE`.
-#' @param processx `logical(1)` if set to TRUE will split string on "\\n" before
-#'   parsing. 
+#' @param split_newline `logical(1)` if set to TRUE will split string on "\\n" before
+#'   parsing (useful when parsing output from `processx`). 
 #'
 #' @return first word entry of each line prefixed by "-". typically this grabs
 #'   all flags from --help output, but often times will require extra
@@ -26,7 +26,7 @@
 #' # with processx
 #' if (require(processx)) {
 #' out <- processx::run("tar", "--help", error_on_status = FALSE)
-#' fn_flags <- cmd_help_parse_flags(out$stdout, processx = TRUE)
+#' fn_flags <- cmd_help_parse_flags(out$stdout, split_newline = TRUE)
 #' }
 #'
 #' # with system2
@@ -34,11 +34,11 @@
 #' fn_flags <- cmd_help_parse_flags(lines)
 #' }
 #'
-cmd_help_parse_flags <- function(help_lines, processx = FALSE){
+cmd_help_parse_flags <- function(help_lines, split_newline = FALSE){
   
-  stopifnot(is.logical(processx))
+  stopifnot(is.logical(split_newline))
   
-  if (processx){
+  if (split_newline){
     help_lines <- strsplit(help_lines, "\n")[[1]]
   }
   

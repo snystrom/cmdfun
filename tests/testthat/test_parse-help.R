@@ -29,7 +29,7 @@ test_that("Parsing Help Works", {
   expect_equal(cmd_help_parse_flags(helplines), c("version", "e", "outdir"))
   
   processxLines <- c("   --version prints the version name\n   -e prints the e-value\n   --outdir the output directory\n blah --anotherflag")
-  expect_equal(cmd_help_parse_flags(processxLines, processx = TRUE), c("version", "e", "outdir"))
+  expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "e", "outdir"))
 })
 
 test_that("Suggestion Error behaves correctly",{
