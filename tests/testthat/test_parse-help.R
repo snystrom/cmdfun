@@ -26,22 +26,24 @@ test_that("Parsing Help Works", {
                  "   --outdir the output directory",
                  "blah --anotherflag"
                  )
-  expect_equal(cmd_help_parse_flags(helplines), c("version", "e", "outdir"))
+  expect_equal(cmd_help_parse_flags(helplines), c("version", "outdir", "e"))
   
   processxLines <- c("   --version prints the version name\n   -e prints the e-value\n   --outdir the output directory\n blah --anotherflag")
-  expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "e", "outdir"))
+  expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "outdir", "e"))
 })
 
 test_that("Parsing Help Works with long/short combo", {
+  # -e , --evalue checks that it can grab both with short/long orientation
+  # --outdir, -o checks it can grab with long/short orientation
   helplines <- c("   --version prints the version name",
                  "   -e, --evalue prints the e-value",
-                 "   --outdir the output directory",
+                 "   --outdir, -o the output directory",
                  "blah --anotherflag"
                  )
-  expect_equal(cmd_help_parse_flags(helplines), c("version", "evalue", "outdir", "e"))
+  expect_equal(cmd_help_parse_flags(helplines), c("version", "evalue", "outdir", "e", "o"))
   
-  processxLines <- c("   --version prints the version name\n   -e, --evalue prints the e-value\n   --outdir the output directory\n blah --anotherflag")
-  expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "evalue", "outdir", "e"))
+  processxLines <- c("   --version prints the version name\n   -e, --evalue prints the e-value\n   --outdir, -o the output directory\n blah --anotherflag")
+  expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "evalue", "outdir", "e", "o"))
 })
 
 test_that("Suggestion Error behaves correctly",{

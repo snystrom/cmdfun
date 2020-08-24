@@ -15,9 +15,7 @@ processx::run(), must set \code{processx = TRUE}.}
 parsing (useful when parsing output from \code{processx}).}
 }
 \value{
-first word entry of each line prefixed by "-". typically this grabs
-all flags from --help output, but often times will require extra
-postprocessing to remove commas or equal signs, for example.
+character vector of flag names parsed from help text
 }
 \description{
 When using cmdfun to write lazy shell wrappers, the user can easily mistype
@@ -25,7 +23,13 @@ a commandline flag since there is not text completion. Some programs behave
 unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages.
 }
 \details{
-\code{cmd_help_parse_flags} tries to grab flags from --help documentation which can be used for error checking.
+\code{cmd_help_parse_flags} tries to grab flags from --help documentation which
+can be used for error checking. It will try to parse flags following "-" or
+"--" while ignoring hyphenated words in help text. Although this should cover
+most use-cases, it may be necessary to write a custom help-text parser for
+nonstandard tools. Inspect this output \strong{carefully} before proceeding. Most
+often, characters are leftover at the \strong{end} of parsed names, which will
+require additional parsing.
 }
 \examples{
 if (.Platform$OS.type == "unix" & file.exists("/bin/tar")) {
@@ -40,6 +44,11 @@ fn_flags <- cmd_help_parse_flags(out$stdout, split_newline = TRUE)
 # with system2
 lines <- system2("tar", "--help", stderr = TRUE)
 fn_flags <- cmd_help_parse_flags(lines)
+
+# NOTE: some of the "tar" flags contain the extra characters: "\\[", "\\)", and ";"
+# ie "one-top-level\[" which should be "one-top-level"
+# These can be additionally parsed using
+gsub("[\\\\[;\\\\)]", "", fn_flags)
 }
 
 }

@@ -4,7 +4,13 @@
 #' a commandline flag since there is not text completion. Some programs behave
 #' unexpectedly when flags are typed incorrectly, and for this reason return uninformative error messages.
 #'
-#' `cmd_help_parse_flags` tries to grab flags from --help documentation which can be used for error checking.
+#' `cmd_help_parse_flags` tries to grab flags from --help documentation which
+#' can be used for error checking. It will try to parse flags following "-" or
+#' "--" while ignoring hyphenated words in help text. Although this should cover
+#' most use-cases, it may be necessary to write a custom help-text parser for
+#' nonstandard tools. Inspect this output **carefully** before proceeding. Most
+#' often, characters are leftover at the **end** of parsed names, which will
+#' require additional parsing.
 #'
 #' @seealso \code{\link{cmd_help_flags_similar}} \code{\link{cmd_help_flags_suggest}}
 #'
@@ -14,9 +20,7 @@
 #' @param split_newline `logical(1)` if set to TRUE will split string on "\\n" before
 #'   parsing (useful when parsing output from `processx`). 
 #'
-#' @return first word entry of each line prefixed by "-". typically this grabs
-#'   all flags from --help output, but often times will require extra
-#'   postprocessing to remove commas or equal signs, for example.
+#' @return character vector of flag names parsed from help text
 #' @export
 #'
 #' @examples
@@ -32,34 +36,101 @@
 #' # with system2
 #' lines <- system2("tar", "--help", stderr = TRUE)
 #' fn_flags <- cmd_help_parse_flags(lines)
+#' 
+#' # NOTE: some of the "tar" flags contain the extra characters: "\\[", "\\)", and ";"
+#' # ie "one-top-level\[" which should be "one-top-level"
+#' # These can be additionally parsed using
+#' gsub("[\\[;\\)]", "", fn_flags)
 #' }
 #'
 cmd_help_parse_flags <- function(help_lines, split_newline = FALSE){
-  
   stopifnot(is.logical(split_newline))
   
   if (split_newline){
     help_lines <- strsplit(help_lines, "\n")[[1]]
   }
   
-  # drop leading whitespace
-  flag_lines <- gsub("^ +", "", help_lines) 
-  # grab lines beginning with flag prefix
-  flag_lines <- grep("^-{1,2}[^-]", flag_lines, value = TRUE)
-  # remove flag prefix
-  flag_lines <- gsub("^-+", "", flag_lines)
-  # remove leading whitespace
-  # in case help file uses an unusual prefix
-  # I've seen this for some windows CMD help pages.
-  flag_lines <- gsub("^ +", "", flag_lines)
-  # Drop empty lines
-  flag_lines <- gsub("^$", "", flag_lines)
+  help_lines %>% 
+    help_flags_all() %>% 
+    help_flag_names
 
-  flag_names <- strsplit(flag_lines, " ") %>%
+}
+
+#' Get flag names from parsed lines
+#'
+#' @param lines parsed flag lines where 1st word on each line is the flag name
+#'
+#' @return character vector of flag names
+#' @noRd
+help_flag_names <- function(lines){
+  strsplit(lines, " ") %>%
     purrr::map_chr(~{
       .x[[1]]
-    })
-  return(flag_names)
+    }) %>% 
+    unique
+}
+
+#' Get vector of help lines for short (-) and long (--) flag definitions
+#'
+#' @param lines unprocessed help lines (with newlines trimmed if needed)
+#'
+#' @return a vector where each entry is a line where the first word is the flag name
+#' @noRd
+help_flags_all <- function(lines){
+  
+  # Preprocess lines
+  parsed_lines <- lines %>% 
+    # drop leading whitespace
+    gsub("^ +", "", .) %>% 
+    # grab lines beginning with flag prefix
+    grep("^-{1,2}[^-]", ., value = TRUE) %>% 
+    # parse - and -- flag entries, and put at beginning of line
+    # combine into single vector for further processing
+    {
+      c(help_flags_long(.), help_flags_short(.))
+    } %>% 
+    # remove flag prefix
+    gsub("^-+", "", .) %>% 
+    # remove leading whitespace
+    # in case help file uses an unusual prefix
+    # I've seen this for some windows CMD help pages.
+    gsub("^ +", "", .) %>% 
+    # Drop empty lines
+    gsub("^$", "", .) %>% 
+    # Drop text after =
+    gsub("=.+", "", .) %>% 
+    # Remove commas
+    gsub(",", "", .)
+  return(parsed_lines)
+  
+}
+
+#' Return "short" (-) flag definition lines
+#'
+#' @param cleaned_lines vector of preprocessed help lines
+#'
+#' @return vector of lines where first word is a flag defined with -
+#' @noRd
+help_flags_short <- function(cleaned_lines){
+  cleaned_lines %>% 
+    # remove up to flag prefix (-)
+    gsub("^-{2}.+ -", "-", .) %>% 
+    # Keep any single - flags
+    grep("^-{1}[^-]", ., value = TRUE) 
+}
+
+#' Return "long" (--) flag definition lines
+#'
+#' @param cleaned_lines 
+#'
+#' @return vector of lines where first word is a flag defined with --
+#' @noRd
+help_flags_long <- function(cleaned_lines){
+  cleaned_lines %>% 
+    # remove up to flag prefix (--)
+    gsub(".+ --", "--", .) %>% 
+    # Drop any single - flags
+    grep("^-{1}[^-]", ., invert = TRUE, value = TRUE) 
 }
 
 #' Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments
