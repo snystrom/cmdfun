@@ -212,9 +212,9 @@ For example, to build an interface to the “MEME” suite, which is by
 default installed to `~/meme/bin`, one could build the following:
 
 ``` r
-handle_meme_path <- cmd_path_search(default_path = "~/meme/bin")
+search_meme_path <- cmd_path_search(default_path = "~/meme/bin")
 
-handle_meme_path()
+search_meme_path()
 ```
 
     ## [1] "/nas/longleaf/home/snystrom/meme/bin"
@@ -222,20 +222,20 @@ handle_meme_path()
 To only search the R environment variable “MEME\_PATH”, one could build:
 
 ``` r
-handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH")
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH")
 ```
 
 ``` r
 # Without environment variable defined
-handle_meme_path()
+search_meme_path()
 ```
 
-    ## Error in handle_meme_path(): No path defined or detected
+    ## Error in search_meme_path(): No path defined or detected
 
 ``` r
 # With environment varialbe defined
 Sys.setenv("MEME_PATH" = "~/meme/bin")
-handle_meme_path()
+search_meme_path()
 ```
 
     ## [1] "/nas/longleaf/home/snystrom/meme/bin"
@@ -244,7 +244,7 @@ Multiple arguments can be used, and they will be searched from
 most-specific, to most-general.
 
 ``` r
-handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin")
 ```
 
@@ -254,7 +254,7 @@ machine.
 
 ``` r
 Sys.setenv("MEME_PATH" = "bad/path")
-handle_meme_path()
+search_meme_path()
 ```
 
     ## [1] "/nas/longleaf/home/snystrom/meme/bin"
@@ -270,7 +270,7 @@ Here, I will include two tools from the MEME suite, AME, and DREME
 (distributed as binaries named “ame”, and “dreme”).
 
 ``` r
-handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin",
                                        utils = c("dreme", "ame"))
 ```
@@ -283,7 +283,7 @@ unexpected user-level
     behavior.
 
 ``` r
-handle_meme_path("bad/path")
+search_meme_path("bad/path")
 ```
 
     ## Error in .check_valid_command_path(path): Command: bad/path, does not exist.
@@ -293,7 +293,7 @@ will throw an error if the utility is not found in any of the specified
 locations.
 
 ``` r
-handle_meme_path(util = "dreme")
+search_meme_path(util = "dreme")
 ```
 
     ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
@@ -302,7 +302,7 @@ List all utility paths (but don’t check if they’re valid). Useful for
 writing user-facing install checking functions.
 
 ``` r
-handle_meme_path(util = TRUE)
+search_meme_path(util = TRUE)
 ```
 
     ## [1] "/nas/longleaf/home/snystrom/meme/bin/dreme"
@@ -318,7 +318,7 @@ Here I build a function for checking a users `meme` install.
 
 ``` r
 check_meme_install <- function(path = NULL){
-  cmd_install_check(handle_meme_path, path = path)
+  cmd_install_check(search_meme_path, path = path)
 }
 ```
 
@@ -373,7 +373,7 @@ conditional examples or function hooks that depend on a command install.
 these funtions as well.
 
 ``` r
-meme_installed <- cmd_install_is_valid(handle_meme_path)
+meme_installed <- cmd_install_is_valid(search_meme_path)
 meme_installed()
 ```
 
@@ -382,7 +382,7 @@ meme_installed()
 This also works on utils defined during path hanlder construction.
 
 ``` r
-ame_installed <- cmd_install_is_valid(handle_meme_path, util = "ame")
+ame_installed <- cmd_install_is_valid(search_meme_path, util = "ame")
 ame_installed()
 ```
 
@@ -400,12 +400,12 @@ This makes for a robust shell wrapper without excess overhead.
 In the `runDreme` function below, the user can pass any valid `dreme`
 argument using the rules for command args defined above to `...`.
 Allowing `meme_path` as a function argument and passing it to
-`handle_meme_path` allows the user to override the default search path
+`search_meme_path` allows the user to override the default search path
 which is: `MEME_PATH` environment variable, followed by the `~/meme/bin`
 default install.
 
 ``` r
-handle_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin",
                                        utils = c("dreme", "ame"))
 
@@ -414,7 +414,7 @@ runDreme <- function(..., meme_path = NULL){
     cmd_list_interp() %>% 
     cmd_list_to_flags()
   
-  command <- handle_meme_path(path = meme_path, util = "dreme")
+  command <- search_meme_path(path = meme_path, util = "dreme")
   
   system2(command, flags)
 }
