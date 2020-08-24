@@ -32,6 +32,18 @@ test_that("Parsing Help Works", {
   expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "e", "outdir"))
 })
 
+test_that("Parsing Help Works with long/short combo", {
+  helplines <- c("   --version prints the version name",
+                 "   -e, --evalue prints the e-value",
+                 "   --outdir the output directory",
+                 "blah --anotherflag"
+                 )
+  expect_equal(cmd_help_parse_flags(helplines), c("version", "evalue", "outdir", "e"))
+  
+  processxLines <- c("   --version prints the version name\n   -e, --evalue prints the e-value\n   --outdir the output directory\n blah --anotherflag")
+  expect_equal(cmd_help_parse_flags(processxLines, split_newline = TRUE), c("version", "evalue", "outdir", "e"))
+})
+
 test_that("Suggestion Error behaves correctly",{
   # No error if no suggestions
   expect_null(cmd_help_flags_suggest(NULL))
