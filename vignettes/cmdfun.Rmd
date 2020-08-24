@@ -1,14 +1,18 @@
 ---
-title: "cmdfun"
-output: github_document
+title: "Writing shell wrappers with cmdfun"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to cmdfun}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-<!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![R build status](https://github.com/snystrom/cmdfun/workflows/R-CMD-check/badge.svg)](https://github.com/snystrom/cmdfun/actions)
-[![Codecov test coverage](https://codecov.io/gh/snystrom/cmdfun/branch/master/graph/badge.svg)](https://codecov.io/gh/snystrom/cmdfun?branch=master)
-<!-- badges: end -->
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 ## A simple framework for building shell interfaces
 
@@ -39,12 +43,6 @@ commandline-style flags. This output can be directly fed to `system2` or
 
 Together, they can be used to build user-friendly R interfaces to shell programs
 without having to manually implement all commandline flags in R functions.
-
-## Install
-```{r, eval=F}
-# To install the development version from github
-remotes::install_github("snystrom/cmdfun")
-```
 
 ## Examples
 ```{r}
@@ -451,3 +449,4 @@ I promise I'll get around to sanitizing user input eventually.
 ```{r, eval=F}
 shellCut("hello_world", f = 2, d = "_ && rm ~/deleteme.txt")
 ```
+

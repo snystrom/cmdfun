@@ -21,63 +21,91 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(cmdfun)
+library(magrittr)
 ```
+
+```{r}
+out <- processx::run("cut", "--help", error_on_status = FALSE)
+out$stdout %>% 
+  cmd_help_parse_flags(split_newline = TRUE)
+```
+
+
+# OLD
 
 Methods to get help lines into R. Examples with processx and system2 (I suggest `processx` because it's handling is better, although it needs more steps)
 ```{r}
 # with processx
 o <- processx::run("tar", "--help", error_on_status = FALSE)
-fn_flags <- cmd_help_parse_flags(o$stdout, processx = TRUE)
+fn_flags <- cmd_help_parse_flags(o$stdout, split_newline = TRUE)
 
 # with system2
 lines <- system2("tar", "--help", stdout = T) 
-fn_flags <- get_help_flag_names(lines)
-fn_flags %>% 
+fn_flags <- cmd_help_parse_flags(lines)
+fn_flags %>% head(10)
+  gsub(", -", "\n-", .) %>% 
   gsub(",", "", .) %>% 
   gsub("=.+", "", .) %>% 
   gsub("\\[", "", .) %>% 
   unique
+
+# Custom function to clean up final parsed flags
+parse_tar_help <- function(lines){
+  lines %>% 
+    gsub(", -", "\n-", .) %>% 
+    gsub(",", "", .) %>% 
+    gsub("=.+", "", .) %>% 
+    gsub("\\[", "", .) %>% 
+    unique
+}
 ```
 
 ```{r}
 tar <- function(...){
-  getDotArgs() %>% 
-    argsToFlags()
+  cmd_args_dots() %>% 
+    cmd_list_to_flags()
 }
 
 tar_withCheck <- function(...){
   tarHelp <- system2("tar", "--help", stdout = T) 
-  tarflags <- get_help_flag_names(tarHelp)
   
-  inputFlags <- getDotArgs() %>% 
-    argsToFlags() %>% 
-    purrr::set_names(~{gsub("_", "-", .)})
+  tarflags <- tarHelp %>% 
+    cmd_help_parse_flags() %>% 
+    parse_tar_help()
+  
+  inputFlags <- cmd_args_dots() %>% 
+    cmd_list_interp() 
+    #purrr::set_names(~{gsub("_", "-", .)})
   
   # check that inputs are valid
-  suggest_flag_names(tarflags, inputFlags, ~{gsub("-", "_", .)}) %>% 
-    error_suggest_flag_names()
+  cmd_help_flags_similar(tarflags, names(inputFlags), ~{gsub("-", "_", .)}) %>% 
+    cmd_help_flags_suggest()
 }
 
 tar_withCheck(utz = "value", exclude_caces = TRUE)
+tar_withCheck(c = T, concatenate = T)
 ```
 
 help checking is expensive (relative to not doing it), so it makes sense to only do it if there's an error. 
 
 We can write a simple function to check 
 ```{r}
-check_tar_flags <- function(check_flags){
+check_tar_flags <- function(flags){
+  flag_names <- names(flags)
+  
   tarhelp_out <- processx::run("tar", "--help", error_on_status = F)
   
-  get_help_flag_names(tarhelp_out$stdout, processx = TRUE) %>% 
-    suggest_flag_names(check_flags, ~{
+  tarhelp_out$stdout %>% 
+    cmd_help_parse_flags(split_newline = TRUE) %>% 
+    cmd_help_flags_similar(flag_names,  ~{
       gsub("-", "_", .) %>% 
         gsub(",", "", .)
       }) %>% 
-    error_suggest_flag_names()
+    cmd_help_flags_suggest()
 }
 ```
 ```{r}
-check_tar_flags(list("utc" = 1, "utz" = 2))
+check_tar_flags(list("utd" = 1, "verzion" = 2))
 ```
 
 This is where `processx` shines, but error checking can be done using `system2`
@@ -86,12 +114,12 @@ is considered an error.
 ```{r}
 tar_withCheck <- function(file, ...){
   
-  inputFlags <- getDotArgs() %>% 
-    argsToFlags() %>% 
+  inputFlags <- cmd_args_dots() %>% 
+    cmd_list_interp() %>% 
     purrr::set_names(~{gsub("_", "-", .)})
   
   flags <- inputFlags %>% 
-    crystallize_flags()
+    cmd_list_to_flags()
   
   flags <- c(flags, file)
   ps_out <- processx::run("tar", flags, error_on_status = F)

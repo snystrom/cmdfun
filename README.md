@@ -39,9 +39,9 @@ arguments:
 flag/value pairs. This output can be useful for additonal handling of
 special flag assignments from within R.
 
-`cmd_list_to_flags` converts the output of `cmd_list_interp` to a
-vector of commandline-style flags. This output can be directly fed to
-`system2` or `processx`.
+`cmd_list_to_flags` converts the output of `cmd_list_interp` to a vector
+of commandline-style flags. This output can be directly fed to `system2`
+or `processx`.
 
 Together, they can be used to build user-friendly R interfaces to shell
 programs without having to manually implement all commandline flags in R
@@ -50,6 +50,7 @@ functions.
 ## Install
 
 ``` r
+# To install the development version from github
 remotes::install_github("snystrom/cmdfun")
 ```
 
@@ -142,12 +143,12 @@ shell_ls("R")
 shell_ls("R", l = T)
 ```
 
-    ## [1] "total 48"                                                                  
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Aug 18 15:45 cmd_args.R"      
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10351 Aug 19 12:08 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  6196 Aug 19 12:08 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9632 Aug 19 12:08 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7361 Aug 19 12:08 utils_internal.R"
+    ## [1] "total 52"                                                                  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6273 Aug 21 09:38 cmd_args.R"      
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 11354 Aug 21 09:38 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  6264 Aug 21 10:43 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 13448 Aug 21 09:38 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7390 Aug 21 09:32 utils_internal.R"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -168,12 +169,12 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("R", long = T)
 ```
 
-    ## [1] "total 48"                                                                  
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6293 Aug 18 15:45 cmd_args.R"      
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 10351 Aug 19 12:08 macros.R"        
-    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  6196 Aug 19 12:08 parse_help.R"    
-    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx  9632 Aug 19 12:08 utils.R"         
-    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7361 Aug 19 12:08 utils_internal.R"
+    ## [1] "total 52"                                                                  
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  6273 Aug 21 09:38 cmd_args.R"      
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 11354 Aug 21 09:38 macros.R"        
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  6264 Aug 21 10:43 parse_help.R"    
+    ## [5] "-rw-r--r-- 1 snystrom its_employee_psx 13448 Aug 21 09:38 utils.R"         
+    ## [6] "-rw-r--r-- 1 snystrom its_employee_psx  7390 Aug 21 09:32 utils_internal.R"
 
 ``` r
 shellCut_alias <- function(text, ...){
@@ -248,9 +249,9 @@ search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        default_path = "~/meme/bin")
 ```
 
-For example, if “MEME\_PATH” is invalid on my machine, the search_function will
-return the default path as long as the default is also valid on my
-machine.
+For example, if “MEME\_PATH” is invalid on my machine, the
+search\_function will return the default path as long as the default is
+also valid on my machine.
 
 ``` r
 Sys.setenv("MEME_PATH" = "bad/path")
@@ -275,11 +276,11 @@ search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
                                        utils = c("dreme", "ame"))
 ```
 
-search_function functions have two optional arguments: `path` and `util`. `path`
-acts as an override to the defaults provided when building the search_function.
-User-provided path variables will always be used instead of provided
-defaults. This is to catch problems from the user and not cause
-unexpected user-level
+search\_function functions have two optional arguments: `path` and
+`util`. `path` acts as an override to the defaults provided when
+building the search\_function. User-provided path variables will always
+be used instead of provided defaults. This is to catch problems from the
+user and not cause unexpected user-level
     behavior.
 
 ``` r
@@ -288,9 +289,9 @@ search_meme_path("bad/path")
 
     ## Error in .check_valid_command_path(path): Command: bad/path, does not exist.
 
-`util` specifies which utility path to return (if any). The path search_function
-will throw an error if the utility is not found in any of the specified
-locations.
+`util` specifies which utility path to return (if any). The path
+search\_function will throw an error if the utility is not found in any
+of the specified locations.
 
 ``` r
 search_meme_path(util = "dreme")
@@ -311,8 +312,8 @@ search_meme_path(util = TRUE)
 `cmdfun` provides a preexisting utility for this, however. The
 `cmd_install_check` function can be lightly wrapped by package builders
 to verify and print a user-friendly series of checks for a valid tool
-install. it takes as input the output of `build_package_search_function` and an
-optional user-override `path`.
+install. it takes as input the output of `build_package_search_function`
+and an optional user-override `path`.
 
 Here I build a function for checking a users `meme` install.
 
@@ -368,9 +369,9 @@ cmd_ui_file_exists("~/meme/bin")
 functions returning boolean values testing for an install path. These
 are useful in function logic, or package development for setting
 conditional examples or function hooks that depend on a command install.
-`cmd_install_is_valid()` takes a path search_function function as input, so any
-`options`, `.Renviron`, or default install location logic propagates to
-these funtions as well.
+`cmd_install_is_valid()` takes a path search\_function function as
+input, so any `options`, `.Renviron`, or default install location logic
+propagates to these funtions as well.
 
 ``` r
 meme_installed <- cmd_install_is_valid(search_meme_path)
@@ -391,9 +392,9 @@ ame_installed()
 ## Bringing it all together
 
 Using a `cmd_args_` family function to get and convert function
-arguments to commandline flags. The path search_function returns the correct
-`command` call which can be passed to `system2` or `processx` along with
-the flags generated from `cmd_list_interp`.
+arguments to commandline flags. The path search\_function returns the
+correct `command` call which can be passed to `system2` or `processx`
+along with the flags generated from `cmd_list_interp`.
 
 This makes for a robust shell wrapper without excess overhead.
 
@@ -506,17 +507,17 @@ myFunction(arg1 = "foo", arg2 = "baz")
 Sometimes a commandline function returns multiple output files you want
 to check for after the run.
 
-`cmd_files_exist` accepts a vector or list of files & checks that they
-exist.
+`cmd_error_if_missing` accepts a vector or list of files & checks that
+they exist.
 
 `cmdfun` additionally provides a few convenience functions for
-generating lists of expected files. `cmd_output_expect` generates
+generating lists of expected files. `cmd_file_combn` generates
 combinations of extension/prefix file names. The output can be passed to
-`cmd_files_exist` which will error if a file isn’t found on the
+`cmd_error_if_missing` which will error if a file isn’t found on the
 filesystem.
 
 ``` r
-cmd_output_expect(ext = c("txt", "xml"), prefix = "outFile")
+cmd_file_combn(ext = c("txt", "xml"), prefix = "outFile")
 ```
 
     ## $txt
@@ -526,7 +527,7 @@ cmd_output_expect(ext = c("txt", "xml"), prefix = "outFile")
     ## [1] "./outFile.xml"
 
 ``` r
-cmd_output_expect(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
+cmd_file_combn(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 ```
 
     ## $outFile
