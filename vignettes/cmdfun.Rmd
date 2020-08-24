@@ -2,7 +2,7 @@
 title: "Writing shell wrappers with cmdfun"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to cmdfun}
+  %\VignetteIndexEntry{Writing shell wrappers with cmdfun}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
