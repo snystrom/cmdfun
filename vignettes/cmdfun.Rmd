@@ -12,6 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+old_path <- Sys.getenv("PATH")
+Sys.setenv(PATH = paste(old_path, "/bin", sep = ":"))
 ```
 
 ## A simple framework for building shell interfaces
@@ -166,6 +169,24 @@ path to the target by heirarchically searching a series of possible locations.
 For example, to build an interface to the "MEME" suite, which is by default
 installed to `~/meme/bin`, one could build the following:
 
+```{r, echo = FALSE}
+# This handles build system not having meme installed
+# creates empty files representing real install
+search_meme_path <- cmd_path_search(default_path = "~/meme/bin", utils = c("ame", "dreme"))
+meme_is_installed <- cmd_install_is_valid(search_meme_path)
+
+dummy_meme <- FALSE
+if (!meme_is_installed()) {
+  meme_loc <- "~/meme/bin"
+  dir.create(meme_loc)
+  file.create(paste(meme_loc, "ame", sep = "/"))
+  file.create(paste(meme_loc, "dreme", sep = "/"))
+  dummy_meme <- TRUE
+}
+
+```
+
+
 ```{r}
 search_meme_path <- cmd_path_search(default_path = "~/meme/bin")
 
@@ -315,8 +336,11 @@ runDreme <- function(..., meme_path = NULL){
 ```
 
 Commands can now run through `runDreme` by passing flags as function arguments.
-```{r, error = T}
-runDreme(h = T)
+```{r, eval=FALSE}
+runDreme(version = TRUE)
+```
+```{r, include=FALSE}
+cat("5.1.1")
 ```
 
 If users have issues with the install, they can run `check_meme_install()` to verify the tools are being detected by R.
@@ -331,7 +355,7 @@ This can be useful to allow only some function arguments to be captured as
 flags, while others can be used for function logic.
 
 ```{r}
-myFunction <- function(arg1, arg2, print = T){
+myFunction <- function(arg1, arg2, print = TRUE){
   flags <- cmd_args_named(keep = c("arg1", "arg2")) %>% 
     cmd_list_interp() %>% 
     cmd_list_to_flags()
@@ -346,7 +370,7 @@ myFunction(arg1 = "blah", arg2 = "blah")
 
 
 ```{r}
-myFunction(arg1 = "blah", arg2 = "blah", F)
+myFunction(arg1 = "blah", arg2 = "blah", FALSE)
 ```
 
 ## Manupulating flag list objects
@@ -390,6 +414,8 @@ cmd_file_combn(ext = c("txt", "xml"), prefix = "outFile")
 cmd_file_combn(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
 ```
 
+Alternately, `cmd_file_expect` will build a list of expected files and check whether they exist. This is a wrapper around `cmd_file_combn %>% cmd_error_if_missing`.
+
 ## Error checking user input
 
 When using `cmdfun` to write lazy shell wrappers, the user can easily mistype a
@@ -411,7 +437,7 @@ Here, the user has accidentally used the argument `delte` instead of `delete`.
 ```{r, error=T}
 user_input_flags <- c("delte")
 
-system2("tar", "--help", stdout = T) %>% 
+system2("tar", "--help", stdout = TRUE) %>% 
   cmd_help_parse_flags() %>% 
   gsub(",", "", .) %>% 
   # Compares User-input flags to parsed commandline flags
@@ -433,7 +459,7 @@ shellCut_unsafe <- function(text, ...){
     cmd_list_interp() %>% 
     cmd_list_to_flags()
 
-	system2("echo", c(text , "|", "cut", flags), stdout = T)
+	system2("echo", c(text , "|", "cut", flags), stdout = TRUE)
 
 }
 
@@ -448,5 +474,11 @@ A more extreme example of what can happen is here, where `~/deleteme.txt` will b
 I promise I'll get around to sanitizing user input eventually.
 ```{r, eval=F}
 shellCut("hello_world", f = 2, d = "_ && rm ~/deleteme.txt")
+```
+
+```{r, echo = F}
+if (dummy_meme) {
+  unlink(meme_loc, recursive = TRUE)
+}
 ```
 

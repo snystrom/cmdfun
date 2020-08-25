@@ -13,4 +13,4 @@ scratch.R
 function_renames.txt
 ^\.github$
 ^codecov\.yml$
-vignettes/
+vignettes/_help_checking.Rmd
