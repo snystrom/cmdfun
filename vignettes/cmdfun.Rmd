@@ -110,11 +110,13 @@ shell_ls <- function(dir = ".", ...){
 ```
 
 ```{r}
-shell_ls("R")
+#shell_ls("R")
+shell_ls(".")
 ```
 
 ```{r}
-shell_ls("R", l = T)
+#shell_ls("R", l = T)
+shell_ls(".", l = T)
 ```
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
@@ -133,7 +135,7 @@ shell_ls_alias <- function(dir = ".", ...){
 ```
 
 ```{r}
-shell_ls_alias("R", long = T)
+shell_ls_alias(".", long = T)
 ```
 
 ```{r}
