@@ -180,7 +180,7 @@ meme_is_installed <- cmd_install_is_valid(search_meme_path)
 dummy_meme <- FALSE
 if (!meme_is_installed()) {
   meme_loc <- "~/meme/bin"
-  dir.create(meme_loc)
+  dir.create(meme_loc, recursive = TRUE)
   file.create(paste(meme_loc, "ame", sep = "/"))
   file.create(paste(meme_loc, "dreme", sep = "/"))
   dummy_meme <- TRUE
