@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check that file(s) exist, error if not — cmd_error_if_missing • cmdfun</title>
+<title>Changelog • cmdfun</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,7 @@
 
 
 
-<meta property="og:title" content="Check that file(s) exist, error if not — cmd_error_if_missing" />
-<meta property="og:description" content="Check that file(s) exist, error if not" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -114,42 +113,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check that file(s) exist, error if not</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snystrom/cmdfun/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
-    <div class="hidden name"><code>cmd_error_if_missing.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/snystrom/cmdfun/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    <p>Check that file(s) exist, error if not</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>cmd_error_if_missing</span>(<span class='no'>files</span>)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>files</th>
-      <td><p>list or vector of paths to check</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>nothing or error message for each missing file</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>cmd_error_if_missing</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='co'># Throws error if file doesn't exist</span>
-<span class='fu'>cmd_error_if_missing</span>(<span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"notreal"</span>))
-}</div></pre>
+    <div id="cmdfun-01109000" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.10.9000">
+<a href="#cmdfun-01109000" class="anchor"></a>cmdfun 0.1.10.9000</h1>
+<ul>
+<li>Fixed <code><a href="../reference/cmd_help_parse_flags.html">cmd_help_parse_flags()</a></code> so it now detects short (-) and long (–) flag names</li>
+</ul>
+</div>
+    <div id="cmdfun-019005" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.9005">
+<a href="#cmdfun-019005" class="anchor"></a>cmdfun 0.1.9005</h1>
+<ul>
+<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+<li>Renamed <code><a href="../reference/cmd_help_parse_flags.html">cmd_help_parse_flags()</a></code> <code>processx</code> argument to <code>split_newline</code>
+</li>
+<li>Updated maintainer email</li>
+<li>Copied README text over to <code>cmdfun</code> vignette so pkg will have a vignette</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 
