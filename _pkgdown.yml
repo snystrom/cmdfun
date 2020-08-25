@@ -2,9 +2,15 @@ url: https://snystrom.github.io/cmdr/
 
 destination: docs
 
+development:
+  mode: unreleased
+
 template:
   params:
     bootswatch: flatly
+    
+articles:
+- title: Writing shell wrappers with cmdfun
     
 reference:
 - title: Selecting Function Arguments
