@@ -110,13 +110,11 @@ shell_ls <- function(dir = ".", ...){
 ```
 
 ```{r}
-#shell_ls("R")
-shell_ls(".")
+shell_ls("~")
 ```
 
 ```{r}
-#shell_ls("R", l = T)
-shell_ls(".", l = T)
+shell_ls("~", l = T)
 ```
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
@@ -207,7 +205,7 @@ search_meme_path()
 ```
 
 ```{r}
-# With environment varialbe defined
+# With environment variable defined
 Sys.setenv("MEME_PATH" = "~/meme/bin")
 search_meme_path()
 ```
@@ -341,7 +339,7 @@ Commands can now run through `runDreme` by passing flags as function arguments.
 ```{r, eval=FALSE}
 runDreme(version = TRUE)
 ```
-```{r, include=FALSE}
+```{r, echo = FALSE}
 cat("5.1.1")
 ```
 
@@ -375,7 +373,7 @@ myFunction(arg1 = "blah", arg2 = "blah")
 myFunction(arg1 = "blah", arg2 = "blah", FALSE)
 ```
 
-## Manupulating flag list objects
+## Manipulating flag list objects
 For the most part, the [purrr](https://purrr.tidyverse.org/) library is the most
 useful toolkit for operations on list objects.
 
