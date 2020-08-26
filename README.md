@@ -33,39 +33,82 @@ if (!requireNamespace("remotes"))
 remotes::install_github("snystrom/cmdfun")
 ```
 
+## Overview
+
+The `cmdfun` framework provides three mechanisms for capturing function
+arguments:
+
+  - `cmd_args_dots()` captures all arguments passed to `...`
+  - `cmd_args_named()` captures all keyword arguments defined by the
+    user
+  - `cmd_args_all()` captures both named + dot arguments
+
+<!-- end list -->
+
+``` r
+library(cmdfun)
+
+myFunction <- function(input, ...){
+  cmd_args_all()
+}
+
+(argsList <- myFunction(input = "test", boolean_flag = TRUE))
+```
+
+    ## $input
+    ## [1] "test"
+    ## 
+    ## $boolean_flag
+    ## [1] TRUE
+
+`cmd_list_interp` converts the captured argument list to a parsed list
+of flag/value pairs.
+
+``` r
+(flagsList <- cmd_list_interp(argsList))
+```
+
+    ## $input
+    ## [1] "test"
+    ## 
+    ## $boolean_flag
+    ## [1] ""
+
+`cmd_list_to_flags` converts a list to a vector of commandline-style
+flags using the list names as flag names and the list values as the flag
+values (empty values return only the flag). This output can be directly
+fed to `system2` or `processx`.
+
+``` r
+cmd_list_to_flags(flagsList)
+```
+
+    ## [1] "-input"        "test"          "-boolean_flag"
+
 ## Quick Examples
 
 `cmdfun` attempts to solve the problem of wrapping external software in
 R. Calling external software is done with `system2` or `processx`.
 
-For example, calling `ls
-    -l`.
+For example, calling `ls -l *.md` using `system2`.
 
 ``` r
-system2("ls", "-l", stdout = TRUE)
+system2("ls", "-l *.md", stdout = TRUE)
 ```
 
-    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx  343 Aug 26 11:12 cmdr.Rproj" 
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  232 Aug 18 15:42 codecov.yml"
-    ## [3] "drwxr-xr-x 2 snystrom its_employee_psx 4096 Aug 24 19:31 man"        
-    ## [4] "drwxr-xr-x 3 snystrom its_employee_psx 4096 Jul 30 22:24 tests"      
-    ## [5] "drwxr-xr-x 2 snystrom its_employee_psx 4096 Aug 25 18:33 vignettes"
-
-However, when using multiple commandline flags each flag must be passed
-as a member of a character vector as follows:
+However, when using multiple commandline flags each flag should be
+passed as a member of a character vector as follows:
 
 When calling `ls -l
-    -a`
+    -i`
 
 ``` r
-system2("ls", c("-l", "-i"), stdout = TRUE)
+system2("ls", c("-l", "-i", "*.md"), stdout = TRUE)
 ```
 
-    ## [1] "1524844666 -rw-r--r-- 1 snystrom its_employee_psx  343 Aug 26 11:12 cmdr.Rproj" 
-    ## [2] "1192376129 -rw-r--r-- 1 snystrom its_employee_psx  232 Aug 18 15:42 codecov.yml"
-    ## [3] "1524844667 drwxr-xr-x 2 snystrom its_employee_psx 4096 Aug 24 19:31 man"        
-    ## [4] "1484110934 drwxr-xr-x 3 snystrom its_employee_psx 4096 Jul 30 22:24 tests"      
-    ## [5] "1484110945 drwxr-xr-x 2 snystrom its_employee_psx 4096 Aug 25 18:33 vignettes"
+    ## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
+    ## [2] "1163031752 -rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
+    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 3865 Aug 26 15:18 README.md"
 
 This becomes even more difficult if trying to support user input, as a
 significant amount of overhead is required to parse user inputs and
@@ -98,6 +141,107 @@ cmd_list_to_flags(argsList)
 ```
 
     ## [1] "-input"      "myInput.txt" "-option1"    "foo"
+
+### Wrapping `ls` with cmdfun
+
+These tools can be used to easily wrap `ls`
+
+``` r
+library(magrittr)
+
+shell_ls <- function(dir = ".", ...){
+  # grab arguments passed to "..." in a list
+  flags <- cmd_args_dots() %>% 
+    # prepare list for conversion to vector
+    cmd_list_interp() %>% 
+    # Convert the list to a flag vector
+    cmd_list_to_flags()
+  
+  # Run ls shell command
+  system2("ls", c(flags, dir), stdout = TRUE)
+}
+```
+
+``` r
+shell_ls("*.md")
+```
+
+    ## [1] "LICENSE.md" "NEWS.md"    "README.md"
+
+### Boolean flags are passed as bool operators
+
+`ls -l` can be mimiced by passing `l = TRUE` to
+    ‘…’.
+
+``` r
+shell_ls("*.md", l = TRUE)
+```
+
+    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 3865 Aug 26 15:18 README.md"
+
+### Named vectors can be used to provide user-friendly aliases for single-letter flags
+
+Commandline tools can have hundreds of arguments, many with
+uninformative, often single-letter, names. To prevent developers from
+having to write aliased function arguments for all, often conflicting
+flags, `cmd_list_interp` can additionally use a lookup table to allow
+developers to provide informative function argument names for
+unintuitive flags.
+
+For example, allowing `long` to act as `-l` in `ls`.
+
+``` r
+shell_ls_alias <- function(dir = ".", ...){
+  
+  # Named vector acts as lookup table
+  # name = function argument
+  # value = flag name
+  names_arg_to_flag <- c("long" = "l")
+  
+  flags <- cmd_args_dots() %>% 
+    # Use lookup table to manage renames
+    cmd_list_interp(names_arg_to_flag) %>% 
+    cmd_list_to_flags()
+  
+  system2("ls", c(flags, dir), stdout = TRUE)
+}
+```
+
+``` r
+shell_ls_alias("*.md", long = TRUE)
+```
+
+    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 3865 Aug 26 15:18 README.md"
+
+### Wrapping `cut` with cmdfun
+
+Here is another example wrapping `cut` which separates text on a
+delimiter (set with `-d`) and returns selected fields (set with `-f`)
+from the separation.
+
+``` r
+shell_cut <- function(text, ...){
+
+  names_arg_to_flag <- c("sep" = "d",
+                         "fields" = "f")
+    
+    flags <- cmd_args_dots() %>%
+        cmd_list_interp(names_arg_to_flag) %>% 
+      cmd_list_to_flags()
+
+    system2("cut", flags, stdout = T, input = text)
+}
+```
+
+``` r
+shell_cut("hello_world", fields = 2, sep = "_") 
+```
+
+    ## [1] "world"
 
 Additionally, `cmdfun` provides utilites for searching & checking valid
 tool installs, expecting system behavior, and helpful error handling to

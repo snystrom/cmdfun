@@ -1,3 +1,8 @@
+# cmdfun 0.1.92.9000
+
+* Updated README and `vignette("cmdfun")` to have more user-friendly explanations
+
+
 # cmdfun 0.1.91.9000
 
 * Changed version numbering scheme to fix my terrible mistakes. This is what I
