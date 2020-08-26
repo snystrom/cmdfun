@@ -4,7 +4,7 @@ output: github_document
 ---
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R build status](https://github.com/snystrom/cmdfun/workflows/R-CMD-check/badge.svg)](https://github.com/snystrom/cmdfun/actions)
 [![Codecov test coverage](https://codecov.io/gh/snystrom/cmdfun/branch/master/graph/badge.svg)](https://codecov.io/gh/snystrom/cmdfun?branch=master)
@@ -28,10 +28,9 @@ if (!requireNamespace("remotes"))
 remotes::install_github("snystrom/cmdfun")
 ```
 
-## Overview
+## Quick Overview
 
-The `cmdfun` framework provides three
-mechanisms for capturing function arguments:
+The `cmdfun` framework provides mechanisms for capturing function arguments:
 
  - `cmd_args_dots()` captures all arguments passed to `...`
  - `cmd_args_named()` captures all keyword arguments defined by the user
@@ -62,8 +61,14 @@ directly fed to `system2` or `processx`.
 cmd_list_to_flags(flagsList)
 ```
 
+`cmd_path_search()` allows package builders to search default locations for installed tools.
+```{r}
+bin_path <- cmd_path_search(default_path = "/bin", utils = c("ls", "cut"))
 
-## Quick Examples
+bin_path(util = "ls")
+```
+
+## Introduction 
 
 `cmdfun` attempts to solve the problem of wrapping external software in R. 
 Calling external software is done with `system2` or `processx`.
@@ -127,7 +132,7 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("*.md")
 ```
 
-### Boolean flags are passed as bool operators
+#### Boolean flags are passed as bool operators
 `ls -l` can be mimiced by passing `l = TRUE` to '...'.
 ```{r}
 shell_ls("*.md", l = TRUE)
@@ -185,9 +190,15 @@ shell_cut <- function(text, ...){
 shell_cut("hello_world", fields = 2, sep = "_") 
 ```
 
+#### Multiple values are passed as vectors
+```{r}
+shell_cut("hello_world_hello", fields = c(1,3), sep = "_") 
+```
+
 Additionally, `cmdfun` provides utilites for searching & checking valid tool
 installs, expecting system behavior, and helpful error handling to allow simple
-construction of external tool wrappers.
+construction of external tool wrappers (see
+[vignette](https://snystrom.github.io/cmdfun/articles/cmdfun.html) for details).
 
 ## More Details
 See [https://snystrom.github.io/cmdfun/articles/cmdfun.html](https://snystrom.github.io/cmdfun/articles/cmdfun.html)

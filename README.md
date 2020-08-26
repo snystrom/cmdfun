@@ -33,9 +33,9 @@ if (!requireNamespace("remotes"))
 remotes::install_github("snystrom/cmdfun")
 ```
 
-## Overview
+## Quick Overview
 
-The `cmdfun` framework provides three mechanisms for capturing function
+The `cmdfun` framework provides mechanisms for capturing function
 arguments:
 
   - `cmd_args_dots()` captures all arguments passed to `...`
@@ -85,7 +85,19 @@ cmd_list_to_flags(flagsList)
 
     ## [1] "-input"        "test"          "-boolean_flag"
 
-## Quick Examples
+`cmd_path_search()` allows package builders to search default locations
+for installed
+tools.
+
+``` r
+bin_path <- cmd_path_search(default_path = "/bin", utils = c("ls", "cut"))
+
+bin_path(util = "ls")
+```
+
+    ## [1] "//bin/ls"
+
+## Introduction
 
 `cmdfun` attempts to solve the problem of wrapping external software in
 R. Calling external software is done with `system2` or `processx`.
@@ -108,7 +120,7 @@ system2("ls", c("-l", "-i", "*.md"), stdout = TRUE)
 
     ## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
     ## [2] "1163031752 -rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 3865 Aug 26 15:18 README.md"
+    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:17 README.md"
 
 This becomes even more difficult if trying to support user input, as a
 significant amount of overhead is required to parse user inputs and
@@ -168,7 +180,7 @@ shell_ls("*.md")
 
     ## [1] "LICENSE.md" "NEWS.md"    "README.md"
 
-### Boolean flags are passed as bool operators
+#### Boolean flags are passed as bool operators
 
 `ls -l` can be mimiced by passing `l = TRUE` to
     ‘…’.
@@ -179,7 +191,7 @@ shell_ls("*.md", l = TRUE)
 
     ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 3865 Aug 26 15:18 README.md"
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:17 README.md"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -215,7 +227,7 @@ shell_ls_alias("*.md", long = TRUE)
 
     ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 3865 Aug 26 15:18 README.md"
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:17 README.md"
 
 ### Wrapping `cut` with cmdfun
 
@@ -243,9 +255,19 @@ shell_cut("hello_world", fields = 2, sep = "_")
 
     ## [1] "world"
 
+#### Multiple values are passed as vectors
+
+``` r
+shell_cut("hello_world_hello", fields = c(1,3), sep = "_") 
+```
+
+    ## [1] "hello_hello"
+
 Additionally, `cmdfun` provides utilites for searching & checking valid
 tool installs, expecting system behavior, and helpful error handling to
-allow simple construction of external tool wrappers.
+allow simple construction of external tool wrappers (see
+[vignette](https://snystrom.github.io/cmdfun/articles/cmdfun.html) for
+details).
 
 ## More Details
 
