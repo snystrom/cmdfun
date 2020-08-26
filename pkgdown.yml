@@ -4,8 +4,8 @@ pkgdown_sha: ~
 articles:
   _help_checking: _help_checking.html
   cmdfun: cmdfun.html
-last_built: 2020-08-25T23:02Z
+last_built: 2020-08-26T23:24Z
 urls:
-  reference: https://snystrom.github.io/cmdr//reference
-  article: https://snystrom.github.io/cmdr//articles
+  reference: https://snystrom.github.io/cmdfun//reference
+  article: https://snystrom.github.io/cmdfun//articles
 

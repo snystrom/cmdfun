@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cmdfun</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.91.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.92.9000</span>
       </span>
     </div>
 
@@ -90,11 +90,11 @@
 <h2 class="hasAnchor">
 <a href="#a-simple-framework-for-building-shell-interfaces" class="anchor"></a>A simple framework for building shell interfaces</h2>
 <p>The purpose of <code>cmdfun</code> is to significantly reduce the overhead involved in wrapping shell programs in R. The tools are intended to be intuitive and lightweight enough to use for data scientists trying to get things done quickly, but robust and full-fledged enough for developers to extend them to more advanced use cases.</p>
+<p>Briefly, <code>cmdfun</code> captures R function arguments (<strong>args</strong>) as a base R <code>list</code> and converts them to a vector of commandline <strong>flags</strong>.</p>
 </div>
-<div id="vocabulary-to-describe-operations" class="section level2">
+<div id="grabbing-function-arguments-as-lists" class="section level2">
 <h2 class="hasAnchor">
-<a href="#vocabulary-to-describe-operations" class="anchor"></a>Vocabulary to describe operations</h2>
-<p>Briefly, <code>cmdfun</code> captures R function arguments (<strong>args</strong>) and converts them to a vector of commandline <strong>flags</strong>.</p>
+<a href="#grabbing-function-arguments-as-lists" class="anchor"></a>Grabbing function arguments as lists</h2>
 <p>The <code>cmdfun</code> framework provides three mechanisms for capturing function arguments:</p>
 <ul>
 <li>
@@ -105,165 +105,325 @@
 <li>
 <code><a href="../reference/cmd_args_all.html">cmd_args_all()</a></code> captures both named + dot arguments</li>
 </ul>
-<p><code>cmd_list_interp</code> converts the captured arguments to a parsed list of flag/value pairs. This output can be useful for additonal handling of special flag assignments from within R.</p>
-<p><code>cmd_list_to_flags</code> converts the output of <code>cmd_list_interp</code> to a vector of commandline-style flags. This output can be directly fed to <code>system2</code> or <code>processx</code>.</p>
+<p><code>cmd_list_interp</code> converts the captured argument list to a parsed list of flag/value pairs (details below). This output can be useful for additonal handling of special flag assignments from within R.</p>
+<p><code>cmd_list_to_flags</code> converts a list to a vector of commandline-style flags using the list names as flag names and the list values as the flag values (empty values return only the flag). This output can be directly fed to <code>system2</code> or <code>processx</code>.</p>
 <p>Together, they can be used to build user-friendly R interfaces to shell programs without having to manually implement all commandline flags in R functions.</p>
-</div>
-<div id="examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h2>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">cmdfun</span>)</pre></body></html></div>
-<p>variables defined in <code>...</code> are converted to character vector of flags appropriate for shell commands.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r">
-<span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">...</span>){
+<p>The <code>cmd_args</code> family of functions operate <strong>within</strong> a function environment to capture the arguments. Therefore, to examine their behavior, they must be wrapped in functions.</p>
+<p>Here I’ll compare the differences between the three <code>cmd_args</code> functions.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">get_all</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">...</span>){
+  <span class="fu"><a href="../reference/cmd_args_all.html">cmd_args_all</a></span>()
+}
 
-  <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>()
+<span class="no">get_named</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">...</span>){
+  <span class="fu"><a href="../reference/cmd_args_named.html">cmd_args_named</a></span>()
+}
 
-  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">flags</span>)
+<span class="no">get_dots</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">...</span>){
+  <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>()
 }</pre></body></html></div>
-<div class="sourceCode" id="cb3"><html><body><pre class="r">(<span class="no">flagsList</span> <span class="kw">&lt;-</span> <span class="fu">myFunction</span>(<span class="kw">flag</span> <span class="kw">=</span> <span class="st">"var"</span>, <span class="kw">bool_flag</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-<span class="co">#&gt; $flag</span>
-<span class="co">#&gt; [1] "var"</span>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># cmd_args_all() gets all keword arguments and arguments passed to "..."</span>
+(<span class="no">argsListAll</span> <span class="kw">&lt;-</span> <span class="fu">get_all</span>(<span class="st">"input"</span>, <span class="fl">NA</span>, <span class="kw">bool</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">vals</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>)))
+<span class="co">#&gt; $arg1</span>
+<span class="co">#&gt; [1] "input"</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $bool_flag</span>
-<span class="co">#&gt; [1] ""</span></pre></body></html></div>
-<p>This list can be passed to <code>cmd_list_to_flags</code> to generate a vector suitable for <code>system2</code> to build shell commands.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">flagsList</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
-<span class="co">#&gt; [1] "-flag"      "var"        "-bool_flag"</span></pre></body></html></div>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">shellCut</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
-
-  <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
-
-    <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"cut"</span>, <span class="no">flags</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>, <span class="kw">input</span> <span class="kw">=</span> <span class="no">text</span>)
-
-}</pre></body></html></div>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu">shellCut</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_"</span>)
-<span class="co">#&gt; [1] "world"</span></pre></body></html></div>
-<p>Multiple values can be passed to arguments using vectors</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu">shellCut</span>(<span class="st">"hello_world_hello"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">3</span>), <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_"</span>)
-<span class="co">#&gt; [1] "hello_hello"</span></pre></body></html></div>
-<div id="boolean-flags-are-passed-as-bool-operators" class="section level3">
-<h3 class="hasAnchor">
-<a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h3>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">shell_ls</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">dir</span> <span class="kw">=</span> <span class="st">"."</span>, <span class="no">...</span>){
-  <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
-
-  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">dir</span>, <span class="no">flags</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
-}</pre></body></html></div>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co">#shell_ls("R")</span>
-<span class="fu">shell_ls</span>(<span class="st">"."</span>)
-<span class="co">#&gt; [1] "_help_checking.Rmd" "cmdfun.Rmd"</span></pre></body></html></div>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co">#shell_ls("R", l = T)</span>
-<span class="fu">shell_ls</span>(<span class="st">"."</span>, <span class="kw">l</span> <span class="kw">=</span> <span class="no">T</span>)
-<span class="co">#&gt; Warning in system2("ls", c(dir, flags), stdout = T): running command ''ls' . -l'</span>
-<span class="co">#&gt; had status 1</span>
-<span class="co">#&gt; [1] ".:"                 "_help_checking.Rmd" "cmdfun.Rmd"        </span>
-<span class="co">#&gt; attr(,"status")</span>
-<span class="co">#&gt; [1] 1</span></pre></body></html></div>
+<span class="co">#&gt; $arg2</span>
+<span class="co">#&gt; [1] NA</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $bool</span>
+<span class="co">#&gt; [1] TRUE</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $vals</span>
+<span class="co">#&gt; [1] 1 2 3</span></pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># cmd_args_named() gets all keword arguments, excluding arguments passed to "..."</span>
+(<span class="no">argsListNamed</span> <span class="kw">&lt;-</span> <span class="fu">get_named</span>(<span class="st">"input"</span>, <span class="fl">NA</span>, <span class="kw">bool</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">vals</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>)))
+<span class="co">#&gt; $arg1</span>
+<span class="co">#&gt; [1] "input"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $arg2</span>
+<span class="co">#&gt; [1] NA</span></pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># cmd_args_dots() gets all arguments passed to "...", excluding keyword arguments</span>
+(<span class="no">argsListDots</span> <span class="kw">&lt;-</span> <span class="fu">get_dots</span>(<span class="st">"input"</span>, <span class="fl">NA</span>, <span class="kw">bool</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">vals</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>)))
+<span class="co">#&gt; $bool</span>
+<span class="co">#&gt; [1] TRUE</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $vals</span>
+<span class="co">#&gt; [1] 1 2 3</span></pre></body></html></div>
+<p>The captured argument lists contain the argument names as list names, and the argument values as list values.</p>
 </div>
-<div id="named-vectors-can-be-used-to-provide-user-friendly-aliases-for-single-letter-flags" class="section level3">
+<div id="create-r-representations-of-commandline-flags" class="section level2">
+<h2 class="hasAnchor">
+<a href="#create-r-representations-of-commandline-flags" class="anchor"></a>Create R representations of commandline flags</h2>
+<p>Passing flags to commandline software inheritly varies from how arguments are passed to R functions. For example, some flags require values to follow them, while others do not (ie <code>head -n 5</code> vs <code>ls -l</code>). In some cases, flags can have multiple values assigned to them, passed as comma-separated entries (ie <code>cut -f 1,2,3</code>).</p>
+<p>To facilitate the conversion of these concepts between R and the shell, <code>cmd_list_interp</code> <strong>interprets</strong> R data structures in each list entry and converts them where necessary to prepare them for final conversion to a character vector.</p>
+<p>Argument values are interpreted according to the following rules:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Argument Value Type</th>
+<th align="center">
+<code>cmd_list_interp</code> behavior</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code><a href="https://rdrr.io/r/base/character.html">character(1)</a></code></td>
+<td align="center">keep</td>
+</tr>
+<tr class="even">
+<td align="center"><code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code></td>
+<td align="center">keep</td>
+</tr>
+<tr class="odd">
+<td align="center">
+<code>character</code> vector</td>
+<td align="center">keep</td>
+</tr>
+<tr class="even">
+<td align="center">
+<code>numeric</code> vector</td>
+<td align="center">keep</td>
+</tr>
+<tr class="odd">
+<td align="center"><code>factor</code></td>
+<td align="center">keep</td>
+</tr>
+<tr class="even">
+<td align="center"><code>TRUE</code></td>
+<td align="center">Convert to: ""</td>
+</tr>
+<tr class="odd">
+<td align="center"><code>FALSE</code></td>
+<td align="center">Drop entry from list</td>
+</tr>
+<tr class="even">
+<td align="center"><code>NA</code></td>
+<td align="center">Drop entry from list</td>
+</tr>
+<tr class="odd">
+<td align="center"><code>NULL</code></td>
+<td align="center">Drop entry from list</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Note that `arg2` is dropped, and `bool` is converted to ""</span>
+<span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">argsListAll</span>)
+<span class="co">#&gt; $arg1</span>
+<span class="co">#&gt; [1] "input"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $bool</span>
+<span class="co">#&gt; [1] ""</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $vals</span>
+<span class="co">#&gt; [1] 1 2 3</span></pre></body></html></div>
+<p>Commandline tools can have hundreds of arguments, many with uninformative, often single-letter, names. To prevent developers from having to write aliased function arguments for all, often conflicting flags, <code>cmd_list_interp</code> can additionally use a lookup table to allow developers to provide informative function argument names for unintuitive flags.</p>
+<div class="sourceCode" id="cb7"><html><body><pre class="r">(<span class="no">flagList</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">argsListAll</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"bool"</span> <span class="kw">=</span> <span class="st">"b"</span>)))
+<span class="co">#&gt; $arg1</span>
+<span class="co">#&gt; [1] "input"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $b</span>
+<span class="co">#&gt; [1] ""</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $vals</span>
+<span class="co">#&gt; [1] 1 2 3</span></pre></body></html></div>
+</div>
+<div id="convert-lists-to-flag-vectors" class="section level2">
+<h2 class="hasAnchor">
+<a href="#convert-lists-to-flag-vectors" class="anchor"></a>Convert lists to flag vectors</h2>
+<p>After interpreting argument lists with <code>cmd_list_interp</code>, the resulting list can be coerced into a vector suitable for passing to <code>system2</code> or <code>processx</code> using <code>cmd_list_to_flags</code>. <code>cmd_list_to_flags</code> will produce the following vector values for each name/value pair in the list:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Argument Value Type</th>
+<th align="center">
+<code>cmd_list_to_flags</code> behavior</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code><a href="https://rdrr.io/r/base/character.html">character(1)</a></code></td>
+<td align="center"><code><a href="https://rdrr.io/r/base/c.html">c("-name", "value")</a></code></td>
+</tr>
+<tr class="even">
+<td align="center"><code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code></td>
+<td align="center"><code><a href="https://rdrr.io/r/base/c.html">c("-name", "value")</a></code></td>
+</tr>
+<tr class="odd">
+<td align="center">
+<code>character</code> vector</td>
+<td align="center"><code><a href="https://rdrr.io/r/base/c.html">c("-name", "a,b,c")</a></code></td>
+</tr>
+<tr class="even">
+<td align="center">
+<code>numeric</code> vector</td>
+<td align="center"><code><a href="https://rdrr.io/r/base/c.html">c("-name", "1,2,3")</a></code></td>
+</tr>
+<tr class="odd">
+<td align="center"><code>factor</code></td>
+<td align="center">same as <code>character</code>
+</td>
+</tr>
+<tr class="even">
+<td align="center">empty string: ""</td>
+<td align="center"><code><a href="https://rdrr.io/r/base/c.html">c("-name")</a></code></td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>(<span class="no">flagList</span>)
+<span class="co">#&gt; [1] "-arg1" "input" "-b"    "-vals" "1,2,3"</span></pre></body></html></div>
+</div>
+<div id="examples-using-unix-tools" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples-using-unix-tools" class="anchor"></a>Examples using unix tools</h2>
+<p>Here are two examples wrapping common shell utilities <code>ls</code> and <code>cut</code>.</p>
+<div id="wrapping-ls-with-cmdfun" class="section level3">
 <h3 class="hasAnchor">
-<a href="#named-vectors-can-be-used-to-provide-user-friendly-aliases-for-single-letter-flags" class="anchor"></a>Named vectors can be used to provide user-friendly aliases for single-letter flags</h3>
-<div class="sourceCode" id="cb11"><html><body><pre class="r">
+<a href="#wrapping-ls-with-cmdfun" class="anchor"></a>Wrapping <code>ls</code> with cmdfun</h3>
+<p>These tools can be used to easily wrap <code>ls</code>, a command which lists files in the target directory.</p>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
+
+<span class="no">shell_ls</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">dir</span> <span class="kw">=</span> <span class="st">"."</span>, <span class="no">...</span>){
+  <span class="co"># grab arguments passed to "..." in a list</span>
+  <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
+    <span class="co"># prepare list for conversion to vector</span>
+    <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="co"># Convert the list to a flag vector</span>
+    <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
+
+  <span class="co"># Run ls shell command</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">dir</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+}</pre></body></html></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># list all .md files in ../</span>
+<span class="fu">shell_ls</span>(<span class="st">"../*.md"</span>)
+<span class="co">#&gt; [1] "../LICENSE.md" "../NEWS.md"    "../README.md"</span></pre></body></html></div>
+<div id="boolean-flags-are-passed-as-bool-operators" class="section level4">
+<h4 class="hasAnchor">
+<a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h4>
+<p><code>ls -l</code> can be mimiced by passing <code>l = TRUE</code> to ‘…’.</p>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu">shell_ls</span>(<span class="st">"../*.md"</span>, <span class="kw">l</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 26 23:21 ../LICENSE.md"</span>
+<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   628 Aug 26 23:21 ../NEWS.md"   </span>
+<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7485 Aug 26 23:21 ../README.md"</span></pre></body></html></div>
+</div>
+<div id="using-a-lookup-table-to-make-user-friendly-argument-names" class="section level4">
+<h4 class="hasAnchor">
+<a href="#using-a-lookup-table-to-make-user-friendly-argument-names" class="anchor"></a>Using a lookup table to make user-friendly argument names</h4>
+<p>For example, allowing <code>long</code> to act as <code>-l</code> in <code>ls</code>.</p>
+<div class="sourceCode" id="cb12"><html><body><pre class="r">
 <span class="no">shell_ls_alias</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">dir</span> <span class="kw">=</span> <span class="st">"."</span>, <span class="no">...</span>){
 
-  <span class="no">argsDict</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"long"</span> <span class="kw">=</span> <span class="st">"l"</span>)
+  <span class="co"># Named vector acts as lookup table</span>
+  <span class="co"># name = function argument</span>
+  <span class="co"># value = flag name</span>
+  <span class="no">names_arg_to_flag</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"long"</span> <span class="kw">=</span> <span class="st">"l"</span>)
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">argsDict</span>) <span class="kw">%&gt;%</span>
+    <span class="co"># Use lookup table to manage renames</span>
+    <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">names_arg_to_flag</span>) <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
-  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">dir</span>, <span class="no">flags</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">dir</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 }</pre></body></html></div>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu">shell_ls_alias</span>(<span class="st">"."</span>, <span class="kw">long</span> <span class="kw">=</span> <span class="no">T</span>)
-<span class="co">#&gt; Warning in system2("ls", c(dir, flags), stdout = T): running command ''ls' . -l'</span>
-<span class="co">#&gt; had status 1</span>
-<span class="co">#&gt; [1] ".:"                 "_help_checking.Rmd" "cmdfun.Rmd"        </span>
-<span class="co">#&gt; attr(,"status")</span>
-<span class="co">#&gt; [1] 1</span></pre></body></html></div>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">shellCut_alias</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu">shell_ls_alias</span>(<span class="st">"../*.md"</span>, <span class="kw">long</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 26 23:21 ../LICENSE.md"</span>
+<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   628 Aug 26 23:21 ../NEWS.md"   </span>
+<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7485 Aug 26 23:21 ../README.md"</span></pre></body></html></div>
+</div>
+</div>
+<div id="wrapping-cut-with-cmdfun" class="section level3">
+<h3 class="hasAnchor">
+<a href="#wrapping-cut-with-cmdfun" class="anchor"></a>Wrapping <code>cut</code> with cmdfun</h3>
+<p>Here is another example wrapping <code>cut</code> which separates text on a delimiter (set with <code>-d</code>) and returns selected fields (set with <code>-f</code>) from the separation. Again, we use a lookup table to create the optional <code>sep</code> and <code>fields</code> arguments which specify <code>-d</code> and <code>-f</code>, respectively.</p>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">shell_cut</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
 
-  <span class="no">argsDict</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sep"</span> <span class="kw">=</span> <span class="st">"d"</span>,
-                <span class="st">"fields"</span> <span class="kw">=</span> <span class="st">"f"</span>)
+  <span class="no">names_arg_to_flag</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sep"</span> <span class="kw">=</span> <span class="st">"d"</span>,
+                         <span class="st">"fields"</span> <span class="kw">=</span> <span class="st">"f"</span>)
 
     <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
-        <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">argsDict</span>) <span class="kw">%&gt;%</span>
+        <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="no">names_arg_to_flag</span>) <span class="kw">%&gt;%</span>
       <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
     <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"cut"</span>, <span class="no">flags</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="no">T</span>, <span class="kw">input</span> <span class="kw">=</span> <span class="no">text</span>)
 }</pre></body></html></div>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu">shellCut_alias</span>(<span class="st">"hello_world"</span>, <span class="kw">fields</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">"_"</span>)
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu">shell_cut</span>(<span class="st">"hello_world"</span>, <span class="kw">fields</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">"_"</span>)
 <span class="co">#&gt; [1] "world"</span></pre></body></html></div>
+<p>Multiple values can be passed to arguments using vectors</p>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="co"># Note that the flag name values are accepted even when using a lookup table</span>
+<span class="fu">shell_cut</span>(<span class="st">"hello_world_hello"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">3</span>), <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_"</span>)
+<span class="co">#&gt; [1] "hello_hello"</span></pre></body></html></div>
 </div>
 </div>
-<div id="abstraction-of-command-path-handling" class="section level2">
+<div id="abstraction-of-command-path-detection" class="section level2">
 <h2 class="hasAnchor">
-<a href="#abstraction-of-command-path-handling" class="anchor"></a>Abstraction of command path handling</h2>
-<p>A common pattern when designing shell interfaces is to ask the user to give an absolute path to the target shell utility. It is common to pass this information from the user to R by using either R environment variables defined in <code>.Renviron</code>, using options (set with <code><a href="https://rdrr.io/r/base/options.html">option()</a></code>, and got with <code><a href="https://rdrr.io/r/base/options.html">getOption()</a></code>), having the user explicitly pass the path in the function call, or failing this, using a default install path.</p>
-<p><code><a href="../reference/cmd_path_search.html">cmd_path_search()</a></code> is a macro which returns a function that returns a valid path to the target by heirarchically searching a series of possible locations.</p>
+<a href="#abstraction-of-command-path-detection" class="anchor"></a>Abstraction of command path detection</h2>
+<p>Command executibles can be stored in different locations across devices, therefore another barrier to wrapping external software is detecting the location of the desired tool. The simplest solution is to ask the user to provide the location to their install, however, requring this for every function call can become repetitive and clunky. To reduce this cognitive overhead, a common pattern when designing shell interfaces is to ask the user to pass this information to R by using either R environment variables defined in <code>.Renviron</code>, using options (set with <code><a href="https://rdrr.io/r/base/options.html">options()</a></code>, and got with <code><a href="https://rdrr.io/r/base/options.html">getOption()</a></code>). Fallback options can include having the user explicitly pass the path each time in the function call, or failing this, using a default install path.</p>
+<p><code><a href="../reference/cmd_path_search.html">cmd_path_search()</a></code> is a macro which returns a function that returns a valid path to the target by heirarchically searching a series of possible locations according to the following heirarchy:</p>
+<ol style="list-style-type: decimal">
+<li>Manually passing the install path to the function call</li>
+<li>An option set using <code><a href="https://rdrr.io/r/base/options.html">options(option_name = "value")</a></code>
+</li>
+<li>An environment variable set in <code>.Renviron</code>
+</li>
+<li>A default install location</li>
+</ol>
+<p>The resulting search function will always prefer the most specific option (ie when a user explicity passes a path) before falling back to a less-specific assignment. It is up to the designer whether to support any or all of these features.</p>
 <p>For example, to build an interface to the “MEME” suite, which is by default installed to <code>~/meme/bin</code>, one could build the following:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)
+<p>This will search for <code>~/meme/bin</code> and either return a valid path if it exists, or throw an error if it can’t be found.</p>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)
 
 <span class="fu">search_meme_path</span>()
 <span class="co">#&gt; [1] "/Users/runner/meme/bin"</span></pre></body></html></div>
-<p>To only search the R environment variable “MEME_PATH”, one could build:</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="co"># Without environment variable defined</span>
+<p>The user can always pass their own path which will override the default location. If this path is invalid, the search function will error.</p>
+<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="st">"bad/path"</span>)
+<span class="co">#&gt; Error in .check_valid_command_path(path): Command: bad/path, does not exist.</span></pre></body></html></div>
+<p>To instead only search the R environment variable “MEME_PATH”, one could build:</p>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="co"># Without environment variable defined</span>
 <span class="fu">search_meme_path</span>()
 <span class="co">#&gt; Error in search_meme_path(): No path defined or detected</span></pre></body></html></div>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="co"># With environment varialbe defined</span>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="co"># With environment variable defined</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span>(<span class="st">"MEME_PATH"</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)
 <span class="fu">search_meme_path</span>()
 <span class="co">#&gt; [1] "/Users/runner/meme/bin"</span></pre></body></html></div>
 <p>Multiple arguments can be used, and they will be searched from most-specific, to most-general.</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)</pre></body></html></div>
 <p>For example, if “MEME_PATH” is invalid on my machine, the search_function will return the default path as long as the default is also valid on my machine.</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span>(<span class="st">"MEME_PATH"</span> <span class="kw">=</span> <span class="st">"bad/path"</span>)
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span>(<span class="st">"MEME_PATH"</span> <span class="kw">=</span> <span class="st">"bad/path"</span>)
 <span class="fu">search_meme_path</span>()
 <span class="co">#&gt; [1] "/Users/runner/meme/bin"</span></pre></body></html></div>
+<p>As always, if the user passes their own path, this will take precedence.</p>
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="kw">path</span> <span class="kw">=</span> <span class="st">"bad/path"</span>)
+<span class="co">#&gt; Error in .check_valid_command_path(path): Command: bad/path, does not exist.</span></pre></body></html></div>
 <div id="support-for-tool-utilities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#support-for-tool-utilities" class="anchor"></a>Support for tool utilities</h3>
 <p>Some software, like the MEME suite is distributed as several binaries located in a common directory. To allow interface builders to officially support specific binaries, each binary can be defined as a “utility” within the build path.</p>
-<p>Here, I will include two tools from the MEME suite, AME, and DREME (distributed as binaries named “ame”, and “dreme”).</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<p>Here, I will include two tools from the MEME suite, AME, and DREME (distributed as binaries named “ame”, and “dreme”). The user can set the binary location by setting the <code>MEME_PATH</code> environment variable, passing their own path, or fall back to the default install location.</p>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>,
                                        <span class="kw">utils</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dreme"</span>, <span class="st">"ame"</span>))</pre></body></html></div>
 <p>search_function functions have two optional arguments: <code>path</code> and <code>util</code>. <code>path</code> acts as an override to the defaults provided when building the search_function. User-provided path variables will always be used instead of provided defaults. This is to catch problems from the user and not cause unexpected user-level behavior.</p>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="st">"bad/path"</span>)
+<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="st">"bad/path"</span>)
 <span class="co">#&gt; Error in .check_valid_command_path(path): Command: bad/path, does not exist.</span></pre></body></html></div>
 <p><code>util</code> specifies which utility path to return (if any). The path search_function will throw an error if the utility is not found in any of the specified locations.</p>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="kw">util</span> <span class="kw">=</span> <span class="st">"dreme"</span>)
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="kw">util</span> <span class="kw">=</span> <span class="st">"dreme"</span>)
 <span class="co">#&gt; [1] "/Users/runner/meme/bin/dreme"</span></pre></body></html></div>
-<p>List all utility paths (but don’t check if they’re valid). Useful for writing user-facing install checking functions.</p>
-<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu">search_meme_path</span>(<span class="kw">util</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="co">#&gt; [1] "/Users/runner/meme/bin/dreme" "/Users/runner/meme/bin/ame"</span></pre></body></html></div>
-<p><code>cmdfun</code> provides a preexisting utility for this, however. The <code>cmd_install_check</code> function can be lightly wrapped by package builders to verify and print a user-friendly series of checks for a valid tool install. it takes as input the output of <code>build_package_search_function</code> and an optional user-override <code>path</code>.</p>
+<p>The <code>cmd_install_check</code> function can be lightly wrapped by package builders to verify and print a user-friendly series of checks for a valid tool install. it takes as input the output of <code>cmd_path_search</code> and an optional user-override <code>path</code>. The search logic is inherited from the path search function, so the options and environment variables are also searched.</p>
 <p>Here I build a function for checking a users <code>meme</code> install.</p>
-<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">check_meme_install</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">path</span> <span class="kw">=</span> <span class="kw">NULL</span>){
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">check_meme_install</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">path</span> <span class="kw">=</span> <span class="kw">NULL</span>){
   <span class="fu"><a href="../reference/cmd_install_check.html">cmd_install_check</a></span>(<span class="no">search_meme_path</span>, <span class="kw">path</span> <span class="kw">=</span> <span class="no">path</span>)
 }</pre></body></html></div>
-<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="co"># searches default meme search locations</span>
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="co"># searches default meme search locations</span>
 <span class="fu">check_meme_install</span>()
 <span class="co">#&gt; checking main install</span>
 <span class="co">#&gt; ✔ /Users/runner/meme/bin</span>
 <span class="co">#&gt; checking util installs</span>
 <span class="co">#&gt; ✔ /Users/runner/meme/bin/dreme</span>
 <span class="co">#&gt; ✔ /Users/runner/meme/bin/ame</span></pre></body></html></div>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="co"># uses user override</span>
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="co"># uses user override</span>
 <span class="fu">check_meme_install</span>(<span class="st">'bad/path'</span>)
 <span class="co">#&gt; checking main install</span>
 <span class="co">#&gt; ✖ bad/path</span></pre></body></html></div>
 <p>If you want to write your own install checker instead of using the <code>cmd_install_check</code> function, <code>cmdfun</code> also provides the <code>cmd_ui_file_exists</code> function for printing pretty status messages.</p>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_ui_file_exists.html">cmd_ui_file_exists</a></span>(<span class="st">"bad/file"</span>)
+<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_ui_file_exists.html">cmd_ui_file_exists</a></span>(<span class="st">"bad/file"</span>)
 <span class="co">#&gt; ✖ bad/file</span>
 <span class="fu"><a href="../reference/cmd_ui_file_exists.html">cmd_ui_file_exists</a></span>(<span class="st">"~/meme/bin"</span>)
 <span class="co">#&gt; ✔ ~/meme/bin</span></pre></body></html></div>
@@ -271,12 +431,12 @@
 <div id="internal-install-validators" class="section level3">
 <h3 class="hasAnchor">
 <a href="#internal-install-validators" class="anchor"></a>Internal install validators</h3>
-<p><code>cmdfun</code> also provides a macro <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path search_function function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">meme_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">search_meme_path</span>)
+<p><code>cmdfun</code> also provides a macro <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path search function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">meme_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">search_meme_path</span>)
 <span class="fu">meme_installed</span>()
 <span class="co">#&gt; [1] TRUE</span></pre></body></html></div>
-<p>This also works on utils defined during path hanlder construction.</p>
-<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="no">ame_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">search_meme_path</span>, <span class="kw">util</span> <span class="kw">=</span> <span class="st">"ame"</span>)
+<p>This also works on utils defined during path search construction.</p>
+<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">ame_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">search_meme_path</span>, <span class="kw">util</span> <span class="kw">=</span> <span class="st">"ame"</span>)
 <span class="fu">ame_installed</span>()
 <span class="co">#&gt; [1] TRUE</span></pre></body></html></div>
 </div>
@@ -284,10 +444,10 @@
 <div id="bringing-it-all-together" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bringing-it-all-together" class="anchor"></a>Bringing it all together</h2>
-<p>Using a <code>cmd_args_</code> family function to get and convert function arguments to commandline flags. The path search_function returns the correct <code>command</code> call which can be passed to <code>system2</code> or <code>processx</code> along with the flags generated from <code>cmd_list_interp</code>.</p>
+<p>Using a <code>cmd_args_</code> family function to get and convert function arguments to commandline flags. The path search function returns the correct <code>command</code> call which can be passed to <code>system2</code> or <code>processx</code> along with the flags generated from <code>cmd_list_to_flags</code>.</p>
 <p>This makes for a robust shell wrapper without excess overhead.</p>
-<p>In the <code>runDreme</code> function below, the user can pass any valid <code>dreme</code> argument using the rules for command args defined above to <code>...</code>. Allowing <code>meme_path</code> as a function argument and passing it to <code>search_meme_path</code> allows the user to override the default search path which is: <code>MEME_PATH</code> environment variable, followed by the <code>~/meme/bin</code> default install.</p>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
+<p>In the <code>runDreme</code> function below, the user can pass any valid <code>dreme</code> argument using the rules for command args defined above to <code>...</code>. Allowing <code>meme_path</code> as a function argument and passing it to <code>search_meme_path</code> allows the user to override the default search path which is: the <code>MEME_PATH</code> environment variable, followed by the <code>~/meme/bin</code> default install.</p>
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">environment_var</span> <span class="kw">=</span> <span class="st">"MEME_PATH"</span>,
                                        <span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>,
                                        <span class="kw">utils</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dreme"</span>, <span class="st">"ame"</span>))
 
@@ -296,45 +456,67 @@
     <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
-  <span class="no">command</span> <span class="kw">&lt;-</span> <span class="fu">search_meme_path</span>(<span class="kw">path</span> <span class="kw">=</span> <span class="no">meme_path</span>, <span class="kw">util</span> <span class="kw">=</span> <span class="st">"dreme"</span>)
+  <span class="no">dreme_path</span> <span class="kw">&lt;-</span> <span class="fu">search_meme_path</span>(<span class="kw">path</span> <span class="kw">=</span> <span class="no">meme_path</span>, <span class="kw">util</span> <span class="kw">=</span> <span class="st">"dreme"</span>)
 
-  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="no">command</span>, <span class="no">flags</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="no">dreme_path</span>, <span class="no">flags</span>)
 }</pre></body></html></div>
 <p>Commands can now run through <code>runDreme</code> by passing flags as function arguments.</p>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu">runDreme</span>(<span class="kw">version</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu">runDreme</span>(<span class="kw">version</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<pre><code>#&gt; 5.1.1</code></pre>
 <p>If users have issues with the install, they can run <code>check_meme_install()</code> to verify the tools are being detected by R.</p>
 </div>
+<div id="additional-features" class="section level1">
+<h1 class="hasAnchor">
+<a href="#additional-features" class="anchor"></a>Additional Features</h1>
 <div id="restrict-argument-matching" class="section level2">
 <h2 class="hasAnchor">
 <a href="#restrict-argument-matching" class="anchor"></a>Restrict argument matching</h2>
 <p>each <code>cmd_args_</code> family function accepts a character vector of names to <code>keep</code> or <code>drop</code> arguments which will restrict command argument matches to values in <code>keep</code> (or ignore those in <code>drop</code>). As of now, <code>keep</code> and <code>drop</code> are mutually exclusive.</p>
 <p>This can be useful to allow only some function arguments to be captured as flags, while others can be used for function logic.</p>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">print</span> <span class="kw">=</span> <span class="fl">TRUE</span>){
+<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>, <span class="no">someText</span> <span class="kw">=</span> <span class="st">"default"</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_named.html">cmd_args_named</a></span>(<span class="kw">keep</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"arg1"</span>, <span class="st">"arg2"</span>)) <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
-  <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">print</span>, <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="st">"printing"</span>), <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="st">"nothing"</span>))
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">someText</span>)
 
   <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">flags</span>)
 }
 
 <span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"blah"</span>)
-<span class="co">#&gt; [1] "printing"</span>
+<span class="co">#&gt; [1] "default"</span>
 <span class="co">#&gt; [1] "-arg1" "blah"  "-arg2" "blah"</span></pre></body></html></div>
-<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="fl">FALSE</span>)
-<span class="co">#&gt; [1] "nothing"</span>
+<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="fu">myFunction</span>(<span class="kw">arg1</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">arg2</span> <span class="kw">=</span> <span class="st">"blah"</span>, <span class="kw">someText</span> <span class="kw">=</span> <span class="st">"hello world"</span>)
+<span class="co">#&gt; [1] "hello world"</span>
 <span class="co">#&gt; [1] "-arg1" "blah"  "-arg2" "blah"</span></pre></body></html></div>
 </div>
-<div id="manupulating-flag-list-objects" class="section level2">
+<div id="manipulating-list-objects" class="section level2">
 <h2 class="hasAnchor">
-<a href="#manupulating-flag-list-objects" class="anchor"></a>Manupulating flag list objects</h2>
+<a href="#manipulating-list-objects" class="anchor"></a>Manipulating list objects</h2>
 <p>For the most part, the <a href="https://purrr.tidyverse.org/">purrr</a> library is the most useful toolkit for operations on list objects.</p>
 <p><code>cmdfun</code> provides additional helper functions to handle common manipulations.</p>
-<p><code>cmd_list_drop</code> operates on flag lists to drop all entries corresponding to a certain name, specific name/value pairs, or by index position. Can be useful for ignoring setting certain flags if the user set them to a specific value. Conversely, <code>cmd_list_keep</code> functions identically but for keeping entries.</p>
-<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>){
+<p><code>cmd_list_drop</code> operates on argument &amp; flag lists to drop all entries corresponding to a certain name, specific name/value pairs, or by index position. Conversely, <code>cmd_list_keep</code> functions identically but for keeping entries.</p>
+<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="no">myList</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">'value1'</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+               <span class="st">'value2'</span> <span class="kw">=</span> <span class="st">"Hello"</span>,
+               <span class="st">'value2'</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fl">4</span>)
+
+<span class="fu"><a href="../reference/cmd_list_keep.html">cmd_list_keep</a></span>(<span class="no">myList</span>, <span class="st">"value2"</span>)
+<span class="co">#&gt; $value2</span>
+<span class="co">#&gt; [1] "Hello"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $value2</span>
+<span class="co">#&gt; [1] 1 2 3 4</span></pre></body></html></div>
+<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_list_keep.html">cmd_list_keep</a></span>(<span class="no">myList</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"value2"</span> <span class="kw">=</span> <span class="st">"Hello"</span>))
+<span class="co">#&gt; $value2</span>
+<span class="co">#&gt; [1] "Hello"</span></pre></body></html></div>
+<div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_list_drop.html">cmd_list_drop</a></span>(<span class="no">myList</span>, <span class="st">"value2"</span>)
+<span class="co">#&gt; $value1</span>
+<span class="co">#&gt; [1] TRUE</span></pre></body></html></div>
+<p>These functions can be useful for ignoring setting certain flags if the user set them to a specific value.</p>
+<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="no">myFunction</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">arg1</span>, <span class="no">arg2</span>){
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_named.html">cmd_args_named</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
+    <span class="co"># if arg2 == "baz", don't include it </span>
     <span class="fu"><a href="../reference/cmd_list_drop.html">cmd_list_drop</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"arg2"</span> <span class="kw">=</span> <span class="st">"baz"</span>)) <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
 
@@ -352,13 +534,13 @@
 <p>Sometimes a commandline function returns multiple output files you want to check for after the run.</p>
 <p><code>cmd_error_if_missing</code> accepts a vector or list of files &amp; checks that they exist.</p>
 <p><code>cmdfun</code> additionally provides a few convenience functions for generating lists of expected files. <code>cmd_file_combn</code> generates combinations of extension/prefix file names. The output can be passed to <code>cmd_error_if_missing</code> which will error if a file isn’t found on the filesystem.</p>
-<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_file_combn.html">cmd_file_combn</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)
+<div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_file_combn.html">cmd_file_combn</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"txt"</span>, <span class="st">"xml"</span>), <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"outFile"</span>)
 <span class="co">#&gt; $txt</span>
 <span class="co">#&gt; [1] "./outFile.txt"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $xml</span>
 <span class="co">#&gt; [1] "./outFile.xml"</span></pre></body></html></div>
-<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_file_combn.html">cmd_file_combn</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="st">"txt"</span>, <span class="kw">prefix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"outFile"</span>, <span class="st">"outFile2"</span>, <span class="st">"outFile3"</span>))
+<div class="sourceCode" id="cb44"><html><body><pre class="r"><span class="fu"><a href="../reference/cmd_file_combn.html">cmd_file_combn</a></span>(<span class="kw">ext</span> <span class="kw">=</span> <span class="st">"txt"</span>, <span class="kw">prefix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"outFile"</span>, <span class="st">"outFile2"</span>, <span class="st">"outFile3"</span>))
 <span class="co">#&gt; $outFile</span>
 <span class="co">#&gt; [1] "./outFile.txt"</span>
 <span class="co">#&gt; </span>
@@ -376,11 +558,10 @@
 <p>Alternatively, package builders could pass a vector of allowed flag names to check against if they didn’t want to parse help text. The goal is maximum flexibility.</p>
 <p>The following example demonstrates how to parse help text (in this case from <code>tar</code>) into a vector of allowed flags. This vector is compared to the user-input flags (<code>user_input_flags</code> below), and tries to identify misspelled function arguments.</p>
 <p>Here, the user has accidentally used the argument <code>delte</code> instead of <code>delete</code>. <code>cmdfun</code> tries to be helpful and identify the misspelling for the user.</p>
-<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="no">user_input_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"delte"</span>)
+<div class="sourceCode" id="cb45"><html><body><pre class="r"><span class="no">user_input_flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"delte"</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"tar"</span>, <span class="st">"--help"</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/cmd_help_parse_flags.html">cmd_help_parse_flags</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">","</span>, <span class="st">""</span>, <span class="no">.</span>) <span class="kw">%&gt;%</span>
   <span class="co"># Compares User-input flags to parsed commandline flags</span>
   <span class="co"># returns flags that match based on edit distance</span>
   <span class="fu"><a href="../reference/cmd_help_flags_similar.html">cmd_help_flags_similar</a></span>(<span class="no">user_input_flags</span>) <span class="kw">%&gt;%</span>
@@ -393,7 +574,7 @@
 <h2 class="hasAnchor">
 <a href="#unsafe-operations" class="anchor"></a>Unsafe operations</h2>
 <p><strong>WARNING:</strong> It’s still possible to do unsafe operations as follows, so please be careful how you build system calls.</p>
-<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="no">shellCut_unsafe</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
+<div class="sourceCode" id="cb46"><html><body><pre class="r"><span class="no">shellCut_unsafe</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">text</span>, <span class="no">...</span>){
 
   <span class="no">flags</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="../reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="kw">%&gt;%</span>
@@ -403,12 +584,13 @@
 
 }
 
-<span class="fu">shellCut_unsafe</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; echo test"</span>)
-<span class="co">#&gt; [1] "world" "test"</span></pre></body></html></div>
+<span class="fu">shellCut_unsafe</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; echo unsafe operation!"</span>)
+<span class="co">#&gt; [1] "world"             "unsafe operation!"</span></pre></body></html></div>
 <p><strong>NOTE</strong> even if when setting <code>stdout = TRUE</code> the second command doesn’t appear in the output, it will still have run.</p>
 <p>A more extreme example of what can happen is here, where <code>~/deleteme.txt</code> will be removed silently.</p>
-<p>I promise I’ll get around to sanitizing user input eventually.</p>
-<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu">shellCut</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; rm ~/deleteme.txt"</span>)</pre></body></html></div>
+<p>I promise I’ll get around to sanitizing user input eventually, I am still reasoning about the best way to do this. You can provide feedback on this process at <a href="https://github.com/snystrom/cmdfun/issues/6">this issue</a>.</p>
+<div class="sourceCode" id="cb47"><html><body><pre class="r"><span class="fu">shellCut</span>(<span class="st">"hello_world"</span>, <span class="kw">f</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">d</span> <span class="kw">=</span> <span class="st">"_ &amp;&amp; rm ~/deleteme.txt"</span>)</pre></body></html></div>
+</div>
 </div>
   </div>
 
