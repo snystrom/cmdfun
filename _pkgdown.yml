@@ -3,7 +3,7 @@ url: https://snystrom.github.io/cmdfun/
 destination: docs
 
 development:
-  mode: unreleased
+  mode: auto
 
 template:
   params:
