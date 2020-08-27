@@ -1,5 +1,5 @@
 # cmdfun 1.0.0
-* CRAN Release
+* CRAN Release Candidate
 
 # cmdfun 0.2.01
 * fixed error in .Rbuildignore causing failing R CMD CHECK
