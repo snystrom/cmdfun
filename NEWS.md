@@ -1,3 +1,6 @@
+# cmdfun 1.0.1
+* Spell check fixes
+
 # cmdfun 1.0.0
 * CRAN Release Candidate
 

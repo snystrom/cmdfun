@@ -109,9 +109,10 @@ For example, calling `ls -l *.md` using
 system2("ls", "-l *.md", stdout = TRUE)
 ```
 
-    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
+    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"
 
 However, when using multiple commandline flags each flag should be
 passed as a member of a character vector as follows:
@@ -123,9 +124,10 @@ When calling `ls -l
 system2("ls", c("-l", "-i", "*.md"), stdout = TRUE)
 ```
 
-    ## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
-    ## [2] "1163031752 -rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
+    ## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      
+    ## [2] "1163031757 -rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         
+    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       
+    ## [4] "1163031762 -rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"
 
 This becomes even more difficult if trying to support user input, as a
 significant amount of overhead is required to parse user inputs and
@@ -183,20 +185,21 @@ shell_ls <- function(dir = ".", ...){
 shell_ls("*.md")
 ```
 
-    ## [1] "LICENSE.md" "NEWS.md"    "README.md"
+    ## [1] "LICENSE.md"       "NEWS.md"          "README.md"        "cran-comments.md"
 
 #### Boolean flags are passed as bool operators
 
-`ls -l` can be mimiced by passing `l = TRUE` to
+`ls -l` can be mimicked by passing `l = TRUE` to
     ‘…’.
 
 ``` r
 shell_ls("*.md", l = TRUE)
 ```
 
-    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
+    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -230,9 +233,10 @@ shell_ls_alias <- function(dir = ".", ...){
 shell_ls_alias("*.md", long = TRUE)
 ```
 
-    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
-    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
+    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       
+    ## [4] "-rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"
 
 ### Wrapping `cut` with cmdfun
 

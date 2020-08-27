@@ -5,12 +5,20 @@ This is a new package submission
 * windows-latest (release) - github actions
 * macOS-latest (release) - github actions
 * ubuntu-20.04 (release and devel) - github actions
+* Windows Server 2008 R2 SP1 (devel) - rhub
+* win-builder
 
 ## R CMD check results
 
 There were no ERRORs, WARNINGs. 
 
-There was 1 NOTE:
+There were 2 NOTEs:
+
+* checking CRAN incoming feasibility ... NOTE
+   Maintainer: 'Spencer Nystrom <nystromdev@gmail.com>'
+   New submission
+   
+   This is a new package submission
 
 * checking for future file timestamps ... NOTE
   unable to verify current time
