@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Framework for Building Interfaces to Shell Commands">
-<meta property="og:description" content="Writing interfaces to commandline software is cumbersome. 
-    cmdfun provides a framework for building function calls to seemlessly 
-    interface with shell commands by allowing lazy evaluation of commandline arguments. 
+<meta property="og:description" content="Writing interfaces to command line software is cumbersome. 
+    cmdfun provides a framework for building function calls to seamlessly 
+    interface with shell commands by allowing lazy evaluation of command line arguments. 
     cmdfun also provides methods for handling user-specific paths to tool installs or secrets like API keys. 
-    Its focus is to equally serve package builders who wish to wrap commandline software, and to help analysts stay inside 
+    Its focus is to equally serve package builders who wish to wrap command line software, and to help analysts stay inside 
     R when they might usually leave to execute non-R software.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">cmdfun</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -146,15 +146,17 @@
 <p><code>cmdfun</code> attempts to solve the problem of wrapping external software in R. Calling external software is done with <code>system2</code> or <code>processx</code>.</p>
 <p>For example, calling <code>ls -l *.md</code> using <code>system2</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="st">"-l *.md"</span>, <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   </span></span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"</span></span></code></pre></div>
 <p>However, when using multiple commandline flags each flag should be passed as a member of a character vector as follows:</p>
 <p>When calling <code>ls -l     -i</code></p>
 <div class="sourceCode" id="cb12"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"-l"</span>, <span class="st">"-i"</span>, <span class="st">"*.md"</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co">## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="co">## [2] "1163031752 -rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   </span></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="co">## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co">## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="co">## [2] "1163031757 -rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="co">## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="co">## [4] "1163031762 -rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"</span></span></code></pre></div>
 <p>This becomes even more difficult if trying to support user input, as a significant amount of overhead is required to parse user inputs and optional flags into these vectors.</p>
 <p><code>cmdfun</code> provides utilities for converting <strong>function arguments</strong> into <strong>lists</strong> which can easily convert to <strong>character vectors</strong> suitable for use with <code>system2</code> or <code>processx</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">cmdfun</span>)
@@ -191,15 +193,16 @@
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">dir</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 }</pre></div>
 <div class="sourceCode" id="cb19"><pre class="r"><span class="fu">shell_ls</span>(<span class="st">"*.md"</span>)</pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">## [1] "LICENSE.md" "NEWS.md"    "README.md"</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">## [1] "LICENSE.md"       "NEWS.md"          "README.md"        "cran-comments.md"</span></span></code></pre></div>
 <div id="boolean-flags-are-passed-as-bool-operators" class="section level4">
 <h4 class="hasAnchor">
 <a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h4>
-<p><code>ls -l</code> can be mimiced by passing <code>l = TRUE</code> to ‘…’.</p>
+<p><code>ls -l</code> can be mimicked by passing <code>l = TRUE</code> to ‘…’.</p>
 <div class="sourceCode" id="cb21"><pre class="r"><span class="fu">shell_ls</span>(<span class="st">"*.md"</span>, <span class="kw">l</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
-<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   </span></span>
-<span id="cb22-3"><a href="#cb22-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"</span></span></code></pre></div>
 </div>
 </div>
 <div id="named-vectors-can-be-used-to-provide-user-friendly-aliases-for-single-letter-flags" class="section level3">
@@ -222,9 +225,10 @@
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">dir</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 }</pre></div>
 <div class="sourceCode" id="cb24"><pre class="r"><span class="fu">shell_ls_alias</span>(<span class="st">"*.md"</span>, <span class="kw">long</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"</span></span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   </span></span>
-<span id="cb25-3"><a href="#cb25-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
+<span id="cb25-3"><a href="#cb25-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="co">## [4] "-rw-r--r-- 1 snystrom its_employee_psx  744 Aug 26 21:35 cran-comments.md"</span></span></code></pre></div>
 </div>
 <div id="wrapping-cut-with-cmdfun" class="section level3">
 <h3 class="hasAnchor">

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cmdfun</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
 <li>
 <code><a href="../reference/cmd_args_all.html">cmd_args_all()</a></code> captures both named + dot arguments</li>
 </ul>
-<p><code>cmd_list_interp</code> converts the captured argument list to a parsed list of flag/value pairs (details below). This output can be useful for additonal handling of special flag assignments from within R.</p>
+<p><code>cmd_list_interp</code> converts the captured argument list to a parsed list of flag/value pairs (details below). This output can be useful for additional handling of special flag assignments from within R.</p>
 <p><code>cmd_list_to_flags</code> converts a list to a vector of commandline-style flags using the list names as flag names and the list values as the flag values (empty values return only the flag). This output can be directly fed to <code>system2</code> or <code>processx</code>.</p>
 <p>Together, they can be used to build user-friendly R interfaces to shell programs without having to manually implement all commandline flags in R functions.</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
@@ -155,7 +155,7 @@
 <div id="create-r-representations-of-commandline-flags" class="section level2">
 <h2 class="hasAnchor">
 <a href="#create-r-representations-of-commandline-flags" class="anchor"></a>Create R representations of commandline flags</h2>
-<p>Passing flags to commandline software inheritly varies from how arguments are passed to R functions. For example, some flags require values to follow them, while others do not (ie <code>head -n 5</code> vs <code>ls -l</code>). In some cases, flags can have multiple values assigned to them, passed as comma-separated entries (ie <code>cut -f 1,2,3</code>).</p>
+<p>Passing flags to commandline software inherently varies from how arguments are passed to R functions. For example, some flags require values to follow them, while others do not (ie <code>head -n 5</code> vs <code>ls -l</code>). In some cases, flags can have multiple values assigned to them, passed as comma-separated entries (ie <code>cut -f 1,2,3</code>).</p>
 <p>To facilitate the conversion of these concepts between R and the shell, <code>cmd_list_interp</code> <strong>interprets</strong> R data structures in each list entry and converts them where necessary to prepare them for final conversion to a character vector.</p>
 <p>Argument values are interpreted according to the following rules:</p>
 <table class="table">
@@ -299,10 +299,10 @@
 <a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h4>
 <p><code>ls -l</code> can be mimiced by passing <code>l = TRUE</code> to ‘…’.</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu">shell_ls</span>(<span class="st">"../*.md"</span>, <span class="kw">l</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 01:30 ../LICENSE.md"      </span>
-<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   791 Aug 27 01:30 ../NEWS.md"         </span>
-<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7718 Aug 27 01:30 ../README.md"       </span>
-<span class="co">#&gt; [4] "-rw-r--r--  1 runner  staff   661 Aug 27 01:30 ../cran-comments.md"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 02:32 ../LICENSE.md"      </span>
+<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   837 Aug 27 02:32 ../NEWS.md"         </span>
+<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  8192 Aug 27 02:32 ../README.md"       </span>
+<span class="co">#&gt; [4] "-rw-r--r--  1 runner  staff   965 Aug 27 02:32 ../cran-comments.md"</span></pre></body></html></div>
 </div>
 <div id="using-a-lookup-table-to-make-user-friendly-argument-names" class="section level4">
 <h4 class="hasAnchor">
@@ -324,10 +324,10 @@
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">dir</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 }</pre></body></html></div>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu">shell_ls_alias</span>(<span class="st">"../*.md"</span>, <span class="kw">long</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 01:30 ../LICENSE.md"      </span>
-<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   791 Aug 27 01:30 ../NEWS.md"         </span>
-<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7718 Aug 27 01:30 ../README.md"       </span>
-<span class="co">#&gt; [4] "-rw-r--r--  1 runner  staff   661 Aug 27 01:30 ../cran-comments.md"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 02:32 ../LICENSE.md"      </span>
+<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   837 Aug 27 02:32 ../NEWS.md"         </span>
+<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  8192 Aug 27 02:32 ../README.md"       </span>
+<span class="co">#&gt; [4] "-rw-r--r--  1 runner  staff   965 Aug 27 02:32 ../cran-comments.md"</span></pre></body></html></div>
 </div>
 </div>
 <div id="wrapping-cut-with-cmdfun" class="section level3">
@@ -356,8 +356,8 @@
 <div id="abstraction-of-command-path-detection" class="section level2">
 <h2 class="hasAnchor">
 <a href="#abstraction-of-command-path-detection" class="anchor"></a>Abstraction of command path detection</h2>
-<p>Command executibles can be stored in different locations across devices, therefore another barrier to wrapping external software is detecting the location of the desired tool. The simplest solution is to ask the user to provide the location to their install, however, requring this for every function call can become repetitive and clunky. To reduce this cognitive overhead, a common pattern when designing shell interfaces is to ask the user to pass this information to R by using either R environment variables defined in <code>.Renviron</code>, using options (set with <code><a href="https://rdrr.io/r/base/options.html">options()</a></code>, and got with <code><a href="https://rdrr.io/r/base/options.html">getOption()</a></code>). Fallback options can include having the user explicitly pass the path each time in the function call, or failing this, using a default install path.</p>
-<p><code><a href="../reference/cmd_path_search.html">cmd_path_search()</a></code> is a macro which returns a function that returns a valid path to the target by heirarchically searching a series of possible locations according to the following heirarchy:</p>
+<p>Command executables can be stored in different locations across devices, therefore another barrier to wrapping external software is detecting the location of the desired tool. The simplest solution is to ask the user to provide the location to their install, however, requiring this for every function call can become repetitive and clunky. To reduce this cognitive overhead, a common pattern when designing shell interfaces is to ask the user to pass this information to R by using either R environment variables defined in <code>.Renviron</code>, using options (set with <code><a href="https://rdrr.io/r/base/options.html">options()</a></code>, and got with <code><a href="https://rdrr.io/r/base/options.html">getOption()</a></code>). Fallback options can include having the user explicitly pass the path each time in the function call, or failing this, using a default install path.</p>
+<p><code><a href="../reference/cmd_path_search.html">cmd_path_search()</a></code> is a macro which returns a function that returns a valid path to the target by hierarchically searching a series of possible locations according to the following hierarchy:</p>
 <ol style="list-style-type: decimal">
 <li>Manually passing the install path to the function call</li>
 <li>An option set using <code><a href="https://rdrr.io/r/base/options.html">options(option_name = "value")</a></code>
@@ -366,7 +366,7 @@
 </li>
 <li>A default install location</li>
 </ol>
-<p>The resulting search function will always prefer the most specific option (ie when a user explicity passes a path) before falling back to a less-specific assignment. It is up to the designer whether to support any or all of these features.</p>
+<p>The resulting search function will always prefer the most specific option (ie when a user explicitly passes a path) before falling back to a less-specific assignment. It is up to the designer whether to support any or all of these features.</p>
 <p>For example, to build an interface to the “MEME” suite, which is by default installed to <code>~/meme/bin</code>, one could build the following:</p>
 <p>This will search for <code>~/meme/bin</code> and either return a valid path if it exists, or throw an error if it can’t be found.</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">search_meme_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_path_search.html">cmd_path_search</a></span>(<span class="kw">default_path</span> <span class="kw">=</span> <span class="st">"~/meme/bin"</span>)
@@ -434,7 +434,7 @@
 <div id="internal-install-validators" class="section level3">
 <h3 class="hasAnchor">
 <a href="#internal-install-validators" class="anchor"></a>Internal install validators</h3>
-<p><code>cmdfun</code> also provides a macro <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path search function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these funtions as well.</p>
+<p><code>cmdfun</code> also provides a macro <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> to construct functions returning boolean values testing for an install path. These are useful in function logic, or package development for setting conditional examples or function hooks that depend on a command install. <code><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid()</a></code> takes a path search function as input, so any <code>options</code>, <code>.Renviron</code>, or default install location logic propagates to these functions as well.</p>
 <div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">meme_installed</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/cmd_install_is_valid.html">cmd_install_is_valid</a></span>(<span class="no">search_meme_path</span>)
 <span class="fu">meme_installed</span>()
 <span class="co">#&gt; [1] TRUE</span></pre></body></html></div>
