@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cmdfun</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.92.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.00</span>
       </span>
     </div>
 
@@ -292,15 +292,17 @@
 }</pre></body></html></div>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># list all .md files in ../</span>
 <span class="fu">shell_ls</span>(<span class="st">"../*.md"</span>)
-<span class="co">#&gt; [1] "../LICENSE.md" "../NEWS.md"    "../README.md"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "../LICENSE.md"       "../NEWS.md"          "../README.md"       </span>
+<span class="co">#&gt; [4] "../cran-comments.md"</span></pre></body></html></div>
 <div id="boolean-flags-are-passed-as-bool-operators" class="section level4">
 <h4 class="hasAnchor">
 <a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h4>
 <p><code>ls -l</code> can be mimiced by passing <code>l = TRUE</code> to ‘…’.</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu">shell_ls</span>(<span class="st">"../*.md"</span>, <span class="kw">l</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 00:41 ../LICENSE.md"</span>
-<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   628 Aug 27 00:41 ../NEWS.md"   </span>
-<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7718 Aug 27 00:41 ../README.md"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 00:54 ../LICENSE.md"      </span>
+<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   684 Aug 27 00:54 ../NEWS.md"         </span>
+<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7718 Aug 27 00:54 ../README.md"       </span>
+<span class="co">#&gt; [4] "-rw-r--r--  1 runner  staff   661 Aug 27 00:54 ../cran-comments.md"</span></pre></body></html></div>
 </div>
 <div id="using-a-lookup-table-to-make-user-friendly-argument-names" class="section level4">
 <h4 class="hasAnchor">
@@ -322,9 +324,10 @@
   <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">flags</span>, <span class="no">dir</span>), <span class="kw">stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 }</pre></body></html></div>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu">shell_ls_alias</span>(<span class="st">"../*.md"</span>, <span class="kw">long</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 00:41 ../LICENSE.md"</span>
-<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   628 Aug 27 00:41 ../NEWS.md"   </span>
-<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7718 Aug 27 00:41 ../README.md"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "-rw-r--r--  1 runner  staff  1077 Aug 27 00:54 ../LICENSE.md"      </span>
+<span class="co">#&gt; [2] "-rw-r--r--  1 runner  staff   684 Aug 27 00:54 ../NEWS.md"         </span>
+<span class="co">#&gt; [3] "-rw-r--r--  1 runner  staff  7718 Aug 27 00:54 ../README.md"       </span>
+<span class="co">#&gt; [4] "-rw-r--r--  1 runner  staff   661 Aug 27 00:54 ../cran-comments.md"</span></pre></body></html></div>
 </div>
 </div>
 <div id="wrapping-cut-with-cmdfun" class="section level3">
