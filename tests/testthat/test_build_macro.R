@@ -170,6 +170,10 @@ test_that("cmd_install_check works", {
   expect_invisible(cmd_install_check(check_build_noutil))
   expect_message(cmd_install_check(check_build_noutil), "main install")
   
+  context("works when main is bad")
+  expect_invisible(cmd_install_check(check_build, "bad/path"))
+  expect_message(cmd_install_check(check_build, "bad/path"), cli::symbol$cross)
+  
 })
 
 teardown({

@@ -75,3 +75,9 @@ test_that("internal list helpers work",{
   context("ignores unnamed values in input list")
   expect_equal(list_index_named_values(list(1, "one" = 1), c("one" = 1)), 2)
 })
+
+test_that("file_not_exist error is invisible if NULL or empty", {
+  expect_invisible(error_text_file_not_exist(NULL))
+  expect_invisible(error_text_file_not_exist(c()))
+})
+

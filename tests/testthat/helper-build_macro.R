@@ -26,6 +26,7 @@ cleanup_valid_path <- function(allPaths){
 
 allUtils <- c("tool1", "tool2", "tool3")
 supportedUtils <- c("tool1", "tool2")
+unsupportedUtils <- "tool3"
 myUtils <- supportedUtils
 
 check_paths <- build_valid_path("tests", allUtils)
