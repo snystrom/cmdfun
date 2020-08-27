@@ -1,7 +1,9 @@
+# cmdfun 0.2.00
+* Release candidate for CRAN submission
+
 # cmdfun 0.1.92.9000
 
 * Updated README and `vignette("cmdfun")` to have more user-friendly explanations
-
 
 # cmdfun 0.1.91.9000
 
