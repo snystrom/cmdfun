@@ -133,7 +133,7 @@ shell_ls("*.md")
 ```
 
 #### Boolean flags are passed as bool operators
-`ls -l` can be mimiced by passing `l = TRUE` to '...'.
+`ls -l` can be mimicked by passing `l = TRUE` to '...'.
 ```{r}
 shell_ls("*.md", l = TRUE)
 ```

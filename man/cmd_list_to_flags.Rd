@@ -12,7 +12,7 @@ correspond to flags and members correspond to the value for the flag.}
 
 \item{prefix}{flag prefix, usually "-" or "--".}
 
-\item{sep}{seperator to use if flag has a vector of values (default: NULL).}
+\item{sep}{separator to use if flag has a vector of values (default: NULL).}
 }
 \value{
 character vector of parsed commandline flags followed by their values

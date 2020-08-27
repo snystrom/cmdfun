@@ -55,7 +55,7 @@ To design an interface to coolpackage, this function can automate checking
 and validation for not only the package, but for each desired utility in the
 package.
 
-The heirarchy of path usage is: user-defined > option_name > environment_var > default_path
+The hierarchy of path usage is: user-defined > option_name > environment_var > default_path
 }
 \examples{
 if (.Platform$OS.type == "unix") {

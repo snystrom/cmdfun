@@ -153,7 +153,7 @@ cmd_list_interp <- function(args, flag_lookup = NULL){
 #' @param flagList output from cmd_list_interp(). A named list where names
 #'   correspond to flags and members correspond to the value for the flag.
 #' @param prefix flag prefix, usually "-" or "--".
-#' @param sep seperator to use if flag has a vector of values (default: NULL). 
+#' @param sep separator to use if flag has a vector of values (default: NULL). 
 #'
 #' @return character vector of parsed commandline flags followed by their values
 #' @export

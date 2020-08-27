@@ -19,7 +19,7 @@
 #' and validation for not only the package, but for each desired utility in the
 #' package.
 #' 
-#' The heirarchy of path usage is: user-defined > option_name > environment_var > default_path
+#' The hierarchy of path usage is: user-defined > option_name > environment_var > default_path
 #' 
 #' 
 #'
@@ -117,17 +117,17 @@ cmd_path_search <- function(environment_var = NULL, option_name = NULL, default_
     if (length(pathList) == 0) stop("No path defined or detected")
     
     # use this vector to sort list of valid paths
-    heirarchy <- c("user", "option", "environment", "default")
+    hierarchy <- c("user", "option", "environment", "default")
     
-    validPathHeirarchy <- pathList %>% 
+    validPathHierarchy <- pathList %>% 
       unlist %>% 
-      sort_vector(heirarchy) %>% 
+      sort_vector(hierarchy) %>% 
       as.list()
     
     # This check is to mostly to evaluate default_path at runtime 
     # if all other options fail. This is so that default_path values 
     # like "~/path/to/file" won't expand at compile-time.
-    fullPath <- .check_valid_command_path(validPathHeirarchy[[1]])
+    fullPath <- .check_valid_command_path(validPathHierarchy[[1]])
     
     if (!is.null(util)) {
       

@@ -2,7 +2,7 @@
 % Please edit documentation in R/parse_help.R
 \name{cmd_help_flags_similar}
 \alias{cmd_help_flags_similar}
-\title{Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments}
+\title{Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arguments}
 \usage{
 cmd_help_flags_similar(
   command_flag_names,
@@ -20,12 +20,12 @@ cmd_help_flags_similar(
 before checking their values. If using a function to rename flags after
 \code{cmd_list_interp}, use that same function here. Can be useful for parsing help
 lines into R-friendly variable names for user-convenience. Can be function
-or \code{rlang}-style formula defintion (ie \code{.fun = ~{foo(.x)}} is the same as
+or \code{rlang}-style formula definition (ie \code{.fun = ~{foo(.x)}} is the same as
 \code{.fun = function(x){foo(x)}}). Note: if command_flag_names need additional
 parsing after \code{\link{cmd_help_parse_flags}}, it is best to do that
 preprocessing before passing them to this function.}
 
-\item{distance_cutoff}{Levenstein edit distance beyond which to suggest
+\item{distance_cutoff}{Levenshtein edit distance beyond which to suggest
 ??? instead of most similar argument (default = 3). Setting this too
 liberally will result in nonsensical suggestions.}
 }
@@ -33,7 +33,7 @@ liberally will result in nonsensical suggestions.}
 named vector where names are names from \code{flags} and their values are the suggested best match from \code{command_flag_names}
 }
 \description{
-Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments
+Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arguments
 }
 \examples{
 # with a flagsList, need to pass names()

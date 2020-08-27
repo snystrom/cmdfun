@@ -14,7 +14,7 @@
 #'
 #' @seealso \code{\link{cmd_help_flags_similar}} \code{\link{cmd_help_flags_suggest}}
 #'
-#' @param help_lines `character` vector contianing the output of "command
+#' @param help_lines `character` vector containing the output of "command
 #'   --help", or similar output. Optional: pass either `stdout`, or `stderr` output from
 #'   processx::run(), must set `processx = TRUE`.
 #' @param split_newline `logical(1)` if set to TRUE will split string on "\\n" before
@@ -133,7 +133,7 @@ help_flags_long <- function(cleaned_lines){
     grep("^-{1}[^-]", ., invert = TRUE, value = TRUE) 
 }
 
-#' Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arugments
+#' Suggest alternative name by minimizing Levenshtein edit distance between valid and invalid arguments
 #'
 #' @param command_flag_names character vector of valid names (can be output of \code{\link{cmd_help_parse_flags}})
 #' @param flags a vector names correspond to values to be checked against `command_flag_names`
@@ -141,11 +141,11 @@ help_flags_long <- function(cleaned_lines){
 #'   before checking their values. If using a function to rename flags after
 #'   `cmd_list_interp`, use that same function here. Can be useful for parsing help
 #'   lines into R-friendly variable names for user-convenience. Can be function
-#'   or `rlang`-style formula defintion (ie `.fun = ~{foo(.x)}` is the same as
+#'   or `rlang`-style formula definition (ie `.fun = ~{foo(.x)}` is the same as
 #'   `.fun = function(x){foo(x)}`). Note: if command_flag_names need additional
 #'   parsing after \code{\link{cmd_help_parse_flags}}, it is best to do that
 #'   preprocessing before passing them to this function.
-#' @param distance_cutoff Levenstein edit distance beyond which to suggest
+#' @param distance_cutoff Levenshtein edit distance beyond which to suggest
 #'   ??? instead of most similar argument (default = 3). Setting this too
 #'   liberally will result in nonsensical suggestions.
 #'

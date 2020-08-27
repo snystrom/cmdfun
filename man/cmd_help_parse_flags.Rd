@@ -7,7 +7,7 @@
 cmd_help_parse_flags(help_lines, split_newline = FALSE)
 }
 \arguments{
-\item{help_lines}{\code{character} vector contianing the output of "command
+\item{help_lines}{\code{character} vector containing the output of "command
 --help", or similar output. Optional: pass either \code{stdout}, or \code{stderr} output from
 processx::run(), must set \code{processx = TRUE}.}
 
