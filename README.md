@@ -4,7 +4,7 @@ cmdfun
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -102,11 +102,16 @@ bin_path(util = "ls")
 `cmdfun` attempts to solve the problem of wrapping external software in
 R. Calling external software is done with `system2` or `processx`.
 
-For example, calling `ls -l *.md` using `system2`.
+For example, calling `ls -l *.md` using
+    `system2`.
 
 ``` r
 system2("ls", "-l *.md", stdout = TRUE)
 ```
+
+    ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
+    ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
 
 However, when using multiple commandline flags each flag should be
 passed as a member of a character vector as follows:
@@ -120,7 +125,7 @@ system2("ls", c("-l", "-i", "*.md"), stdout = TRUE)
 
     ## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
     ## [2] "1163031752 -rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:17 README.md"
+    ## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
 
 This becomes even more difficult if trying to support user input, as a
 significant amount of overhead is required to parse user inputs and
@@ -191,7 +196,7 @@ shell_ls("*.md", l = TRUE)
 
     ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:17 README.md"
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
 
 ### Named vectors can be used to provide user-friendly aliases for single-letter flags
 
@@ -227,7 +232,7 @@ shell_ls_alias("*.md", long = TRUE)
 
     ## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"
     ## [2] "-rw-r--r-- 1 snystrom its_employee_psx  628 Aug 26 18:54 NEWS.md"   
-    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:17 README.md"
+    ## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7485 Aug 26 19:18 README.md"
 
 ### Wrapping `cut` with cmdfun
 

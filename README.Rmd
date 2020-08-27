@@ -74,7 +74,7 @@ bin_path(util = "ls")
 Calling external software is done with `system2` or `processx`.
 
 For example, calling `ls -l *.md` using `system2`.
-```{r, eval=F}
+```{r}
 system2("ls", "-l *.md", stdout = TRUE)
 ```
 
