@@ -127,10 +127,10 @@
     </div>
 
     <pre class="usage"><span class='fu'>cmd_help_flags_similar</span>(
-  <span class='no'>command_flag_names</span>,
-  <span class='no'>flags</span>,
-  <span class='kw'>.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>distance_cutoff</span> <span class='kw'>=</span> <span class='fl'>3L</span>
+  <span class='kw'>command_flag_names</span>,
+  <span class='kw'>flags</span>,
+  .fun = <span class='kw'>NULL</span>,
+  distance_cutoff = <span class='fl'>3L</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -169,15 +169,18 @@ liberally will result in nonsensical suggestions.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># with a flagsList, need to pass names()</span>
-<span class='no'>flagsList</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"output"</span> <span class='kw'>=</span> <span class='st'>"somevalue"</span>, <span class='st'>"missplld"</span> <span class='kw'>=</span> <span class='st'>"anotherValue"</span>)
-<span class='fu'>cmd_help_flags_similar</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"output"</span>, <span class='st'>"misspelled"</span>), <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>flagsList</span>))</div><div class='output co'>#&gt;     missplld 
+<span class='kw'>flagsList</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"output"</span> = <span class='st'>"somevalue"</span>, <span class='st'>"missplld"</span> = <span class='st'>"anotherValue"</span>)
+<span class='fu'>cmd_help_flags_similar</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"output"</span>, <span class='st'>"misspelled"</span>), <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>flagsList</span>))
+</div><div class='output co'>#&gt;     missplld 
 #&gt; "misspelled" </div><div class='input'>
-<span class='no'>command_flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"long-flag-name"</span>)
-<span class='no'>flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"long_flag_naee"</span>)
-<span class='fu'>cmd_help_flags_similar</span>(<span class='no'>command_flags</span>, <span class='no'>flags</span>, <span class='kw'>.fun</span> <span class='kw'>=</span> ~{<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span>(<span class='st'>"-"</span>, <span class='st'>"_"</span>, <span class='no'>.x</span>)})</div><div class='output co'>#&gt;   long_flag_naee 
+<span class='kw'>command_flags</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"long-flag-name"</span>)
+<span class='kw'>flags</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"long_flag_naee"</span>)
+<span class='fu'>cmd_help_flags_similar</span>(<span class='kw'>command_flags</span>, <span class='kw'>flags</span>, .fun = <span class='op'>~</span>{<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span>(<span class='st'>"-"</span>, <span class='st'>"_"</span>, <span class='kw'>.x</span>)})
+</div><div class='output co'>#&gt;   long_flag_naee 
 #&gt; "long_flag_name" </div><div class='input'>
 <span class='co'># returns NULL if no errors</span>
-<span class='fu'>cmd_help_flags_similar</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"test"</span>), <span class='st'>"test"</span>)</div><div class='output co'>#&gt; NULL</div></pre>
+<span class='fu'>cmd_help_flags_similar</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"test"</span>), <span class='st'>"test"</span>)
+</div><div class='output co'>#&gt; NULL</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -193,7 +196,7 @@ liberally will result in nonsensical suggestions.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

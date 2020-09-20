@@ -126,7 +126,7 @@
     <p>Return all named arguments from parent function call</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_args_named</span>(<span class='kw'>keep</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>drop</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_args_named</span>(keep = <span class='kw'>NULL</span>, drop = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,8 +146,9 @@
     <p>named list of all defined function arguments from parent</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>theFunction</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>arg1</span>, <span class='no'>...</span>) { <span class='fu'>cmd_args_named</span>() }
-<span class='no'>theNamedArgs</span> <span class='kw'>&lt;-</span>  <span class='fu'>theFunction</span>(<span class='kw'>arg1</span> <span class='kw'>=</span> <span class='st'>"test"</span>, <span class='kw'>example</span> <span class='kw'>=</span> <span class='st'>"hello"</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>theFunction</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>arg1</span>, <span class='kw'>...</span>) { <span class='fu'>cmd_args_named</span>() }
+<span class='kw'>theNamedArgs</span> <span class='op'>&lt;-</span>  <span class='fu'>theFunction</span>(arg1 = <span class='st'>"test"</span>, example = <span class='st'>"hello"</span>)
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -163,7 +164,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

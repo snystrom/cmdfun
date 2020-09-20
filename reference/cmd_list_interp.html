@@ -128,7 +128,7 @@ and looks for common usage mistakes." />
 and looks for common usage mistakes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_list_interp</span>(<span class='no'>args</span>, <span class='kw'>flag_lookup</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_list_interp</span>(<span class='kw'>args</span>, flag_lookup = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,10 +153,11 @@ advanced use before evaluating them to the command flags vector with
 cmd_list_to_flags().</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>theFunction</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>...</span>){<span class='fu'><a href='cmd_args_all.html'>cmd_args_all</a></span>()}
-<span class='no'>theArgs</span> <span class='kw'>&lt;-</span> <span class='fu'>theFunction</span>(<span class='kw'>arg1</span> <span class='kw'>=</span> <span class='st'>"value"</span>, <span class='kw'>arg2</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>flagList</span> <span class='kw'>&lt;-</span> <span class='fu'>cmd_list_interp</span>(<span class='no'>theArgs</span>)
-<span class='no'>flags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cmd_list_to_flags.html'>cmd_list_to_flags</a></span>(<span class='no'>flagList</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>theFunction</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>...</span>){<span class='fu'><a href='cmd_args_all.html'>cmd_args_all</a></span>()}
+<span class='kw'>theArgs</span> <span class='op'>&lt;-</span> <span class='fu'>theFunction</span>(arg1 = <span class='st'>"value"</span>, arg2 = <span class='fl'>TRUE</span>)
+<span class='kw'>flagList</span> <span class='op'>&lt;-</span> <span class='fu'>cmd_list_interp</span>(<span class='kw'>theArgs</span>)
+<span class='kw'>flags</span> <span class='op'>&lt;-</span> <span class='fu'><a href='cmd_list_to_flags.html'>cmd_list_to_flags</a></span>(<span class='kw'>flagList</span>)
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -172,7 +173,7 @@ cmd_list_to_flags().</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

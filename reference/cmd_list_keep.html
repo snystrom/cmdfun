@@ -126,7 +126,7 @@
     <p>keep entries from list of flags by name, name/value pair, or index</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_list_keep</span>(<span class='no'>flags</span>, <span class='no'>keep</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_list_keep</span>(<span class='kw'>flags</span>, <span class='kw'>keep</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,19 +148,23 @@ pairs. Pass a numeric vector to keep by position.</p></td>
     <p>flags list with values not in keep removed</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>exFlags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"flag1"</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='st'>"flag2"</span> <span class='kw'>=</span> <span class='st'>"someText"</span>)
-<span class='fu'>cmd_list_keep</span>(<span class='no'>exFlags</span>, <span class='st'>"flag1"</span>)</div><div class='output co'>#&gt; $flag1
+    <pre class="examples"><div class='input'><span class='kw'>exFlags</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"flag1"</span> = <span class='fl'>2</span>, <span class='st'>"flag2"</span> = <span class='st'>"someText"</span>)
+<span class='fu'>cmd_list_keep</span>(<span class='kw'>exFlags</span>, <span class='st'>"flag1"</span>)
+</div><div class='output co'>#&gt; $flag1
 #&gt; [1] 2
 #&gt; </div><div class='input'><span class='co'># will keep flag2 because its name and value match 'keep' vector</span>
-<span class='fu'>cmd_list_keep</span>(<span class='no'>exFlags</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"flag2"</span> <span class='kw'>=</span> <span class='st'>"someText"</span>))</div><div class='output co'>#&gt; $flag2
+<span class='fu'>cmd_list_keep</span>(<span class='kw'>exFlags</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"flag2"</span> = <span class='st'>"someText"</span>))
+</div><div class='output co'>#&gt; $flag2
 #&gt; [1] "someText"
 #&gt; </div><div class='input'><span class='co'># Will keep "flag1" by position index</span>
-<span class='fu'>cmd_list_keep</span>(<span class='no'>exFlags</span>, <span class='fl'>1</span>)</div><div class='output co'>#&gt; $flag1
+<span class='fu'>cmd_list_keep</span>(<span class='kw'>exFlags</span>, <span class='fl'>1</span>)
+</div><div class='output co'>#&gt; $flag1
 #&gt; [1] 2
 #&gt; </div><div class='input'>
 <span class='co'># won't keep flag2 because its value isn't 'someText'</span>
-<span class='no'>exFlags2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"flag1"</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='st'>"flag2"</span> <span class='kw'>=</span> <span class='st'>"otherText"</span>)
-<span class='fu'>cmd_list_keep</span>(<span class='no'>exFlags</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"flag2"</span> <span class='kw'>=</span> <span class='st'>"someText"</span>))</div><div class='output co'>#&gt; $flag2
+<span class='kw'>exFlags2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"flag1"</span> = <span class='fl'>2</span>, <span class='st'>"flag2"</span> = <span class='st'>"otherText"</span>)
+<span class='fu'>cmd_list_keep</span>(<span class='kw'>exFlags</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"flag2"</span> = <span class='st'>"someText"</span>))
+</div><div class='output co'>#&gt; $flag2
 #&gt; [1] "someText"
 #&gt; </div></pre>
   </div>
@@ -178,7 +182,7 @@ pairs. Pass a numeric vector to keep by position.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

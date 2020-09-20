@@ -128,7 +128,7 @@ propagated across all values of the other. See Examples for details." />
 propagated across all values of the other. See Examples for details.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cmd_file_expect</span>(<span class='no'>prefix</span>, <span class='no'>ext</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
+    <pre class="usage"><span class='fu'>cmd_file_expect</span>(<span class='kw'>prefix</span>, <span class='kw'>ext</span>, outdir = <span class='st'>"."</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,7 +155,7 @@ propagated across all values of the other. See Examples for details.</p>
     <p>If files are not found, throws an error</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Expects many file types of same prefix</span>
 <span class='co'># ie myFile.txt, myFile.html, myFile.xml</span>
 <span class='fu'>cmd_file_expect</span>(<span class='st'>"myFile"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"txt"</span>, <span class='st'>"html"</span>, <span class='st'>"xml"</span>))
@@ -168,7 +168,10 @@ propagated across all values of the other. See Examples for details.</p>
 <span class='co'># ie myFile1.txt, myFile1.html, myFile2.txt, myFile2.html</span>
 <span class='fu'>cmd_file_expect</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"myFile1"</span>, <span class='st'>"myFile2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"txt"</span>, <span class='st'>"html"</span>))
 
-}</div></pre>
+}
+
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -184,7 +187,7 @@ propagated across all values of the other. See Examples for details.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
