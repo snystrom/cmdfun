@@ -40,10 +40,16 @@
     <loc>https://snystrom.github.io/cmdfun//reference/cmd_list_drop.html</loc>
   </url>
   <url>
+    <loc>https://snystrom.github.io/cmdfun//reference/cmd_list_drop_named.html</loc>
+  </url>
+  <url>
     <loc>https://snystrom.github.io/cmdfun//reference/cmd_list_interp.html</loc>
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdfun//reference/cmd_list_keep.html</loc>
+  </url>
+  <url>
+    <loc>https://snystrom.github.io/cmdfun//reference/cmd_list_keep_named.html</loc>
   </url>
   <url>
     <loc>https://snystrom.github.io/cmdfun//reference/cmd_list_to_flags.html</loc>
