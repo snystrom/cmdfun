@@ -12,6 +12,7 @@ template:
 articles:
 - title: Writing shell wrappers with cmdfun
   navbar: ~
+  contents:
   - building_wrappers
 
 reference:
