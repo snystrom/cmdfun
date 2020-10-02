@@ -1,0 +1,616 @@
+---
+title: "Writing shell wrappers with cmdfun"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Writing shell wrappers with cmdfun}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+old_path <- Sys.getenv("PATH")
+Sys.setenv(PATH = paste(old_path, "/bin", sep = ":"))
+```
+
+## A simple framework for building shell interfaces
+
+The purpose of `cmdfun` is to significantly reduce the overhead involved in
+wrapping shell programs in R. The tools are intended to be intuitive and
+lightweight enough to use for data scientists trying to get things done quickly,
+but robust and full-fledged enough for developers to extend them to more
+advanced use cases.
+
+Briefly, `cmdfun` captures R function arguments (**args**) as a base R `list`
+and converts them to a vector of commandline **flags**.
+
+## Grabbing function arguments as lists
+
+The `cmdfun` framework provides three
+mechanisms for capturing function arguments:
+
+ - `cmd_args_dots()` captures all arguments passed to `...`
+ - `cmd_args_named()` captures all keyword arguments defined by the user
+ - `cmd_args_all()` captures both named + dot arguments
+ 
+`cmd_list_interp` converts the captured argument list to a parsed list of
+flag/value pairs (details below). This output can be useful for additional
+handling of special flag assignments from within R.
+
+`cmd_list_to_flags` converts a list to a vector of
+commandline-style flags using the list names as flag names and the list values
+as the flag values (empty values return only the flag). This output can be
+directly fed to `system2` or `processx`.
+
+Together, they can be used to build user-friendly R interfaces to shell programs
+without having to manually implement all commandline flags in R functions.
+
+```{r}
+library(magrittr)
+library(cmdfun)
+```
+
+The `cmd_args` family of functions operate **within** a function environment to
+capture the arguments. Therefore, to examine their behavior, they must be
+wrapped in functions.
+
+Here I'll compare the differences between the three `cmd_args` functions.
+```{r}
+get_all <- function(arg1, arg2, ...){
+  cmd_args_all()
+}
+
+get_named <- function(arg1, arg2, ...){
+  cmd_args_named()
+}
+
+get_dots <- function(arg1, arg2, ...){
+  cmd_args_dots()
+}
+```
+
+```{r}
+# cmd_args_all() gets all keword arguments and arguments passed to "..."
+(argsListAll <- get_all("input", NA, bool = TRUE, vals = c(1,2,3)))
+```
+
+```{r}
+# cmd_args_named() gets all keword arguments, excluding arguments passed to "..."
+(argsListNamed <- get_named("input", NA, bool = TRUE, vals = c(1,2,3)))
+```
+
+```{r}
+# cmd_args_dots() gets all arguments passed to "...", excluding keyword arguments
+(argsListDots <- get_dots("input", NA, bool = TRUE, vals = c(1,2,3)))
+```
+
+The captured argument lists contain the argument names as list names, and the
+argument values as list values.
+
+## Create R representations of commandline flags
+
+Passing flags to commandline software inherently varies from how arguments are
+passed to R functions. For example, some flags require values to follow them,
+while others do not (ie `head -n 5` vs `ls -l`). In some cases, flags can have
+multiple values assigned to them, passed as comma-separated entries (ie `cut -f 1,2,3`). 
+
+To facilitate the conversion of these concepts between R and the shell,
+`cmd_list_interp` **interprets** R data structures in each list entry and
+converts them where necessary to prepare them for final conversion to a
+character vector.
+
+Argument values are interpreted according to the following rules:
+
+| Argument Value Type  | `cmd_list_interp` behavior |
+|:--------------------:|:--------------------------:|
+| `character(1)`       | keep                       |
+| `numeric(1)`         | keep                       |
+| `character` vector   | keep                       |
+| `numeric` vector     | keep                       |
+| `factor`             | keep                       |
+| `TRUE`               | Convert to: ""             |
+| `FALSE`              | Drop entry from list       |
+| `NA`                 | Drop entry from list       |
+| `NULL`               | Drop entry from list       |
+
+
+```{r}
+# Note that `arg2` is dropped, and `bool` is converted to ""
+cmd_list_interp(argsListAll) 
+```
+
+Commandline tools can have hundreds of arguments, many with uninformative, often
+single-letter, names. To prevent developers from having to write aliased
+function arguments for all, often conflicting flags, `cmd_list_interp` can
+additionally use a lookup table to allow developers to provide informative
+function argument names for unintuitive flags.
+
+```{r}
+(flagList <- cmd_list_interp(argsListAll, c("bool" = "b")))
+```
+
+## Convert lists to flag vectors
+
+After interpreting argument lists with `cmd_list_interp`, the resulting list can
+be coerced into a vector suitable for passing to `system2` or `processx` using
+`cmd_list_to_flags`. `cmd_list_to_flags` will produce the following vector
+values for each name/value pair in the list:
+
+| Argument Value Type  | `cmd_list_to_flags` behavior |
+|:--------------------:|:----------------------------:|
+| `character(1)`       | `c("-name", "value")`        |
+| `numeric(1)`         | `c("-name", "value")`        |
+| `character` vector   | `c("-name", "a,b,c")`        |
+| `numeric` vector     | `c("-name", "1,2,3")`        |
+| `factor`             | same as `character`          |
+| empty string: ""     | `c("-name")`                 |
+
+```{r}
+cmd_list_to_flags(flagList)
+```
+
+## Examples using unix tools
+
+Here are two examples wrapping common shell utilities `ls` and `cut`.
+
+### Wrapping `ls` with cmdfun
+
+These tools can be used to easily wrap `ls`, a command which lists files in the target directory.
+```{r}
+library(magrittr)
+
+shell_ls <- function(dir = ".", ...){
+  # grab arguments passed to "..." in a list
+  flags <- cmd_args_dots() %>% 
+    # prepare list for conversion to vector
+    cmd_list_interp() %>% 
+    # Convert the list to a flag vector
+    cmd_list_to_flags()
+  
+  # Run ls shell command
+  system2("ls", c(flags, dir), stdout = TRUE)
+}
+```
+
+```{r}
+# list all .md files in ../
+shell_ls("../*.md")
+```
+
+#### Boolean flags are passed as bool operators
+`ls -l` can be mimiced by passing `l = TRUE` to '...'.
+```{r}
+shell_ls("../*.md", l = TRUE)
+```
+
+#### Using a lookup table to make user-friendly argument names
+
+For example, allowing `long` to act as `-l` in `ls`.
+```{r}
+
+shell_ls_alias <- function(dir = ".", ...){
+  
+  # Named vector acts as lookup table
+  # name = function argument
+  # value = flag name
+  names_arg_to_flag <- c("long" = "l")
+  
+  flags <- cmd_args_dots() %>% 
+    # Use lookup table to manage renames
+    cmd_list_interp(names_arg_to_flag) %>% 
+    cmd_list_to_flags()
+  
+  system2("ls", c(flags, dir), stdout = TRUE)
+}
+```
+
+```{r}
+shell_ls_alias("../*.md", long = TRUE)
+```
+
+### Wrapping `cut` with cmdfun
+Here is another example wrapping `cut` which separates text on a delimiter (set
+with `-d`) and returns selected fields (set with `-f`) from the separation.
+Again, we use a lookup table to create the optional `sep` and `fields` arguments
+which specify `-d` and `-f`, respectively.
+```{r}
+shell_cut <- function(text, ...){
+
+  names_arg_to_flag <- c("sep" = "d",
+                         "fields" = "f")
+    
+	flags <- cmd_args_dots() %>%
+		cmd_list_interp(names_arg_to_flag) %>% 
+	  cmd_list_to_flags()
+
+	system2("cut", flags, stdout = T, input = text)
+}
+```
+
+```{r}
+shell_cut("hello_world", fields = 2, sep = "_") 
+```
+
+Multiple values can be passed to arguments using vectors
+```{r}
+# Note that the flag name values are accepted even when using a lookup table
+shell_cut("hello_world_hello", f = c(1,3), d = "_") 
+```
+
+## Abstraction of command path detection
+
+Command executables can be stored in different locations across devices,
+therefore another barrier to wrapping external software is detecting the
+location of the desired tool. The simplest solution is to ask the user to
+provide the location to their install, however, requiring this for every function
+call can become repetitive and clunky. To reduce this cognitive overhead, a
+common pattern when designing shell interfaces is to ask the user to pass this
+information to R by using either R environment variables defined in `.Renviron`,
+using options (set with `options()`, and got with `getOption()`). Fallback
+options can include having the user explicitly pass the path each time in the
+function call, or failing this, using a default install path.
+
+`cmd_path_search()` is a macro which returns a function that returns a valid
+path to the target by hierarchically searching a series of possible locations
+according to the following hierarchy:
+
+1. Manually passing the install path to the function call
+2. An option set using `options(option_name = "value")`
+3. An environment variable set in `.Renviron`
+4. A default install location
+
+The resulting search function will always prefer the most specific option (ie
+when a user explicitly passes a path) before falling back to a less-specific
+assignment. It is up to the designer whether to support any or all of these
+features.
+
+For example, to build an interface to the "MEME" suite, which is by default
+installed to `~/meme/bin`, one could build the following:
+
+```{r, echo = FALSE}
+# This handles build system not having meme installed
+# creates empty files representing real install
+search_meme_path <- cmd_path_search(default_path = "~/meme/bin", utils = c("ame", "dreme"))
+meme_is_installed <- cmd_install_is_valid(search_meme_path)
+
+dummy_meme <- FALSE
+if (!meme_is_installed()) {
+  meme_loc <- "~/meme/bin"
+  dir.create(meme_loc, recursive = TRUE)
+  file.create(paste(meme_loc, "ame", sep = "/"))
+  file.create(paste(meme_loc, "dreme", sep = "/"))
+  dummy_meme <- TRUE
+}
+
+```
+
+This will search for `~/meme/bin` and either return a valid path if it exists,
+or throw an error if it can't be found.
+```{r}
+search_meme_path <- cmd_path_search(default_path = "~/meme/bin")
+
+search_meme_path()
+```
+
+The user can always pass their own path which will override the default location. If this path is invalid, the search function will error.
+```{r, error = TRUE}
+search_meme_path("bad/path")
+```
+
+To instead only search the R environment variable "MEME_PATH", one could build:
+```{r}
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH")
+```
+
+
+```{r, error = T}
+# Without environment variable defined
+search_meme_path()
+```
+
+```{r}
+# With environment variable defined
+Sys.setenv("MEME_PATH" = "~/meme/bin")
+search_meme_path()
+```
+
+Multiple arguments can be used, and they will be searched from most-specific, to most-general. 
+```{r}
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin")
+```
+
+For example, if "MEME_PATH" is invalid on my machine, the search_function will return
+the default path as long as the default is also valid on my machine.
+```{r}
+Sys.setenv("MEME_PATH" = "bad/path")
+search_meme_path()
+```
+
+As always, if the user passes their own path, this will take precedence.
+```{r, error = TRUE}
+search_meme_path(path = "bad/path")
+```
+
+### Support for tool utilities
+Some software, like the MEME suite is distributed as several binaries located in
+a common directory. To allow interface builders to officially support specific binaries, 
+each binary can be defined as a "utility" within the build path.
+
+Here, I will include two tools from the MEME suite, AME, and DREME (distributed
+as binaries named "ame", and "dreme"). The user can set the binary location by
+setting the `MEME_PATH` environment variable, passing their own path, or fall
+back to the default install location.
+```{r}
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin",
+                                       utils = c("dreme", "ame"))
+```
+
+search_function functions have two optional arguments: `path` and `util`. `path` acts as
+an override to the defaults provided when building the search_function. User-provided
+path variables will always be used instead of provided defaults. This is to
+catch problems from the user and not cause unexpected user-level behavior.
+```{r, error = T}
+search_meme_path("bad/path")
+```
+
+`util` specifies which utility path to return (if any). The path search_function will
+throw an error if the utility is not found in any of the specified locations.
+```{r, error = T}
+search_meme_path(util = "dreme")
+```
+
+The `cmd_install_check` function can be lightly wrapped by package builders to
+verify and print a user-friendly series of checks for a valid tool install. it
+takes as input the output of `cmd_path_search` and an optional user-override
+`path`. The search logic is inherited from the path search function, so the
+options and environment variables are also searched.
+
+Here I build a function for checking a users `meme` install.
+```{r}
+check_meme_install <- function(path = NULL){
+  cmd_install_check(search_meme_path, path = path)
+}
+```
+
+
+```{r}
+# searches default meme search locations
+check_meme_install()
+```
+
+```{r}
+# uses user override
+check_meme_install('bad/path')
+```
+
+If you want to write your own install checker instead of using the
+`cmd_install_check` function, `cmdfun` also provides the `cmd_ui_file_exists` function
+for printing pretty status messages.
+```{r}
+cmd_ui_file_exists("bad/file")
+cmd_ui_file_exists("~/meme/bin")
+```
+
+### Internal install validators
+`cmdfun` also provides a macro `cmd_install_is_valid()` to construct
+functions returning boolean values testing for an install path. These are useful
+in function logic, or package development for setting conditional examples or
+function hooks that depend on a command install. `cmd_install_is_valid()`
+takes a path search function as input, so any `options`, `.Renviron`, or
+default install location logic propagates to these functions as well.
+
+```{r}
+meme_installed <- cmd_install_is_valid(search_meme_path)
+meme_installed()
+```
+
+This also works on utils defined during path search construction.
+```{r}
+ame_installed <- cmd_install_is_valid(search_meme_path, util = "ame")
+ame_installed()
+```
+
+
+## Bringing it all together
+Using a `cmd_args_` family function to get and convert function arguments to
+commandline flags. The path search function returns the correct `command` call which can
+be passed to `system2` or `processx` along with the flags generated from `cmd_list_to_flags`.
+
+This makes for a robust shell wrapper without excess overhead.
+
+In the `runDreme` function below, the user can pass any valid `dreme` argument
+using the rules for command args defined above to `...`. Allowing `meme_path` as
+a function argument and passing it to `search_meme_path` allows the user to
+override the default search path which is: the `MEME_PATH` environment variable,
+followed by the `~/meme/bin` default install.
+
+```{r}
+search_meme_path <- cmd_path_search(environment_var = "MEME_PATH",
+                                       default_path = "~/meme/bin",
+                                       utils = c("dreme", "ame"))
+
+runDreme <- function(..., meme_path = NULL){
+  flags <- cmd_args_dots() %>% 
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
+  
+  dreme_path <- search_meme_path(path = meme_path, util = "dreme")
+  
+  system2(dreme_path, flags)
+}
+```
+
+Commands can now run through `runDreme` by passing flags as function arguments.
+```{r, eval=FALSE}
+runDreme(version = TRUE)
+```
+```{r, echo = FALSE}
+cat("5.1.1")
+```
+
+If users have issues with the install, they can run `check_meme_install()` to verify the tools are being detected by R.
+
+# Additional Features
+## Restrict argument matching
+each `cmd_args_` family function accepts a character vector of names to `keep` or
+`drop` arguments which will restrict command argument matches to values in
+`keep` (or ignore those in `drop`). As of now, `keep` and `drop` are mutually
+exclusive.
+
+This can be useful to allow only some function arguments to be captured as
+flags, while others can be used for function logic.
+
+```{r}
+myFunction <- function(arg1, arg2, someText = "default"){
+  flags <- cmd_args_named(keep = c("arg1", "arg2")) %>% 
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
+  
+  print(someText)
+  
+  return(flags)
+}
+
+myFunction(arg1 = "blah", arg2 = "blah")
+```
+
+
+```{r}
+myFunction(arg1 = "blah", arg2 = "blah", someText = "hello world")
+```
+
+## Manipulating list objects
+For the most part, the [purrr](https://purrr.tidyverse.org/) library is the most
+useful toolkit for operations on list objects.
+
+`cmdfun` provides additional helper functions to handle common manipulations.
+
+`cmd_list_drop` operates on argument & flag lists to drop all entries corresponding to a
+certain name, specific name/value pairs, or by index position. Conversely,
+`cmd_list_keep` functions identically but for keeping entries.
+
+```{r}
+myList <- list('value1' = TRUE,
+               'value2' = "Hello",
+               'value2' = 1:4)
+
+cmd_list_keep(myList, "value2")
+```
+
+```{r}
+cmd_list_keep(myList, c("value2" = "Hello"))
+```
+
+```{r}
+cmd_list_drop(myList, "value2")
+```
+
+These functions can be useful for ignoring setting certain flags if the user set
+them to a specific value.
+
+```{r}
+myFunction <- function(arg1, arg2){
+  flags <- cmd_args_named() %>% 
+    cmd_list_interp() %>% 
+    # if arg2 == "baz", don't include it 
+    cmd_list_drop(c("arg2" = "baz")) %>% 
+    cmd_list_to_flags()
+  
+  return(flags)
+}
+
+myFunction(arg1 = "foo", arg2 = "bar")
+myFunction(arg1 = "foo", arg2 = "baz")
+```
+
+## Expecting output files
+Sometimes a commandline function returns multiple output files you want to check for after the run.
+
+`cmd_error_if_missing` accepts a vector or list of files & checks that they exist.
+
+`cmdfun` additionally provides a few convenience functions for generating lists
+of expected files. `cmd_file_combn` generates combinations of extension/prefix
+file names. The output can be passed to `cmd_error_if_missing` which will error if
+a file isn't found on the filesystem.
+```{r}
+cmd_file_combn(ext = c("txt", "xml"), prefix = "outFile")
+```
+
+```{r}
+cmd_file_combn(ext = "txt", prefix = c("outFile", "outFile2", "outFile3"))
+```
+
+Alternately, `cmd_file_expect` will build a list of expected files and check whether they exist. This is a wrapper around `cmd_file_combn %>% cmd_error_if_missing`.
+
+## Error checking user input
+
+When using `cmdfun` to write lazy shell wrappers, the user can easily mistype a
+commandline flag since there is not text completion. Some programs behave
+unexpectedly when flags are typed incorrectly, and for this reason return
+uninformative error messages. `cmdfun` has built-in methods to automatically
+populate a list of valid flags from a command's help-text.
+
+Alternatively, package builders could pass a vector of allowed flag names to
+check against if they didn't want to parse help text. The goal is maximum flexibility.
+
+The following example demonstrates how to parse help text (in this case from
+`tar`) into a vector of allowed flags. This vector is compared to the user-input
+flags (`user_input_flags` below), and tries to identify misspelled function
+arguments.
+
+Here, the user has accidentally used the argument `delte` instead of `delete`.
+`cmdfun` tries to be helpful and identify the misspelling for the user.
+```{r, error=T}
+user_input_flags <- c("delte")
+
+system2("tar", "--help", stdout = TRUE) %>% 
+  cmd_help_parse_flags() %>% 
+  # Compares User-input flags to parsed commandline flags
+  # returns flags that match based on edit distance
+  cmd_help_flags_similar(user_input_flags) %>% 
+  # Prints error message suggesting the most similar flag name
+  cmd_help_flags_suggest()
+```
+
+
+## Unsafe operations
+
+**WARNING:** It's still possible to do unsafe operations as follows, so please be careful how you build system calls.
+
+```{r}
+shellCut_unsafe <- function(text, ...){
+
+  flags <- cmd_args_dots() %>%
+    cmd_list_interp() %>% 
+    cmd_list_to_flags()
+
+	system2("echo", c(text , "|", "cut", flags), stdout = TRUE)
+
+}
+
+shellCut_unsafe("hello_world", f = 2, d = "_ && echo unsafe operation!")
+```
+
+**NOTE** even if when setting `stdout = TRUE` the second command doesn't appear
+in the output, it will still have run. 
+
+A more extreme example of what can happen is here, where `~/deleteme.txt` will be removed silently.
+
+I promise I'll get around to sanitizing user input eventually, I am still
+reasoning about the best way to do this. You can provide feedback on this process at [this issue](https://github.com/snystrom/cmdfun/issues/6).
+```{r, eval=F}
+shellCut("hello_world", f = 2, d = "_ && rm ~/deleteme.txt")
+```
+
+```{r teardown, echo = F}
+if (dummy_meme) {
+  unlink(meme_loc, recursive = TRUE)
+}
+```
+
