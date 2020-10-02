@@ -1,12 +1,15 @@
 #' Keep items by name from list
-#'
+#' 
+#' A pipe-friendly wrapper around `list[(names(list) %in% names]`.
+#' 
+#' This function is slightly faster than using [cmd_list_keep()] to keep items
+#' by name.
+#' 
 #' @param list an R list
 #' @param names vector of names to keep
 #'
 #' @return list keeping only items defined by names
 #' 
-#' @noRd
-#'
 #' @examples
 #' cmd_list_keep_named(list("a" = 1, "b" = 2), "a")
 cmd_list_keep_named <- function(list, names){
@@ -15,13 +18,16 @@ cmd_list_keep_named <- function(list, names){
 
 #' Drop items by name from list
 #'
+#' A pipe-friendly wrapper around `list[!(names(list) %in% names)]`
+
+#' This function is slightly faster than using [cmd_list_drop()] to drop items
+#' by name.
+#' 
 #' @param list an R list
 #' @param names vector of names to drop
 #'
 #' @return list removing items defined by names
 #'
-#' @noRd
-#' 
 #' @examples
 #' cmd_list_drop_named(list("a" = 1, "b" = 2), "a")
 cmd_list_drop_named <- function(list, names){
