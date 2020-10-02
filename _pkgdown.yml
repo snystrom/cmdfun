@@ -11,7 +11,9 @@ template:
     
 articles:
 - title: Writing shell wrappers with cmdfun
-    
+  navbar: ~
+  - building_wrappers
+
 reference:
 - title: Selecting Function Arguments
   contents:
