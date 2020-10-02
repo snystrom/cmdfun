@@ -1,3 +1,12 @@
+# cmdfun 1.0.2
+* Vignette now directs users to cmdfun website: snystrom.github.io/cmdfun
+* Vignette alteration fixes bug where forcing vignette rebuild writes & cleans
+up empty dir to userspace if it doesn't exist to allow rebuild to complete
+without error
+* exports `cmd_list_keep_named` and `cmd_list_drop_named` which are less
+abstracted than `cmd_list_keep`/`cmd_list_drop` for the simple operation of
+dropping list items by name.
+
 # cmdfun 1.0.1
 * Spell check fixes
 
