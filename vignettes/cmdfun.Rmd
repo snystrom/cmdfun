@@ -20,5 +20,5 @@ Please see the cmdfun website for full documentation:
   
 In particular, a guide to building wrappers using cmdfun, complete with several examples, can be found here:
 
- * <https://snystrom.github.io/cmdfun/articles/cmdfun.html>
+ * <https://snystrom.github.io/cmdfun/articles/building_wrappers.html>
   
