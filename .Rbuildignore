@@ -14,7 +14,7 @@ function_renames.txt
 ^\.github$
 ^codecov\.yml$
 vignettes/_help_checking.Rmd
-cran-comments.md
 ^CRAN-RELEASE$
 ^vignettes/articles$
 ^vignettes/building_wrappers.Rmd$
+^cran-comments\.md$
