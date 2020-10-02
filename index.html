@@ -95,11 +95,10 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>Install the development version of <code>cmdfun</code> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co">if</span> (<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"remotes"</span>))
-  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
 
-<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"snystrom/cmdfun"</span>)
-</pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"snystrom/cmdfun"</span><span class="op">)</span></pre></div>
 </div>
 <div id="quick-overview" class="section level2">
 <h2 class="hasAnchor">
@@ -115,14 +114,13 @@
 <code><a href="reference/cmd_args_all.html">cmd_args_all()</a></code> captures both named + dot arguments</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://snystrom.github.io/cmdfun">cmdfun</a></span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://snystrom.github.io/cmdfun/">cmdfun</a></span><span class="op">)</span>
 
-<span class="kw">myFunction</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">input</span>, <span class="kw">...</span>){
-  <span class="fu"><a href="reference/cmd_args_all.html">cmd_args_all</a></span>()
-}
+<span class="va">myFunction</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="reference/cmd_args_all.html">cmd_args_all</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span>
 
-(<span class="kw">argsList</span> <span class="op">&lt;-</span> <span class="fu">myFunction</span>(input = <span class="st">"test"</span>, boolean_flag = <span class="fl">TRUE</span>))
-</pre></div>
+<span class="op">(</span><span class="va">argsList</span> <span class="op">&lt;-</span> <span class="fu">myFunction</span><span class="op">(</span>input <span class="op">=</span> <span class="st">"test"</span>, boolean_flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">## $input</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="co">## [1] "test"</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co">## </span></span>
@@ -130,8 +128,7 @@
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co">## [1] TRUE</span></span></code></pre></div>
 <p><code>cmd_list_interp</code> converts the captured argument list to a parsed list of flag/value pairs.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-(<span class="kw">flagsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="kw">argsList</span>))
-</pre></div>
+<span class="op">(</span><span class="va">flagsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span><span class="op">(</span><span class="va">argsList</span><span class="op">)</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">## $input</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="co">## [1] "test"</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co">## </span></span>
@@ -139,15 +136,13 @@
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co">## [1] ""</span></span></code></pre></div>
 <p><code>cmd_list_to_flags</code> converts a list to a vector of commandline-style flags using the list names as flag names and the list values as the flag values (empty values return only the flag). This output can be directly fed to <code>system2</code> or <code>processx</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>(<span class="kw">flagsList</span>)
-</pre></div>
+<span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span><span class="op">(</span><span class="va">flagsList</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">## [1] "-input"        "test"          "-boolean_flag"</span></span></code></pre></div>
 <p><code><a href="reference/cmd_path_search.html">cmd_path_search()</a></code> allows package builders to search default locations for installed tools.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">bin_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span>(default_path = <span class="st">"/bin"</span>, utils = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ls"</span>, <span class="st">"cut"</span>))
+<span class="va">bin_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_path_search.html">cmd_path_search</a></span><span class="op">(</span>default_path <span class="op">=</span> <span class="st">"/bin"</span>, utils <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ls"</span>, <span class="st">"cut"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu">bin_path</span>(util = <span class="st">"ls"</span>)
-</pre></div>
+<span class="fu">bin_path</span><span class="op">(</span>util <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">## [1] "//bin/ls"</span></span></code></pre></div>
 </div>
 <div id="introduction" class="section level2">
@@ -156,8 +151,7 @@
 <p><code>cmdfun</code> attempts to solve the problem of wrapping external software in R. Calling external software is done with <code>system2</code> or <code>processx</code>.</p>
 <p>For example, calling <code>ls -l *.md</code> using <code>system2</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="st">"-l *.md"</span>, stdout = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span><span class="op">(</span><span class="st">"ls"</span>, <span class="st">"-l *.md"</span>, stdout <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
@@ -165,8 +159,7 @@
 <p>However, when using multiple commandline flags each flag should be passed as a member of a character vector as follows:</p>
 <p>When calling <code>ls -l     -i</code></p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"-l"</span>, <span class="st">"-i"</span>, <span class="st">"*.md"</span>), stdout = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span><span class="op">(</span><span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"-l"</span>, <span class="st">"-i"</span>, <span class="st">"*.md"</span><span class="op">)</span>, stdout <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co">## [1] "1163031755 -rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
 <span id="cb13-2"><a href="#cb13-2"></a><span class="co">## [2] "1163031757 -rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="co">## [3] "1163031758 -rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
@@ -174,15 +167,14 @@
 <p>This becomes even more difficult if trying to support user input, as a significant amount of overhead is required to parse user inputs and optional flags into these vectors.</p>
 <p><code>cmdfun</code> provides utilities for converting <strong>function arguments</strong> into <strong>lists</strong> which can easily convert to <strong>character vectors</strong> suitable for use with <code>system2</code> or <code>processx</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://snystrom.github.io/cmdfun">cmdfun</a></span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://snystrom.github.io/cmdfun/">cmdfun</a></span><span class="op">)</span>
 
-<span class="kw">myFunction</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">input</span>, <span class="kw">option1</span>){
+<span class="va">myFunction</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">option1</span><span class="op">)</span><span class="op">{</span>
   <span class="co"># Grabs named arguments as key/value pairs</span>
-  <span class="fu"><a href="reference/cmd_args_named.html">cmd_args_named</a></span>()
-}
+  <span class="fu"><a href="reference/cmd_args_named.html">cmd_args_named</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span>
 
-(<span class="kw">argsList</span> <span class="op">&lt;-</span> <span class="fu">myFunction</span>(<span class="st">"myInput.txt"</span>, <span class="st">"foo"</span>))
-</pre></div>
+<span class="op">(</span><span class="va">argsList</span> <span class="op">&lt;-</span> <span class="fu">myFunction</span><span class="op">(</span><span class="st">"myInput.txt"</span>, <span class="st">"foo"</span><span class="op">)</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">## $input</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a><span class="co">## [1] "myInput.txt"</span></span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="co">## </span></span>
@@ -190,39 +182,35 @@
 <span id="cb15-5"><a href="#cb15-5"></a><span class="co">## [1] "foo"</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit">
 <span class="co"># Converts list to character vector of flags &amp; values</span>
-<span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>(<span class="kw">argsList</span>)
-</pre></div>
+<span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span><span class="op">(</span><span class="va">argsList</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co">## [1] "-input"      "myInput.txt" "-option1"    "foo"</span></span></code></pre></div>
 <div id="wrapping-ls-with-cmdfun" class="section level3">
 <h3 class="hasAnchor">
 <a href="#wrapping-ls-with-cmdfun" class="anchor"></a>Wrapping <code>ls</code> with cmdfun</h3>
 <p>These tools can be used to easily wrap <code>ls</code></p>
 <div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">magrittr</span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">magrittr</span><span class="op">)</span>
 
-<span class="kw">shell_ls</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">dir</span> = <span class="st">"."</span>, <span class="kw">...</span>){
+<span class="va">shell_ls</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dir</span> <span class="op">=</span> <span class="st">"."</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
   <span class="co"># grab arguments passed to "..." in a list</span>
-  <span class="kw">flags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="op">%&gt;%</span> 
+  <span class="va">flags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
     <span class="co"># prepare list for conversion to vector</span>
-    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>() <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
     <span class="co"># Convert the list to a flag vector</span>
-    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span><span class="op">(</span><span class="op">)</span>
   
   <span class="co"># Run ls shell command</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">flags</span>, <span class="kw">dir</span>), stdout = <span class="fl">TRUE</span>)
-}
-</pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span><span class="op">(</span><span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">flags</span>, <span class="va">dir</span><span class="op">)</span>, stdout <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="op">}</span></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="fu">shell_ls</span>(<span class="st">"*.md"</span>)
-</pre></div>
+<span class="fu">shell_ls</span><span class="op">(</span><span class="st">"*.md"</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">## [1] "LICENSE.md"       "NEWS.md"          "README.md"        "cran-comments.md"</span></span></code></pre></div>
 <div id="boolean-flags-are-passed-as-bool-operators" class="section level4">
 <h4 class="hasAnchor">
 <a href="#boolean-flags-are-passed-as-bool-operators" class="anchor"></a>Boolean flags are passed as bool operators</h4>
 <p><code>ls -l</code> can be mimicked by passing <code>l = TRUE</code> to ‘…’.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="fu">shell_ls</span>(<span class="st">"*.md"</span>, l = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="fu">shell_ls</span><span class="op">(</span><span class="st">"*.md"</span>, l <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
 <span id="cb22-2"><a href="#cb22-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
 <span id="cb22-3"><a href="#cb22-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
@@ -235,24 +223,22 @@
 <p>Commandline tools can have hundreds of arguments, many with uninformative, often single-letter, names. To prevent developers from having to write aliased function arguments for all, often conflicting flags, <code>cmd_list_interp</code> can additionally use a lookup table to allow developers to provide informative function argument names for unintuitive flags.</p>
 <p>For example, allowing <code>long</code> to act as <code>-l</code> in <code>ls</code>.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit">
-<span class="kw">shell_ls_alias</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">dir</span> = <span class="st">"."</span>, <span class="kw">...</span>){
+<span class="va">shell_ls_alias</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dir</span> <span class="op">=</span> <span class="st">"."</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
   
   <span class="co"># Named vector acts as lookup table</span>
   <span class="co"># name = function argument</span>
   <span class="co"># value = flag name</span>
-  <span class="kw">names_arg_to_flag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"long"</span> = <span class="st">"l"</span>)
+  <span class="va">names_arg_to_flag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span> <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span>
   
-  <span class="kw">flags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="op">%&gt;%</span> 
+  <span class="va">flags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
     <span class="co"># Use lookup table to manage renames</span>
-    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="kw">names_arg_to_flag</span>) <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
+    <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span><span class="op">(</span><span class="va">names_arg_to_flag</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span><span class="op">(</span><span class="op">)</span>
   
-  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">flags</span>, <span class="kw">dir</span>), stdout = <span class="fl">TRUE</span>)
-}
-</pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span><span class="op">(</span><span class="st">"ls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">flags</span>, <span class="va">dir</span><span class="op">)</span>, stdout <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="op">}</span></pre></div>
 <div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="fu">shell_ls_alias</span>(<span class="st">"*.md"</span>, long = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="fu">shell_ls_alias</span><span class="op">(</span><span class="st">"*.md"</span>, long <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="co">## [1] "-rw-r--r-- 1 snystrom its_employee_psx 1077 Aug 20 19:20 LICENSE.md"      </span></span>
 <span id="cb25-2"><a href="#cb25-2"></a><span class="co">## [2] "-rw-r--r-- 1 snystrom its_employee_psx  837 Aug 26 21:51 NEWS.md"         </span></span>
 <span id="cb25-3"><a href="#cb25-3"></a><span class="co">## [3] "-rw-r--r-- 1 snystrom its_employee_psx 7718 Aug 26 20:14 README.md"       </span></span>
@@ -263,28 +249,25 @@
 <a href="#wrapping-cut-with-cmdfun" class="anchor"></a>Wrapping <code>cut</code> with cmdfun</h3>
 <p>Here is another example wrapping <code>cut</code> which separates text on a delimiter (set with <code>-d</code>) and returns selected fields (set with <code>-f</code>) from the separation.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit">
-<span class="kw">shell_cut</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">text</span>, <span class="kw">...</span>){
+<span class="va">shell_cut</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">text</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
 
-  <span class="kw">names_arg_to_flag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sep"</span> = <span class="st">"d"</span>,
-                         <span class="st">"fields"</span> = <span class="st">"f"</span>)
+  <span class="va">names_arg_to_flag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sep"</span> <span class="op">=</span> <span class="st">"d"</span>,
+                         <span class="st">"fields"</span> <span class="op">=</span> <span class="st">"f"</span><span class="op">)</span>
     
-    <span class="kw">flags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span>() <span class="op">%&gt;%</span>
-        <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span>(<span class="kw">names_arg_to_flag</span>) <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span>()
+    <span class="va">flags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmd_args_dots.html">cmd_args_dots</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+        <span class="fu"><a href="reference/cmd_list_interp.html">cmd_list_interp</a></span><span class="op">(</span><span class="va">names_arg_to_flag</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+      <span class="fu"><a href="reference/cmd_list_to_flags.html">cmd_list_to_flags</a></span><span class="op">(</span><span class="op">)</span>
 
-    <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span>(<span class="st">"cut"</span>, <span class="kw">flags</span>, stdout = <span class="kw">T</span>, input = <span class="kw">text</span>)
-}
-</pre></div>
+    <span class="fu"><a href="https://rdrr.io/r/base/system2.html">system2</a></span><span class="op">(</span><span class="st">"cut"</span>, <span class="va">flags</span>, stdout <span class="op">=</span> <span class="cn">T</span>, input <span class="op">=</span> <span class="va">text</span><span class="op">)</span>
+<span class="op">}</span></pre></div>
 <div class="sourceCode" id="cb27"><pre class="downlit">
-<span class="fu">shell_cut</span>(<span class="st">"hello_world"</span>, fields = <span class="fl">2</span>, sep = <span class="st">"_"</span>) 
-</pre></div>
+<span class="fu">shell_cut</span><span class="op">(</span><span class="st">"hello_world"</span>, fields <span class="op">=</span> <span class="fl">2</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span> </pre></div>
 <div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="co">## [1] "world"</span></span></code></pre></div>
 <div id="multiple-values-are-passed-as-vectors" class="section level4">
 <h4 class="hasAnchor">
 <a href="#multiple-values-are-passed-as-vectors" class="anchor"></a>Multiple values are passed as vectors</h4>
 <div class="sourceCode" id="cb29"><pre class="downlit">
-<span class="fu">shell_cut</span>(<span class="st">"hello_world_hello"</span>, fields = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">3</span>), sep = <span class="st">"_"</span>) 
-</pre></div>
+<span class="fu">shell_cut</span><span class="op">(</span><span class="st">"hello_world_hello"</span>, fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span> </pre></div>
 <div class="sourceCode" id="cb30"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="co">## [1] "hello_hello"</span></span></code></pre></div>
 <p>Additionally, <code>cmdfun</code> provides utilites for searching &amp; checking valid tool installs, expecting system behavior, and helpful error handling to allow simple construction of external tool wrappers (see <a href="https://snystrom.github.io/cmdfun/articles/cmdfun.html">vignette</a> for details).</p>
 </div>

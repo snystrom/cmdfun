@@ -2,8 +2,9 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  articles/building_wrappers: building_wrappers.html
   cmdfun: cmdfun.html
-last_built: 2020-09-20T17:36Z
+last_built: 2020-10-02T12:29Z
 urls:
   reference: https://snystrom.github.io/cmdfun//reference
   article: https://snystrom.github.io/cmdfun//articles
