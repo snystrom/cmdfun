@@ -239,7 +239,7 @@ check_args_contain_illegal_flags <- function(args){
   is_illegal <- purrr::map_lgl(names(args), flag_is_illegal) %>% 
     purrr::set_names(names(args)) 
   
-  illegals <- is_illegal[is_illegal == T]
+  illegals <- is_illegal[is_illegal]
   
   purrr::walk(names(illegals), error_illegal_flag)
 }
